@@ -111,4 +111,16 @@ def delete_one_role(role_id):
         return jsonify({"msg": "role deleted succesfull"}), 200
     else:
         return jsonify({"msg": "role doesn't exist"}), 400
+    
+    
+@api.route('/role/<int:role_id>', methods=['GET'])
+def get_one_role(role_id):
+    one_role = Role.query.get(role_id)
+    if one_role:
+        return jsonify(one_role.serialize()), 200
+    else:
+        return jsonify({"msg": "ROLE doesn't exist"}), 400
+
+
+
 
