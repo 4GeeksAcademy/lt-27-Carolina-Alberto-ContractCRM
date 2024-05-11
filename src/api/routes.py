@@ -12,11 +12,46 @@ api = Blueprint('api', __name__)
 CORS(api)
 
 
-@api.route('/hello', methods=['POST', 'GET'])
-def handle_hello():
+@api.route('/users', methods=['GET'])
+def getAllUsers():
+    users = User.query.all()
+    users = list(map(lambda x: x.serialize(), users))
+    return jsonify(users), 200
 
-    response_body = {
-        "message": "Hello! I'm a message that came from the backend, check the network tab on the google inspector and you will see the GET request"
-    }
+    @api.route('/users', methods=['POST'])
+    def createUser():
+        data = request.get_json()
+        new_user = User(username=data['username'], email=data['email'])
+        db.session.add(new_user)
+        db.session.commit()
+        return jsonify(new_user.serialize()), 201
 
-    return jsonify(response_body), 200
+    @api.route('/users/<int:user_id>', methods=['GET'])
+    def getUser(user_id):
+        user = User.query.get(user_id)
+        if user is None:
+            raise APIException('User not found', status_code=404)
+        return jsonify(user.serialize()), 200
+
+    @api.route('/users/<int:user_id>', methods=['PUT'])
+    def updateUser(user_id):
+        user = User.query.get(user_id)
+        if user is None:
+            raise APIException('User not found', status_code=404)
+
+        data = request.get_json()
+        user.name = data['name']
+        user.last_name = data['last_name']
+        user.email = data['email']
+        db.session.commit()
+        return jsonify(user.serialize()), 200
+
+    @api.route('/users/<int:user_id>', methods=['DELETE'])
+    def deleteUser(user_id):
+        user = User.query.get(user_id)
+        if user is None:
+            raise APIException('User not found', status_code=404)
+
+        db.session.delete(user)
+        db.session.commit()
+        return jsonify({'message': 'User deleted successfully'}), 200
