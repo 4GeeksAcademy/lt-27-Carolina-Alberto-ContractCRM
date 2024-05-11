@@ -24,8 +24,6 @@ def handle_hello():
 
 
 
-
-
 @api.route('/role', methods=['GET'])
 def get_roles():
     all_roles = Role.query.all()
@@ -33,6 +31,22 @@ def get_roles():
     return jsonify(results), 200
 
 
+
+@api.route('/role/<int:role_id>', methods=['PUT'])
+def update_role(role_id):
+
+    get_role_to_update = Role.query.get(role_id)
+    print (get_role_to_update)
+
+    if get_role_to_update is None:
+        return jsonify({"message": "The role doesn't exist"}), 400
+        
+    else:  
+        role_data = request.get_json()
+        get_role_to_update.name = role_data ["name"]
+        db.session.commit()
+        return jsonify(get_role_to_update.serialize()), 200
+    
 
 
 
@@ -50,7 +64,6 @@ def add_role():
         db.session.commit()
         print (new_role)
         return jsonify({"message": "Role created"}), 200
-
 
 
         
