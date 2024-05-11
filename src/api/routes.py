@@ -22,7 +22,7 @@ def getAllUsers():
 @api.route('/users', methods=['POST'])
 def createUser():
     data = request.get_json()
-    new_user = User(username=data['username'], email=data['email'])
+    new_user = User(name = data['name'], lastName = data['lastName'], email = data['email'], password = data['password'], isActive = ['isActive'])
     db.session.add(new_user)
     db.session.commit()
     return jsonify(new_user.serialize()), 201
