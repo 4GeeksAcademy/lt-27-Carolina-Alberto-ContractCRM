@@ -11,6 +11,15 @@ api = Blueprint('api', __name__)
 # Allow CORS requests to this API
 CORS(api)
 
+@api.route('/hello', methods=['POST', 'GET'])
+def handle_hello():
+
+    response_body = {
+        "message": "Hello! I'm a message that came from the backend, check the network tab on the google inspector and you will see the GET request"
+    }
+
+    return jsonify(response_body), 200
+
 
 @api.route('/users', methods=['GET'])
 def getAllUsers():
@@ -58,7 +67,7 @@ def deleteUser(user_id):
     return jsonify({'message': 'User deleted successfully'}), 200
 
 
-@api.route('/role', methods=['GET'])
+@api.route('/roles', methods=['GET'])
 def get_roles():
     all_roles = Role.query.all()
     results = list(map(lambda elemento: elemento.serialize(), all_roles))
@@ -66,7 +75,7 @@ def get_roles():
 
 
 
-@api.route('/role/<int:role_id>', methods=['PUT'])
+@api.route('/roles/<int:role_id>', methods=['PUT'])
 def update_role(role_id):
 
     get_role_to_update = Role.query.get(role_id)
@@ -84,7 +93,7 @@ def update_role(role_id):
 
 
 
-@api.route('/role', methods=['POST'])
+@api.route('/roles', methods=['POST'])
 def add_role():
     
     new_role_name = request.json.get('name')
@@ -101,7 +110,7 @@ def add_role():
 
 
         
-@api.route('/role/<int:role_id>', methods=['DELETE'])
+@api.route('/roles/<int:role_id>', methods=['DELETE'])
 def delete_one_role(role_id):
     role_to_delete = Role.query.get(role_id)
     
@@ -113,7 +122,7 @@ def delete_one_role(role_id):
         return jsonify({"msg": "role doesn't exist"}), 400
     
     
-@api.route('/role/<int:role_id>', methods=['GET'])
+@api.route('/roles/<int:role_id>', methods=['GET'])
 def get_one_role(role_id):
     one_role = Role.query.get(role_id)
     if one_role:
