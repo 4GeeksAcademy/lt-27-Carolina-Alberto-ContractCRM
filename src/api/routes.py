@@ -15,14 +15,17 @@ CORS(api)
 @api.route('/users', methods=['GET'])
 def getAllUsers():
     users = User.query.all()
-    users = list(map(lambda x: x.serialize(), users))
+    users = list(map(lambda user: user.serialize(), users))
+    print(users)
     return jsonify(users), 200
 
 
-@api.route('/users', methods=['POST'])
+@api.route('/users/new', methods=['POST'])
 def createUser():
     data = request.get_json()
-    new_user = User(name = data['name'], lastName = data['lastName'], email = data['email'], password = data['password'], isActive = ['isActive'])
+    print(data)
+    new_user = User(name = data['name'], lastName = data['lastName'], email = data['email'], password = data['password'], isActive = data['isActive'])
+    print(new_user.serialize())
     db.session.add(new_user)
     db.session.commit()
     return jsonify(new_user.serialize()), 201
@@ -42,7 +45,7 @@ def updateUser(user_id):
 
     data = request.get_json()
     user.name = data['name']
-    user.last_name = data['last_name']
+    user.lastName = data['lastName']
     user.email = data['email']
     db.session.commit()
     return jsonify(user.serialize()), 200
