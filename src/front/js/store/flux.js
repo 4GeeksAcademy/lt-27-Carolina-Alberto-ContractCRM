@@ -1,5 +1,5 @@
 import { renderToReadableStream } from "react-dom/server";
-import { EditRole } from "../component/Roles/editrole";
+import { EditRole } from "../component/editrole";
 
 
 const getState = ({ getStore, getActions, setStore }) => {
@@ -114,16 +114,19 @@ const getState = ({ getStore, getActions, setStore }) => {
 				})
 			},
 
+			
 			putRole: (editData, role_id) => {
+				console.log(editData, "khair")
 
 				fetch(process.env.BACKEND_URL + "api/roles/" + role_id, {
 					method: "PUT",
-					body: JSON.stringify({"name" : editData}),
+					body: JSON.stringify(editData),
 					headers: {
 					"Content-Type": "application/json"
 					}
         		})
 				.then ((response)=>response.json())
+				// .then ((data)=> console.log(data))
 				.then(  ()=>  getActions().getRoles())
 	
 			},

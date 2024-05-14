@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-import { Context } from "../../store/appContext";
+import { Context } from "../store/appContext";
 
 export const CreateRole = () => {
 	const { actions } = useContext(Context);
@@ -24,6 +24,9 @@ export const CreateRole = () => {
 					<button onClick={save}>
 						Create new role
 					</button>
+					<Link to="/roleshome">  
+                            <span> or get back to ROLES-home</span>
+                    </Link> 
 				</div>
 		</>
 	);

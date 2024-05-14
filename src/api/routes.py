@@ -86,6 +86,7 @@ def update_role(role_id):
         
     else:  
         role_data = request.get_json()
+        print (role_data)
         get_role_to_update.name = role_data ["name"]
         db.session.commit()
         return jsonify(get_role_to_update.serialize()), 200
