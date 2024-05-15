@@ -6,10 +6,15 @@ import { BackendURL } from "./component/backendURL";
 import { Home } from "./pages/home";
 import { Demo } from "./pages/demo";
 import { Single } from "./pages/single";
+import { Roleshome } from "./component/roleshome"
 import injectContext from "./store/appContext";
 
 import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
+
+import { CreateRole } from "./component/createrole";
+import { ListRoles } from "./component/listroles";
+import { EditRole } from "./component/editrole";
 
 //create your first component
 const Layout = () => {
@@ -24,13 +29,18 @@ const Layout = () => {
             <BrowserRouter basename={basename}>
                 <ScrollToTop>
                     <Navbar />
-                    <Routes>
+                    <Routes>  
                         <Route element={<Home />} path="/" />
+                        <Route element={<Roleshome />} path="/roleshome" />
+                        <Route element={<CreateRole />} path="/createrole" />
+                        <Route element={<ListRoles />} path="/listroles" />
+                        <Route element={<EditRole />} path="/editrole" />
+                        <Route element={<EditRole />} path="/editrole/:role_id" />
                         <Route element={<Demo />} path="/demo" />
                         <Route element={<Single />} path="/single/:theid" />
                         <Route element={<h1>Not found!</h1>} />
                     </Routes>
-                    <Footer />
+                    {/* <Footer /> */}
                 </ScrollToTop>
             </BrowserRouter>
         </div>
