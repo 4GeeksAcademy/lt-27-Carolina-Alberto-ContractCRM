@@ -20,7 +20,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 			],
 			roles: [],
 			editableRole: {},
-			
+			users: [],
+			user: {},
 		},
 		actions: {
 			// Use getActions to call a function within a fuction
@@ -129,6 +130,66 @@ const getState = ({ getStore, getActions, setStore }) => {
 				// .then ((data)=> console.log(data))
 				.then(  ()=>  getActions().getRoles())
 	
+			},
+
+			getUsers: () => {
+				console.log("todos los usuarios desde flux");
+				fetch("https://reimagined-capybara-v6q76rw4j92q5x-3001.app.github.dev/api/users")
+				.then(response => response.json())
+				.then(data => setStore({ users: data }))
+			},
+
+			getUser: (user_id) => {
+				console.log("un usuario desde flux", user_id);
+				fetch("https://reimagined-capybara-v6q76rw4j92q5x-3001.app.github.dev/api/users/"+user_id)
+				.then(response => response.json())
+				.then(data => {
+					setStore({ user: data })
+					console.log(data)
+					})
+			},
+
+			putUser: (editData) => {
+				console.log(editData);
+				const body = JSON.stringify({name: editData.name, last_name: editData.last_name,email: editData.email})
+				console.log(body)
+				fetch("https://reimagined-capybara-v6q76rw4j92q5x-3001.app.github.dev/api/users/" + editData.id, {
+					method: "PUT",
+					body: body,
+					headers: {
+					"Content-Type": "application/json",
+					"mode": "no-cors"
+					}
+				})
+				.then ((response)=>response.json())
+				.then((data)=> setStore({ user: data }))
+	
+			},
+
+			newUser: (newUserData) => {
+				console.log(newUserData)
+						
+				return fetch("https://reimagined-capybara-v6q76rw4j92q5x-3001.app.github.dev/api/users/", {
+					method: "POST",
+					body: JSON.stringify(newUserData),
+					headers: {
+					"Content-Type": "application/json",
+					"mode": "no-cors"
+					}
+				})
+				.then ((response)=> response.json() )
+				.then((data)=> {
+					setStore({ users: getStore().users.concat(data) })
+					return data;
+			 	})
+			},
+
+			deleteUser: (user_id) => {
+
+				fetch("https://reimagined-capybara-v6q76rw4j92q5x-3001.app.github.dev/api/users/" + user_id, {method: "DELETE"})
+				.then((response) => response.text())
+				setStore({ users: getStore().users.filter((user)=> user.id != user_id) });
+
 			},
 
 			
