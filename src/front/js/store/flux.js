@@ -22,6 +22,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 			editableRole: {},
 			users: [],
 			user: {},
+			contracts: [],
+			contract: {},
 		},
 		actions: {
 			// Use getActions to call a function within a fuction
@@ -180,8 +182,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				.then ((response)=> response.json() )
 				.then((data)=> {
 					setStore({ users: getStore().users.concat(data) })
-					return data;
-			 	})
+					return data;})
 			},
 
 			deleteUser: (user_id) => {
@@ -192,6 +193,62 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			},
 
+			getContracts: () => {
+				console.log("todos los contratos desde flux");
+				fetch("https://reimagined-capybara-v6q76rw4j92q5x-3001.app.github.dev/api/contracts")
+				.then(response => response.json())
+				.then(data => setStore({ contracts: data }))
+			},
+
+			getContract: (contract_id) => {
+				console.log("un contrato desde flux", contract_id);
+				fetch("https://reimagined-capybara-v6q76rw4j92q5x-3001.app.github.dev/api/contracts/"+contract_id)
+				.then(response => response.json())
+				.then(data => {
+					setStore({ contracts: data })
+					console.log(data)
+					})
+			},
+
+			newContract: (editData) => {
+				console.log(editData);
+				const body = JSON.stringify(editData)
+				console.log(body)
+				fetch("https://reimagined-capybara-v6q76rw4j92q5x-3001.app.github.dev/api/contracts/" + editData.id, {
+					method: "PUT",
+					body: body,
+					headers: {
+					"Content-Type": "application/json",
+					"mode": "no-cors"
+					}
+				})
+				.then ((response)=>response.json())
+				.then((data)=> setStore({ contract: getStore().contracts.concat(data) }))
+			},
+
+			updateContract: (editData, contract_id) => {
+				console.log(editData);
+				const body = JSON.stringify(editData)
+				console.log(body)
+				fetch("https://reimagined-capybara-v6q76rw4j92q5x-3001.app.github.dev/api/contracts/" + contract_id, {
+					method: "PUT",
+					body: body,
+					headers: {
+					"Content-Type": "application/json",
+					"mode": "no-cors"
+					}
+				})
+				.then ((response)=>response.json())
+				.then((data)=> setStore({ contract: data }))
+			},
+
+			deleteContract: (contract_id) => {
+
+				fetch("https://reimagined-capybara-v6q76rw4j92q5x-3001.app.github.dev/api/contracts/" + contract_id, {method: "DELETE"})
+				.then((response) => response.text())
+				setStore({ contracts: getStore().contracts.filter((contract)=> contract.id != contract_id) });
+
+			},
 			
 		}
 	};
