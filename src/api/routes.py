@@ -188,4 +188,37 @@ def delete_contract(contract_id):
         return jsonify({"msg": "Contract deleted successfully"}), 200
     else:
         return jsonify({"msg": "Contract doesn't exist"}), 400
+      
+      
+  # ******************************** ROUTES FOR USER_ROLE *************************
+  
+  @api.route('/user_role', methods=['GET'])
+def get_users_roles():
+    all_users_roles = User_Role.query.all()
+    results = list(map(lambda elemento: elemento.serialize(), all_users_roles))
+    return jsonify(results), 200
+
+
+
+@api.route('/user_role', methods=['POST'])
+def create_user_role():
+    data = request.get_json()
+    add_user_role = User_Role(user_id=data["user_id"], role_id=data["role_id"])
+    db.session.add(add_user_role)
+    db.session.commit()
+    return jsonify(add_user_role.serialize()), 200
+
+
+@api.route('/user/<int:user_id>/role/<int:role_id>', methods=['DELETE'])
+def delete_user_role(user_id, role_id):
+    
+    user_role_to_delete = User_Role.query.filter_by(user_id=user_id,role_id=role_id).first()
+    
+    if user_role_to_delete:
+        db.session.delete(user_role_to_delete)
+        db.session.commit()
+        return jsonify({"msg": "User and Role deleted succesfull"}), 200
+    else:
+        return jsonify({"msg": "User and Role do not exist"}), 400
+
 
