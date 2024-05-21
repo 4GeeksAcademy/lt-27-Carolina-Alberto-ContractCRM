@@ -1,9 +1,7 @@
 import React, { useContext , useEffect} from "react";
 import { Context } from "../store/appContext";
-import { Roleshome } from "../component/roleshome"
-import { Link, useNavigate } from "react-router-dom";
-import rigoImageUrl from "../../img/rigo-baby.jpg";
-import "../../styles/home.css";
+import { Link, } from "react-router-dom";
+import { Contract } from "../component/contract";
 import { User } from "../component/user";
 
 
@@ -24,6 +22,13 @@ export const UsersComponent = () => {
             </Link> 
 			<ul>
 				{store.users.map((user)=> <User key={user.id} user={user}></User>)}
+			</ul>
+			<h1>contracts</h1>
+			<Link to="/newContract">  
+				<span> create new contract</span>
+			</Link>
+			<ul>
+				{store.contracts.map((contract)=> <Contract key={contract.id} contract={contract}></Contract>)}
 			</ul>
 			<Link to="/">
 				<span className="btn btn-primary btn-lg" href="#" role="button">
