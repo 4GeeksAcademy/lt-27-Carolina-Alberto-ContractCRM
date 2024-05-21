@@ -1,4 +1,8 @@
 from flask_sqlalchemy import SQLAlchemy
+import os
+import sys
+from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy.orm import relationship, declarative_base
 
 db = SQLAlchemy()
 
@@ -36,5 +40,22 @@ class Role(db.Model):
             "id": self.id,
             "name": self.name,
         }
-    
+
+class User_Role(db.Model):
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('user.id'))
+    user = relationship(User)
+    role_id = Column(Integer, ForeignKey('role.id'))
+    role = relationship(Role)
+
+    def __repr__(self):
+        return f'<User_Role {self.id}>'
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "role_id": self.role_id,
+        }
     
