@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Role
+from api.models import db, User, Role, Contract
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 
@@ -20,14 +20,16 @@ def handle_hello():
 
     return jsonify(response_body), 200
 
+# ******************* ROUTES FOR USERS *******************
 
+# GET all users
 @api.route('/users', methods=['GET'])
 def getAllUsers():
     users = User.query.all()
     users = list(map(lambda x: x.serialize(), users))
     return jsonify(users), 200
 
-
+# Create a new user
 @api.route('/users', methods=['POST'])
 def createUser():
     data = request.get_json()
@@ -36,6 +38,7 @@ def createUser():
     db.session.commit()
     return jsonify(new_user.serialize()), 201
 
+# GET a single user
 @api.route('/users/<int:user_id>', methods=['GET'])
 def getUser(user_id):
     user = User.query.get(user_id)
@@ -43,6 +46,7 @@ def getUser(user_id):
         raise APIException('User not found', status_code=404)
     return jsonify(user.serialize()), 200
 
+# Update a user
 @api.route('/users/<int:user_id>', methods=['PUT'])
 def updateUser(user_id):
     user = User.query.get(user_id)
@@ -56,6 +60,7 @@ def updateUser(user_id):
     db.session.commit()
     return jsonify(user.serialize()), 200
 
+# Delete a user
 @api.route('/users/<int:user_id>', methods=['DELETE'])
 def deleteUser(user_id):
     user = User.query.get(user_id)
@@ -66,7 +71,9 @@ def deleteUser(user_id):
     db.session.commit()
     return jsonify({'message': 'User deleted successfully'}), 200
 
+# ******************* ROUTES FOR ROLES *******************
 
+# GET all roles
 @api.route('/roles', methods=['GET'])
 def get_roles():
     all_roles = Role.query.all()
@@ -74,7 +81,7 @@ def get_roles():
     return jsonify(results), 200
 
 
-
+# Update a role
 @api.route('/roles/<int:role_id>', methods=['PUT'])
 def update_role(role_id):
 
@@ -93,7 +100,7 @@ def update_role(role_id):
     
 
 
-
+# Create a new role
 @api.route('/roles', methods=['POST'])
 def add_role():
     
@@ -110,7 +117,7 @@ def add_role():
         return jsonify({"message": "Role created"}), 200
 
 
-        
+# Delete a role
 @api.route('/roles/<int:role_id>', methods=['DELETE'])
 def delete_one_role(role_id):
     role_to_delete = Role.query.get(role_id)
@@ -123,6 +130,7 @@ def delete_one_role(role_id):
         return jsonify({"msg": "role doesn't exist"}), 400
     
     
+# GET one role
 @api.route('/roles/<int:role_id>', methods=['GET'])
 def get_one_role(role_id):
     one_role = Role.query.get(role_id)
@@ -130,7 +138,54 @@ def get_one_role(role_id):
         return jsonify(one_role.serialize()), 200
     else:
         return jsonify({"msg": "ROLE doesn't exist"}), 400
+    
+# ******************* ROUTES FOR CONTRACTS *******************
 
+# GET all contracts
+@api.route('/contracts', methods=['GET'])
+def get_contracts():
+    all_contracts = Contract.query.all()
+    results = [contract.serialize() for contract in all_contracts]
+    return jsonify(results), 200
 
+# GET one contract
+@api.route('/contracts/<int:contract_id>', methods=['GET'])
+def get_one_contract(contract_id):
+    contract = Contract.query.get(contract_id)
+    if contract:
+        return jsonify(contract.serialize()), 200
+    else:
+        return jsonify({"msg": "Contract doesn't exist"}), 400
 
+# Create a new contract
+@api.route('/contracts', methods=['POST'])
+def create_contract():
+    data = request.get_json()
+    new_contract = Contract(**data)
+    db.session.add(new_contract)
+    db.session.commit()
+    return jsonify(new_contract.serialize()), 201
+
+# Update a contract
+@api.route('/contracts/<int:contract_id>', methods=['PUT'])
+def update_contract(contract_id):
+    data = request.get_json()
+    contract = Contract.query.get(contract_id)
+    if contract:
+        for key, value in data.items():
+            setattr(contract, key, value)
+        db.session.commit()
+        return jsonify(contract.serialize()), 200
+    else:
+        return jsonify({"msg": "Contract doesn't exist"}), 400
+    
+@api.route('/contracts/<int:contract_id>', methods=['DELETE'])
+def delete_contract(contract_id):
+    contract = Contract.query.get(contract_id)
+    if contract:
+        db.session.delete(contract)
+        db.session.commit()
+        return jsonify({"msg": "Contract deleted successfully"}), 200
+    else:
+        return jsonify({"msg": "Contract doesn't exist"}), 400
 
