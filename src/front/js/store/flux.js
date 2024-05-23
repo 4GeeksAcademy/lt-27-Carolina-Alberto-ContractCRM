@@ -19,11 +19,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			],
 			roles: [],
-			editableRole: {},
+			// editableRole: {},
 			users: [],
 			user: {},
 			contracts: [],
 			contract: {},
+			users_roles: [],
 		},
 		actions: {
 			// Use getActions to call a function within a fuction
@@ -60,11 +61,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			getRoles: () => {
 				console.log("se cargo pagina desde flux")
-				fetch("https://obscure-engine-g44795r6qj5w2v46p-3001.app.github.dev/api/roles")
+				fetch(process.env.BACKEND_URL + "api/roles")
 				.then ( (response)=>response.json() )
 				// .then ( (data)=>console.log(data) )
 				.then ( (data)=> {
-					console.log(data)
+				
 					setStore({ roles: data }) 
 					}
 				)	
@@ -136,14 +137,14 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			getUsers: () => {
 				console.log("todos los usuarios desde flux");
-				fetch("https://reimagined-capybara-v6q76rw4j92q5x-3001.app.github.dev/api/users")
+				fetch(process.env.BACKEND_URL + "api/users")
 				.then(response => response.json())
 				.then(data => setStore({ users: data }))
 			},
 
 			getUser: (user_id) => {
 				console.log("un usuario desde flux", user_id);
-				fetch("https://reimagined-capybara-v6q76rw4j92q5x-3001.app.github.dev/api/users/"+user_id)
+				fetch(process.env.BACKEND_URL + "api/users/"+user_id)
 				.then(response => response.json())
 				.then(data => {
 					setStore({ user: data })
@@ -155,7 +156,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				console.log(editData);
 				const body = JSON.stringify({name: editData.name, last_name: editData.last_name,email: editData.email})
 				console.log(body)
-				fetch("https://reimagined-capybara-v6q76rw4j92q5x-3001.app.github.dev/api/users/" + editData.id, {
+				fetch(process.env.BACKEND_URL + "api/users/" + editData.id, {
 					method: "PUT",
 					body: body,
 					headers: {
@@ -171,7 +172,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			newUser: (newUserData) => {
 				console.log(newUserData)
 						
-				return fetch("https://reimagined-capybara-v6q76rw4j92q5x-3001.app.github.dev/api/users/", {
+				return fetch(process.env.BACKEND_URL + "api/users/", {
 					method: "POST",
 					body: JSON.stringify(newUserData),
 					headers: {
@@ -187,7 +188,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			deleteUser: (user_id) => {
 
-				fetch("https://reimagined-capybara-v6q76rw4j92q5x-3001.app.github.dev/api/users/" + user_id, {method: "DELETE"})
+				fetch(process.env.BACKEND_URL + "api/users/" + user_id, {method: "DELETE"})
 				.then((response) => response.text())
 				setStore({ users: getStore().users.filter((user)=> user.id != user_id) });
 
@@ -195,14 +196,14 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			getContracts: () => {
 				console.log("todos los contratos desde flux");
-				fetch("https://reimagined-capybara-v6q76rw4j92q5x-3001.app.github.dev/api/contracts")
+				fetch(process.env.BACKEND_URL + "api/contracts")
 				.then(response => response.json())
 				.then(data => setStore({ contracts: data }))
 			},
 
 			getContract: (contract_id) => {
 				console.log("un contrato desde flux", contract_id);
-				fetch("https://reimagined-capybara-v6q76rw4j92q5x-3001.app.github.dev/api/contracts/"+contract_id)
+				fetch(process.env.BACKEND_URL + "api/contracts/"+contract_id)
 				.then(response => response.json())
 				.then(data => {
 					setStore({ contracts: data })
@@ -214,7 +215,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				console.log(editData);
 				const body = JSON.stringify(editData)
 				console.log(body)
-				fetch("https://reimagined-capybara-v6q76rw4j92q5x-3001.app.github.dev/api/contracts/" + editData.id, {
+				fetch(process.env.BACKEND_URL + "api/contracts/" + editData.id, {
 					method: "PUT",
 					body: body,
 					headers: {
@@ -230,7 +231,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				console.log(editData);
 				const body = JSON.stringify(editData)
 				console.log(body)
-				fetch("https://reimagined-capybara-v6q76rw4j92q5x-3001.app.github.dev/api/contracts/" + contract_id, {
+				fetch(process.env.BACKEND_URL + "api/contracts/" + contract_id, {
 					method: "PUT",
 					body: body,
 					headers: {
@@ -244,11 +245,26 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			deleteContract: (contract_id) => {
 
-				fetch("https://reimagined-capybara-v6q76rw4j92q5x-3001.app.github.dev/api/contracts/" + contract_id, {method: "DELETE"})
+				fetch(process.env.BACKEND_URL + "api/contracts/" + contract_id, {method: "DELETE"})
 				.then((response) => response.text())
 				setStore({ contracts: getStore().contracts.filter((contract)=> contract.id != contract_id) });
 
 			},
+
+			getUserRole: () => {
+				console.log("se cargo pagina desde flux")
+				fetch(process.env.BACKEND_URL + "api/user_role")
+				.then ( (response)=>response.json() )
+				.then ( (data)=> {
+					
+					setStore({ users_roles: data }) 
+					}
+				)	
+			},
+
+	
+
+			
 			
 		}
 	};

@@ -17,6 +17,7 @@ import { ListRoles } from "./component/listroles";
 import { EditRole } from "./component/editrole";
 import { UsersComponent } from "./pages/userscomponent";
 import { UpdateUser } from "./component/updateUser";
+import { UsersRolesList } from "./component/usersRolesList";
 
 //create your first component
 const Layout = () => {
@@ -41,6 +42,7 @@ const Layout = () => {
                         <Route element={<ListRoles />} path="/listroles" />
                         <Route element={<EditRole />} path="/editrole" />
                         <Route element={<EditRole />} path="/editrole/:role_id" />
+                        <Route element={<UsersRolesList />} path="/UsersRolesList" />
                         <Route element={<Demo />} path="/demo" />
                         <Route element={<Single />} path="/single/:theid" />
                         <Route element={<h1>Not found!</h1>} />
