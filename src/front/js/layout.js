@@ -14,9 +14,11 @@ import { Footer } from "./component/footer";
 import { CreateUser } from "./component/createUser"
 import { CreateRole } from "./component/createrole";
 import { ListRoles } from "./component/listroles";
+import { CreateContract } from "./component/createContract";
 import { EditRole } from "./component/editrole";
 import { UsersComponent } from "./pages/userscomponent";
 import { UpdateUser } from "./component/updateUser";
+import { UpdateContract } from "./component/updateContract";
 import { UsersRolesList } from "./component/usersRolesList";
 
 //create your first component
@@ -36,6 +38,8 @@ const Layout = () => {
                         <Route element={<Home />} path="/" />
                         <Route element={<UsersComponent />} path="/user" />
                         <Route element={<UpdateUser />} path="/updateUser/:user_id" />
+                        <Route element={<CreateContract />} path="/newContract" />
+                        <Route element={<UpdateContract />} path="/updateContract/:contract_id" />
                         <Route element={<CreateUser />} path="/newUser" />
                         <Route element={<Roleshome />} path="/roleshome" />
                         <Route element={<CreateRole />} path="/createrole" />

@@ -188,10 +188,8 @@ def delete_contract(contract_id):
         return jsonify({"msg": "Contract deleted successfully"}), 200
     else:
         return jsonify({"msg": "Contract doesn't exist"}), 400
-      
-      
+
   # ******************************** ROUTES FOR USER_ROLE *************************
-  
 @api.route('/user_role', methods=['GET'])
 def get_users_roles():
     all_users_roles = User_Role.query.all()

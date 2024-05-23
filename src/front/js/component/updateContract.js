@@ -1,11 +1,10 @@
-import React, { useContext , useState } from "react";
+import React, { useContext , useState, useEffect } from "react";
 import { Context } from "../store/appContext";
 import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
-
-export const CreateContract = () => {
+export const UpdateContract = (props) => {
 	const { store, actions } = useContext(Context);
-    const [id, setId] = useState("");
     const [status, setStatus] = useState("");
     const [software_name, setSoftwareName] = useState("");
     const [value, setValue] = useState("");
@@ -24,8 +23,37 @@ export const CreateContract = () => {
     const [supplier_poc, setSupplierPoc] = useState("");
     const [business_unit_poc, setBusinessUnitPoc] = useState("");
     const [attachments, setAttachments] = useState("");
-
+    const params = useParams();
     const navigate = useNavigate();
+
+
+    useEffect(()=>{
+        actions.getContract(params.contract_id);
+    },[])
+
+    useEffect(()=>{
+        if(store.contract.status){
+            console.log("trayendo contrato");
+            setStatus(store.contract.status);
+            setSoftwareName(store.contract.software_name);
+            setValue(store.contract.value);
+            setCurrency(store.contract.currency);
+            setPreviusContract(store.contract.previus_contract);
+            setContractType(store.contract.contract_type);
+            setContractDescription(store.contract.contract_description);
+            setEffectiveDate(store.contract.effective_date);
+            setExpirationDate(store.contract.expiration_date);
+            setContractTerm(store.contract.contract_term);
+            setBusinessUnit(store.contract.business_unit);
+            setNoticePeriod(store.contract.notice_period);
+            setBudgetOwner(store.contract.budget_owner);
+            setFinanceApprover(store.contract.finance_approver);
+            setCostCenters(store.contract.cost_centers);
+            setSupplierPoc(store.contract.supplier_poc);
+            setBusinessUnitPoc(store.contract.business_unit_poc);
+            setAttachments(store.contract.attachments);
+        }
+        },[store.contract])
 	
 	function create(){
 		
