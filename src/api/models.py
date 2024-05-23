@@ -1,6 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
-import os
-import sys
+# import os
+# import sys
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship, declarative_base
 
@@ -13,6 +13,7 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(80), unique=False, nullable=False)
     isActive = db.Column(db.Boolean(), unique=False, nullable=False)
+    # user_role = relationship(User_Role)
 
     def __repr__(self):
         return f'<User: {self.email}>'
