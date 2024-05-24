@@ -11,6 +11,7 @@ export const UsersComponent = () => {
 	useEffect(()=>{
 		console.log("se cargo la pag usercomponent")
 		actions.getUsers();
+		actions.getContracts();
 	},[])
 
 	

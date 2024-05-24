@@ -188,9 +188,9 @@ def delete_contract(contract_id):
         return jsonify({"msg": "Contract deleted successfully"}), 200
     else:
         return jsonify({"msg": "Contract doesn't exist"}), 400
-      
-      
+
   # ******************************** ROUTES FOR USER_ROLE *************************
+
   
 @api.route('/user_role/<int:user_role_id>', methods=['GET'])
 def get_one_user_role(user_role_id):
@@ -199,9 +199,6 @@ def get_one_user_role(user_role_id):
         return jsonify(one_user_role.serialize()), 200
     else:
         return jsonify({"msg": "User & Role do not exist"}), 400
-
-
-
 
 @api.route('/user_role', methods=['GET'])
 def get_users_roles():

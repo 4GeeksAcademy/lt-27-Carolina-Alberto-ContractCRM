@@ -192,17 +192,33 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			getContracts: () => {
 				console.log("todos los contratos desde flux");
-				fetch(process.env.BACKEND_URL + "api/contracts")
-				.then(response => response.json())
+
+				console.log(process.env.BACKEND_URL + "api/contracts");
+				fetch(process.env.BACKEND_URL + "api/contracts",
+				{headers: {
+					"Content-type": "application/json",
+					'Access-Control-Allow-Origin': '*',
+			  	}})
+				.then((response) => {
+					console.log("respuesta get contracts",response)
+					return response.json()
+				})
+
 				.then(data => setStore({ contracts: data }))
 			},
 
 			getContract: (contract_id) => {
 				console.log("un contrato desde flux", contract_id);
-				fetch(process.env.BACKEND_URL + "api/contracts/"+contract_id)
+
+				fetch("https://reimagined-capybara-v6q76rw4j92q5x-3001.app.github.dev/api/contracts/"+contract_id,
+				{headers: {
+					"Content-type": "application/json",
+					'Access-Control-Allow-Origin': '*',
+				}})
+
 				.then(response => response.json())
 				.then(data => {
-					setStore({ contracts: data })
+					setStore({ contract: data })
 					console.log(data)
 					})
 			},
@@ -216,7 +232,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 					body: body,
 					headers: {
 					"Content-Type": "application/json",
-					"mode": "no-cors"
 					}
 				})
 				.then ((response)=>response.json())
@@ -232,7 +247,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 					body: body,
 					headers: {
 					"Content-Type": "application/json",
-					"mode": "no-cors"
 					}
 				})
 				.then ((response)=>response.json())
