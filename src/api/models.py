@@ -59,6 +59,8 @@ class User_Role(db.Model):
           "id": self.id,
           "user_id": self.user_id,
           "role_id": self.role_id,
+          "email": self.user.email,
+          "role": self.role.name,
         }
 
     
