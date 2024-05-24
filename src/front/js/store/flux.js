@@ -72,11 +72,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 
 			deleteRole: (role_id) => {
-				console.log("delete role",role_id)
-
-				// console.log(store.contacts.filter( (contacts, contactsIndex)=> contactsIndex != indexToDelete))
-				// setStore({ contacts: store.contacts.filter( (contacts, contactsIndex)=> contactsIndex != indexToDelete) });
-					
+				console.log("delete role",role_id)	
 				const requestOptions = {
 				  method: "DELETE",
 				  redirect: "follow"
@@ -268,13 +264,70 @@ const getState = ({ getStore, getActions, setStore }) => {
 			getUserRole: () => {
 				console.log("se cargo pagina desde flux")
 				fetch(process.env.BACKEND_URL + "api/user_role")
-				.then ( (response)=>response.json() )
+				.then ( (response)=> response.json())
 				.then ( (data)=> {
-					
+					console.log(data)
 					setStore({ users_roles: data }) 
 					}
 				)	
 			},
+
+			deleteUserRole: (userRoleId) => {
+				const requestOptions = {
+				  method: "DELETE",
+				  redirect: "follow",
+				};
+			  
+				fetch(process.env.BACKEND_URL + "api/user_role/" + userRoleId, requestOptions)
+				  .then((response) => {
+					if (response.ok) {
+					  console.log("User role deleted successfully.");
+					  fetch(process.env.BACKEND_URL + "api/user_role/")
+			  		 .then ((response)=>response.json())
+				     .then( (data)=>setStore({ users_roles: data}))
+					  // Aquí podrías actualizar la variable users_roles en el store si es necesario
+					} else {
+					  console.error("Failed to delete user_role.");
+					}
+				  })
+				  .catch((error) => console.error("Error:", error));
+			  },
+
+			  createUserRole: (user_id, role_id) => {
+				console.log()
+						
+				fetch(process.env.BACKEND_URL + "api/user_role", {
+					method: "POST",
+					body: JSON.stringify({"user_id" : user_id,"role_id" : role_id}),
+					headers: {
+					"Content-Type": "application/json",
+					"mode": "no-cors",
+					}
+        		})
+				.then ((response)=>response.json())
+					.then(  ()=>  getActions().getUserRole())
+			},
+
+
+			updateRoleUser: (user_role, user_id, role_id) => {
+				console.log(user_role)
+				const body = JSON.stringify({
+					user_id : user_id,
+					role_id : role_id, 	
+				  })
+				console.log(body)
+				fetch(process.env.BACKEND_URL + "api/user_role/" + user_role, {
+					method: "PUT",
+					body: body,
+					headers: {
+					"Content-Type": "application/json",
+					}
+				})
+				.then ((response)=>response.json())
+				.then((data)=> setStore({ users_roles: data }))
+				.catch((error) => console.error("Error:", error));
+			},
+
 
 	
 

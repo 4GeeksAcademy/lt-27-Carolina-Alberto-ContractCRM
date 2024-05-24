@@ -6,7 +6,6 @@ import { Context } from "../store/appContext";
 export const EditRole = () => {
 
     const params = useParams();
-    // console.log(params)
 
 	const { actions,store } = useContext(Context);
 
@@ -23,7 +22,7 @@ export const EditRole = () => {
 
     const update = (e) => {
         actions.putRole(editData, params.role_id); 
-        navigate("/listroles");
+        navigate("/rolescomponent");
     }
 
     const getRoleToEdit = () => {
@@ -35,58 +34,32 @@ export const EditRole = () => {
 
 	return (
 		<>
-				<div className="container" style={{width: "18rem"}}>
-                    <h4>Edit Role Name</h4>
-					{/* <input type="text" className="form-control" placeholder="New Role-Name" onChange={e => setEditData(e.target.value)} value={store.editableRole.name}/> */}
-                    <label>New Role Name</label>
-                    <input type="text" onChange={infoInput} name="name" value={editData?.name} placeholder="New Role Name" />  
-					<button onClick={update}>
-						Update
-					</button>
-                    <Link to="/roleshome">  
-                        <span> or get back to ROLES-HOME</span>
-                    </Link> 
+                <div className="container mt-5" style={{width: "28rem"}}>
+					<div className="border border-secundary">
+						<h3 className="text-center mt-5" style= {{color: "blue"}}>Edit Role Name</h3>
+                        <div className="d-flex justify-content-center mb-5 mt-4">
+                            <div>
+                                <div>
+                                    <input type="text" onChange={infoInput} name="name" value={editData?.name} placeholder="New Role Name" />  
+                                </div>
+                                <div className="d-flex justify-content-center">
+                                    <div className="btn btn-primary mt-5"onClick={update}>
+                                        Update
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+						<Link to="/rolescomponent">
+							<button className="btn btn-secondary btn-sm my-5">
+							or get back to ROLES-home
+							</button>
+						</Link>
+					</div>
 				</div>
                 
 		</>
 	);
 };
-
-
-
-
-// export const EditRole = () => {
-
-//     const params = useParams();
-//     console.log(params)
-
-// 	const { actions,store } = useContext(Context);
-
-// 	const [editData, setEditData] = useState ('');
-
-//     const navigate = useNavigate();
-
-//     const update = (e) => {
-//         actions.putRole(editData, params.role_id); 
-//         navigate("/");
-//     }
-
-//     const getRoleToEdit = () => {
-//         const newRoleFound = store.roles.find ((role)=>role.id == params.params.role_id)
-//         setEditData (newRoleFound)
-//     }
-
-//     useEffect(()=>{getRoleToEdit()},[])
-
-// 	return (
-// 		<>
-// 				<div className="container" style={{width: "18rem"}}>
-//                     <h4>Edit Role Name</h4>
-// 					<input type="text" className="form-control" placeholder="New Role-Name" onChange={e => setEditData(e.target.value)} value={store.editableRole.name}/>
-// 					<button onClick={update}>
-// 						Update
-// 					</button>
-// 				</div>
-// 		</>
-// 	);
-// };

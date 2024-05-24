@@ -190,6 +190,16 @@ def delete_contract(contract_id):
         return jsonify({"msg": "Contract doesn't exist"}), 400
 
   # ******************************** ROUTES FOR USER_ROLE *************************
+
+  
+@api.route('/user_role/<int:user_role_id>', methods=['GET'])
+def get_one_user_role(user_role_id):
+    one_user_role = User_Role.query.filter_by(id=user_role_id).first()
+    if one_user_role:
+        return jsonify(one_user_role.serialize()), 200
+    else:
+        return jsonify({"msg": "User & Role do not exist"}), 400
+
 @api.route('/user_role', methods=['GET'])
 def get_users_roles():
     all_users_roles = User_Role.query.all()
@@ -207,10 +217,10 @@ def create_user_role():
     return jsonify(add_user_role.serialize()), 200
 
 
-@api.route('/user/<int:user_id>/role/<int:role_id>', methods=['DELETE'])
-def delete_user_role(user_id, role_id):
+@api.route('/user_role/<int:user_role_id>', methods=['DELETE'])
+def delete_user_role(user_role_id):
     
-    user_role_to_delete = User_Role.query.filter_by(user_id=user_id,role_id=role_id).first()
+    user_role_to_delete = User_Role.query.get(user_role_id)
     
     if user_role_to_delete:
         db.session.delete(user_role_to_delete)
@@ -219,4 +229,21 @@ def delete_user_role(user_id, role_id):
     else:
         return jsonify({"msg": "User and Role do not exist"}), 400
 
+
+@api.route('/user_role/<int:user_role_id>', methods=['PUT'])
+def update_user_role(user_role_id):
+
+    get_user_role_to_update = User_Role.query.get(user_role_id)
+    print (get_user_role_to_update)
+
+    if get_user_role_to_update is None:
+        return jsonify({"message": "The User_Role doesn't exist"}), 400
+        
+    else:  
+        user_role_data = request.get_json()
+        print (user_role_data)
+        get_user_role_to_update.user_id = user_role_data ["user_id"]
+        get_user_role_to_update.role_id = user_role_data ["role_id"]
+        db.session.commit()
+    return jsonify(get_user_role_to_update.serialize()), 200
 
