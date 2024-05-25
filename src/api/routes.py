@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Role, Contract, User_Role
+from api.models import db, User, Role, Contract, User_Role, User_Contract
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 
@@ -286,3 +286,73 @@ def update_user_role(user_role_id):
         db.session.commit()
     return jsonify(get_user_role_to_update.serialize()), 200
 
+
+
+# ******************************** ROUTES FOR USER_CONTRACT *************************
+
+  
+@api.route('/user_contract', methods=['GET'])
+def get_users_contracts():
+    all_users_contracts = User_Contract.query.all()
+    results = list(map(lambda elemento: elemento.serialize(), all_users_contracts))
+    return jsonify(results), 200
+
+
+@api.route('/user_contract/<int:user_contract_id>', methods=['GET'])
+def get_one_user_contract(user_contract_id):
+    one_user_contract = User_Contract.query.filter_by(id=user_contract_id).first()
+    if one_user_contract:
+        return jsonify(one_user_contract.serialize()), 200
+    else:
+        return jsonify({"msg": "Contract status hasn't been modified by the user"}), 400
+    
+
+@api.route('/user_contract', methods=['POST'])
+def create_user_contract():
+    data = request.get_json()
+    add_user_contract = User_Contract(
+        user_id=data["user_id"], 
+        contract_id=data["contract_id"], 
+        update_date=data["update_date"], 
+        original_state=data["original_state"], 
+        new_state=data["new_state"], 
+        comments=data["comments"]
+        )
+    db.session.add(add_user_contract)
+    db.session.commit()
+    return jsonify(add_user_contract.serialize()), 200
+
+
+@api.route('/user_contract/<int:user_contract_id>', methods=['DELETE'])
+def delete_user_contract(user_contract_id):
+    
+    user_contract_to_delete = User_Contract.query.get(user_contract_id)
+    
+    if user_contract_to_delete:
+        db.session.delete(user_contract_to_delete)
+        db.session.commit()
+        return jsonify({"msg": "Contract has been deleted succesfull by user"}), 200
+    else:
+        return jsonify({"msg": "User_Contract does not exist"}), 400
+
+
+@api.route('/user_contract/<int:user_contract_id>', methods=['PUT'])
+def update_user_contract(user_contract_id):
+
+    get_user_contract_to_update = User_Contract.query.get(user_contract_id)
+    print (get_user_contract_to_update)
+
+    if get_user_contract_to_update is None:
+        return jsonify({"message": "The User_Contract doesn't exist"}), 400
+        
+    else:  
+        user_contract_data = request.get_json()
+        print (user_contract_data)
+        get_user_contract_to_update.user_id = user_contract_data ["user_id"]
+        get_user_contract_to_update.contract_id = user_contract_data ["contract_id"]
+        get_user_contract_to_update.update_date = user_contract_data ["update_date"]
+        get_user_contract_to_update.original_state = user_contract_data ["original_state"]
+        get_user_contract_to_update.new_state = user_contract_data ["new_state"]
+        get_user_contract_to_update.comments = user_contract_data ["comments"]
+        db.session.commit()
+    return jsonify(get_user_contract_to_update.serialize()), 200

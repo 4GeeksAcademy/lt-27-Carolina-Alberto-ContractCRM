@@ -28,6 +28,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 			contracts: [],
 			contract: {},
 			users_roles: [],
+			users_contracts: [],
+			user_contract: [],
 		},
 		actions: {
 			// Use getActions to call a function within a fuction
@@ -61,6 +63,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 				//reset the global store
 				setStore({ demo: demo });
 			},
+
+// ******************************** ACTIONS FOR ROLE *************************
 
 			getRoles: () => {
 				console.log("se cargo pagina desde flux")
@@ -134,7 +138,16 @@ const getState = ({ getStore, getActions, setStore }) => {
 	
 			},
 
-			
+
+// ******************************** ACTIONS FOR USER *************************
+
+			getUsers: () => {
+				console.log("todos los usuarios desde flux");
+				fetch(process.env.BACKEND_URL + "api/users")
+				.then(response => response.json())
+				.then(data => setStore({ users: data }))
+			},
+
 
 			getUser: (user_id) => {
 				console.log("un usuario desde flux", user_id);
@@ -172,6 +185,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			},
 
+// ******************************** ACTIONS FOR CONTRACTS *************************
+
 			getContracts: () => {
 				console.log("todos los contratos desde flux");
 
@@ -192,7 +207,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			getContract: (contract_id) => {
 				console.log("un contrato desde flux", contract_id);
 
-				fetch("https://reimagined-capybara-v6q76rw4j92q5x-3001.app.github.dev/api/contracts/"+contract_id,
+				fetch(process.env.BACKEND_URL + "api/contracts/" + contract_id,
 				{headers: {
 					"Content-type": "application/json",
 					'Access-Control-Allow-Origin': '*',
@@ -243,6 +258,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			},
 
+// ******************************** ACTIONS FOR USER_ROLE *************************
+
 			getUserRole: () => {
 				console.log("se cargo pagina desde flux")
 				fetch(process.env.BACKEND_URL + "api/user_role")
@@ -253,6 +270,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					}
 				)	
 			},
+
 
 			deleteUserRole: (userRoleId) => {
 				const requestOptions = {
@@ -276,8 +294,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 
 			createUserRole: (user_id, role_id) => {
-				console.log()
-						
+
+			console.log()
+					
+
 				fetch(process.env.BACKEND_URL + "api/user_role", {
 					method: "POST",
 					body: JSON.stringify({"user_id" : user_id,"role_id" : role_id}),
@@ -285,7 +305,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					"Content-Type": "application/json",
 					"mode": "no-cors",
 					}
-        		})
+				})
 				.then ((response)=>response.json())
 					.then(  ()=>  getActions().getUserRole())
 			},
@@ -412,10 +432,115 @@ const getState = ({ getStore, getActions, setStore }) => {
 				});
 			},
 
-	
+// ******************************** ACTIONS FOR USER_CONTRACT *************************
 
+			// ************action to get ALL user_contract from the model:
+			getUserContract: () => {
+				fetch(process.env.BACKEND_URL + "api/user_contract")
+				.then ( (response)=> response.json())
+				.then ( (data)=> {
+					console.log(data)
+					setStore({ users_contracts: data }) 
+					// console.log("users contracts desde flux", users_contracts)
+					}
+				)	
+			},
+
+			// ************action to get ONE user_contract from the model:
+			// getOneUserContract: (userContractId) => {
+			// 	fetch(process.env.BACKEND_URL + "api/user_contract" + userContractId)
+			// 	.then ( (response)=> response.json())
+			// 	.then ( (data)=> {
+			// 		console.log(data)
+			// 		setStore({ user_contract: data }) 
+			// 		}
+			// 	)	
+			// },
+
+
+			getOneUserContract: (userContractId) => {
+				console.log("un contrato desde flux, one user_contract", userContractId);
+
+				fetch(process.env.BACKEND_URL + "api/user_contract/" + userContractId,
+				{headers: {
+					"Content-type": "application/json",
+					'Access-Control-Allow-Origin': '*',
+				}})
+
+				.then(response => response.json())
+				.then(data => {
+					setStore({ user_contract: data })
+					console.log(data)
+					})
+			},
+
+
+			deleteUserContract: (userContractId) => {
+				const requestOptions = {
+				  method: "DELETE",
+				  redirect: "follow",
+				};
+			  
+				fetch(process.env.BACKEND_URL + "api/user_contract/" + userContractId, requestOptions)
+				  .then((response) => {
+					if (response.ok) {
+					  console.log("User contract deleted successfully.");
+					  fetch(process.env.BACKEND_URL + "api/user_contract/")
+			  		 .then ((response)=>response.json())
+				     .then( (data)=>setStore({ users_contracts: data}))
+					  // Aquí podrías actualizar la variable users_roles en el store si es necesario
+					} else {
+					  console.error("Failed to delete user_contract.");
+					}
+				  })
+				  .catch((error) => console.error("Error:", error));
+			  },
 			
 			
+
+
+			createUserContract: (user_id, contract_id, update_date, original_state, new_state, comments) => {					
+				fetch(process.env.BACKEND_URL + "api/user_contract", {
+					method: "POST",
+					body: JSON.stringify({
+						"user_id" : user_id,
+						"contract_id" : contract_id, 
+						"update_date" : update_date,
+						"original_state" : original_state,
+						"new_state" : new_state,
+						"comments" : comments
+					}),
+					headers: {
+					"Content-Type": "application/json",
+					"mode": "no-cors",
+					}
+				})
+				.then ((response)=>response.json())
+					.then(  ()=>  getActions().getUserContract())
+			},
+
+
+			updateUserContract: (user_contract, user_id, contract_id, update_date, original_state, new_state, comments) => {
+				const body = JSON.stringify({
+					user_id : user_id,
+					contract_id : contract_id, 
+					update_date : update_date,
+					original_state : original_state,
+					new_state : new_state,
+					comments : comments	
+				  })
+				console.log(body)
+				fetch(process.env.BACKEND_URL + "api/user_contract/" + user_contract, {
+					method: "PUT",
+					body: body,
+					headers: {
+					"Content-Type": "application/json",
+					}
+				})
+				.then ((response)=>response.json())
+				.then((data)=> setStore({ users_contracts: data }))
+				.catch((error) => console.error("Error:", error));
+			},
 		}
 	};
 };
