@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy import Column, ForeignKey, Integer, String, Date
 from sqlalchemy.orm import relationship, declarative_base
 
 db = SQLAlchemy()
@@ -110,4 +110,32 @@ class Contract(db.Model):
             "supplier_poc": self.supplier_poc,
             "business_unit_poc": self.business_unit_poc,
             "attachments": self.attachments,
+        }
+
+class User_Contract(db.Model):
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('user.id'))
+    user = relationship(User)
+    contract_id = Column(Integer, ForeignKey('contract.id'))
+    contract = relationship(Contract)
+    update_date = db.Column(db.Date, nullable=False)
+    original_state = db.Column(db.String(120), nullable=False)
+    new_state = db.Column(db.String(120), nullable=False)
+    comments= db.Column(db.String, nullable=False)
+
+    def __repr__(self):
+        return f'<User_Contract {self.id}>'
+      
+    def serialize(self):
+        return {
+          "id": self.id,
+          "user_id": self.user_id,
+          "contract_id": self.contract_id,
+          "update_date": self.update_date,
+          "original_state": self.original_state,
+          "new_state": self.new_state,
+          "comments": self.comments,
+          "name": self.user.name,
+          "last_name": self.user.last_name,
         }
