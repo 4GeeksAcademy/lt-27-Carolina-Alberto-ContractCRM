@@ -6,24 +6,62 @@ from api.models import db, User, Role, Contract, User_Role
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 
-api = Blueprint('api', __name__)
+from flask_jwt_extended import create_access_token
+from flask_jwt_extended import get_jwt
+from flask_jwt_extended import jwt_required
+from flask_jwt_extended import JWTManager
 
-# Allow CORS requests to this API
+api = Blueprint('api', __name__)
 CORS(api)
+
+
 
 @api.route('/hello', methods=['POST', 'GET'])
 def handle_hello():
 
-    response_body = {
-        "message": "Hello! I'm a message that came from the backend, check the network tab on the google inspector and you will see the GET request"
-    }
+    response_body = {"message": 
+    "Hello! I'm a message that came from the backend, check the network tab on the google inspector and you will see the GET request",}
 
     return jsonify(response_body), 200
+
+# ******************* Login *******************
+@api.route("/login", methods=["POST"])
+def login():
+    data = request.get_json()
+    email = data["email"]
+    password = data["password"]
+    user = User.query.filter_by(email=email).first()
+    
+    if not user or not user.password == password :
+        return jsonify({"msg": "Bad username or password"}), 401
+    else:
+        access_token = create_access_token(identity=email)
+        return jsonify(jwt=access_token, user=user.serialize()), 200
+
+# ******************* signup *******************
+@api.route("/signup", methods=["POST"])
+def signup():
+    data = request.get_json()
+    email = data["email"]
+    password = data["password"]
+    name = data["name"]
+    last_name = data["last_name"]
+    user = User.query.filter_by(email=email).first()
+    
+    if user:
+        return jsonify({"msg": "User already exists"}), 400
+    else:
+        new_user = User(email=email, password=password, name=name, last_name=last_name, isActive=True)
+        db.session.add(new_user)
+        db.session.commit()
+        access_token = create_access_token(identity=email)
+        return jsonify(jwt = access_token, user = new_user.serialize()), 200
 
 # ******************* ROUTES FOR USERS *******************
 
 # GET all users
 @api.route('/users', methods=['GET'])
+@jwt_required()
 def getAllUsers():
     users = User.query.all()
     users = list(map(lambda x: x.serialize(), users))
@@ -31,6 +69,7 @@ def getAllUsers():
 
 # Create a new user
 @api.route('/users', methods=['POST'])
+@jwt_required()
 def createUser():
     data = request.get_json()
     new_user = User(name = data['name'], last_name = data['last_name'], email = data['email'], password = data['password'], isActive = True)
