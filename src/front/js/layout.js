@@ -24,6 +24,9 @@ import { UpdateUserRole } from "./component/updateuserrole";
 import { Rolescomponent } from "./pages/rolescomponent";
 import { UpdateContract } from "./component/updateContract";
 import { UsersRolesList } from "./component/usersRolesList";
+import { ContractProfile } from "./component/contractprofile";
+
+
 
 
 //create your first component
@@ -59,6 +62,10 @@ const Layout = () => {
                         <Route element={<h1>Not found!</h1>} />
                         <Route element={<UpdateUserRole />} path="/updateuserrole/:user_role_id" />
                         <Route element={<Rolescomponent />} path="/rolescomponent" />
+                        <Route element={<ContractProfile />} path="/contracts/:contractId" />
+   
+                        
+                
                     </Routes>
                     {/* <Footer /> */}
                 </ScrollToTop>
