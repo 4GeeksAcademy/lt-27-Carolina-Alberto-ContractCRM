@@ -8,12 +8,12 @@ export const User = (props) => {
 		<div className="card mb-3" style= {{maxWidth: "440px"}}>
             <div className="row g-0">
                 <div className="col-md-4">
-                    <img src= {'https://picsum.photos/200/30' + props.user.id} className="img-fluid rounded-start" alt="..."/>
+                    <img src= {'https://picsum.photos/200/300'} className="img-fluid rounded-start" alt="..."/>
                 </div>
                 <div className="col-md-8">
                     <div className="card-body">
                         <h5 className="card-title">Name: {props.user.name}</h5>
-                        <h5 className="card-title">Last Name: {props.user.lastName}</h5>
+                        <h5 className="card-title">Last Name: {props.user.last_name}</h5>
                         <h5 className="card-title">email: {props.user.email}</h5>
                     </div>
                 </div>

@@ -22,6 +22,7 @@ import { Usersrolescomponent } from "./pages/usersrolescomponent";
 import { Newuserrole } from "./component/newuserrole";
 import { UpdateUserRole } from "./component/updateuserrole";
 import { Rolescomponent } from "./pages/rolescomponent";
+import { Login } from "./pages/login";
 import { UpdateContract } from "./component/updateContract";
 import { UsersRolesList } from "./component/usersRolesList";
 
@@ -40,7 +41,7 @@ const Layout = () => {
                 <ScrollToTop>
                     <Navbar />
                     <Routes>  
-                        <Route element={<Home />} path="/" />
+                        <Route element={<Login />} path="/" />
                         <Route element={<UsersComponent />} path="/user" />
                         <Route element={<UpdateUser />} path="/updateUser/:user_id" />
                         <Route element={<CreateContract />} path="/newContract" />
