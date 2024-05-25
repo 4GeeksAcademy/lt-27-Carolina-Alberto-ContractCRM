@@ -9,7 +9,6 @@ export const Usersrolescomponent = () => {
 	const { store, actions } = useContext(Context);
 
 	useEffect(()=>{
-		console.log("se cargo la pag usersRolescomponent")
 		actions.getUserRole();
 	},[store.users_roles])
 

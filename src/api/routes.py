@@ -24,7 +24,7 @@ def handle_hello():
 
     return jsonify(response_body), 200
 
-# ******************* Login *******************
+# ********************************************************* Login *************************************************************
 @api.route("/login", methods=["POST"])
 def login():
     data = request.get_json()
@@ -38,7 +38,7 @@ def login():
         access_token = create_access_token(identity=email)
         return jsonify(jwt=access_token, user=user.serialize()), 200
 
-# ******************* signup *******************
+# ************************************************************** signup ************************************************************
 @api.route("/signup", methods=["POST"])
 def signup():
     data = request.get_json()
@@ -57,7 +57,7 @@ def signup():
         access_token = create_access_token(identity=email)
         return jsonify(jwt = access_token, user = new_user.serialize()), 200
 
-# ******************* ROUTES FOR USERS *******************
+# ************************************************ ROUTES FOR USERS *************************************************************
 
 # GET all users
 @api.route('/users', methods=['GET'])
@@ -110,7 +110,7 @@ def deleteUser(user_id):
     db.session.commit()
     return jsonify({'message': 'User deleted successfully'}), 200
 
-# ******************* ROUTES FOR ROLES *******************
+# ************************************** ROUTES FOR ROLES *******************
 
 # GET all roles
 @api.route('/roles', methods=['GET'])
