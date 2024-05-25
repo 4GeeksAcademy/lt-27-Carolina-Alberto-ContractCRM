@@ -5,6 +5,9 @@ import { EditRole } from "../component/editrole";
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
+			loggedUser:{},
+			jwt: null,
+
 			message: null,
 			demo: [
 				{
@@ -43,7 +46,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					// don't forget to return something, that is how the async resolves
 					return data;
 				}catch(error){
-					console.log("Error loading message from backend", error)
+					console.log(error);
 				}
 			},
 			changeColor: (index, color) => {
@@ -78,19 +81,19 @@ const getState = ({ getStore, getActions, setStore }) => {
 			deleteRole: (role_id) => {
 				console.log("delete role",role_id)	
 				const requestOptions = {
-				  method: "DELETE",
-				  redirect: "follow"
+					method: "DELETE",
+					redirect: "follow"
 				};
 				
 				fetch(process.env.BACKEND_URL + "api/roles/" + role_id, requestOptions)
-				  .then((response) => response.text())
-				  .then((result) => {
+				.then((response) => response.text())
+				.then((result) => {
 					console.log(result)
 					fetch(process.env.BACKEND_URL + "api/roles")
 					.then ((response)=>response.json())
 						.then( (data)=>setStore({ roles: data}))
 						})
-				  .catch((error) => console.error(error));
+				.catch((error) => console.error(error));
 			},
 			
 
@@ -128,12 +131,13 @@ const getState = ({ getStore, getActions, setStore }) => {
 					headers: {
 					"Content-Type": "application/json"
 					}
-        		})
+    			})
 				.then ((response)=>response.json())
 				// .then ((data)=> console.log(data))
 				.then(  ()=>  getActions().getRoles())
 	
 			},
+
 
 // ******************************** ACTIONS FOR USER *************************
 
@@ -143,6 +147,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				.then(response => response.json())
 				.then(data => setStore({ users: data }))
 			},
+
 
 			getUser: (user_id) => {
 				console.log("un usuario desde flux", user_id);
@@ -163,7 +168,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 					body: body,
 					headers: {
 					"Content-Type": "application/json",
-					"mode": "no-cors"
 					}
 				})
 				.then ((response)=>response.json())
@@ -171,22 +175,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 	
 			},
 
-			newUser: (newUserData) => {
-				console.log(newUserData)
-						
-				return fetch(process.env.BACKEND_URL + "api/users/", {
-					method: "POST",
-					body: JSON.stringify(newUserData),
-					headers: {
-					"Content-Type": "application/json",
-					"mode": "no-cors"
-					}
-				})
-				.then ((response)=> response.json() )
-				.then((data)=> {
-					setStore({ users: getStore().users.concat(data) })
-					return data;})
-			},
+			
 
 			deleteUser: (user_id) => {
 
@@ -202,11 +191,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 				console.log("todos los contratos desde flux");
 
 				console.log(process.env.BACKEND_URL + "api/contracts");
-				fetch(process.env.BACKEND_URL + "api/contracts",
-				{headers: {
+				fetch(process.env.BACKEND_URL + "api/contracts",{
+					headers: {
 					"Content-type": "application/json",
 					'Access-Control-Allow-Origin': '*',
-			  	}})
+				}})
 				.then((response) => {
 					console.log("respuesta get contracts",response)
 					return response.json()
@@ -285,28 +274,30 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			deleteUserRole: (userRoleId) => {
 				const requestOptions = {
-				  method: "DELETE",
-				  redirect: "follow",
+					method: "DELETE",
+					redirect: "follow",
 				};
-			  
+			
 				fetch(process.env.BACKEND_URL + "api/user_role/" + userRoleId, requestOptions)
-				  .then((response) => {
+				.then((response) => {
 					if (response.ok) {
-					  console.log("User role deleted successfully.");
-					  fetch(process.env.BACKEND_URL + "api/user_role/")
-			  		 .then ((response)=>response.json())
-				     .then( (data)=>setStore({ users_roles: data}))
+						console.log("User role deleted successfully.");
+						fetch(process.env.BACKEND_URL + "api/user_role/")
+							.then ((response)=>response.json())
+							.then( (data)=>setStore({ users_roles: data}))
 					  // Aquí podrías actualizar la variable users_roles en el store si es necesario
 					} else {
-					  console.error("Failed to delete user_role.");
+						console.error("Failed to delete user_role.");
 					}
-				  })
-				  .catch((error) => console.error("Error:", error));
-			  },
+				})
+				.catch((error) => console.error("Error:", error));
+			},
 
 			createUserRole: (user_id, role_id) => {
+
 			console.log()
 					
+
 				fetch(process.env.BACKEND_URL + "api/user_role", {
 					method: "POST",
 					body: JSON.stringify({"user_id" : user_id,"role_id" : role_id}),
@@ -325,7 +316,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const body = JSON.stringify({
 					user_id : user_id,
 					role_id : role_id, 	
-				  })
+				})
 				console.log(body)
 				fetch(process.env.BACKEND_URL + "api/user_role/" + user_role, {
 					method: "PUT",
@@ -339,6 +330,107 @@ const getState = ({ getStore, getActions, setStore }) => {
 				.catch((error) => console.error("Error:", error));
 			},
 
+			requestParams: (method, data) => {
+				if (data === null) {
+					if(getStore().jwt === null){
+						return {
+							method: method,
+							headers: {
+							"Content-Type": "application/json",
+							"Accept": "application/json",
+							}
+						}
+					}
+					else if(getStore().jwt !== null){
+						return {
+							method: method,
+							headers: {
+							"Content-Type": "application/json",
+							"Accept": "application/json",
+							"Authorization": "Bearer "+getStore().jwt
+							}
+						}
+					}
+				}
+				else {
+					if(getStore().jwt === null){
+						return {
+							method: method,
+							body: JSON.stringify(data),
+							headers: {
+							"Content-Type": "application/json",
+							"Accept": "application/json",
+							}
+						}
+					}
+					else if(getStore().jwt !== null){
+						return {
+							method: method,
+							body: JSON.stringify(data),
+							headers: {
+							"Content-Type": "application/json",
+							"Accept": "application/json",
+							"Authorization": "Bearer "+getStore().jwt
+							}
+						}
+					}
+				}
+			},
+
+
+			queryhandler: (method, route, id, data) => {
+				const url = process.env.BACKEND_URL+"api/"+route;
+				const resquestParams = getActions().requestParams(method, data);
+				console.log(resquestParams);
+				return fetch(url + id, resquestParams)
+				.then((response) => {
+					try {
+						let requestStatus = response.ok;
+						console.log(response);
+						return response.json().then((data) => {
+						console.log(data);
+						return { status: requestStatus, data: data };
+						});
+					} catch (error) {
+						console.log(error.message);
+					}
+				});
+			},
+
+			getUsers: () => {
+				console.log("todos los usuarios desde flux");
+				// fetch(process.env.BACKEND_URL + "api/users")
+				// .then(response => response.json())
+				// .then(data => setStore({ users: data }))
+				getActions().queryhandler("GET", "users", "", null)
+				.then(({status, data}) => {
+					if (status) {
+						setStore({ users: data });
+					} else {
+						console.log("Error loading users from backend");
+						console.log(data);
+					}
+				})
+			},
+
+			login: (data) => {
+				getActions().queryhandler("POST", "login/", "", data)
+				.then(({status, data}) => {
+						console.log(status);
+						console.log(data);
+						setStore({loggedUser: data.user, jwt: data.jwt});
+					
+				});
+			},
+			signup: (newUserData) => {
+				getActions().queryhandler("POST", "signup/", "", newUserData)
+				.then(({status, data}) => {
+					console.log(status);
+					console.log(data);
+					setStore({loggedUser: data.user, jwt: data.jwt});
+				
+				});
+			},
 
 // ******************************** ACTIONS FOR USER_CONTRACT *************************
 
