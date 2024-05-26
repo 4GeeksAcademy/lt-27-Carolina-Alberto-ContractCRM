@@ -17,6 +17,8 @@ export const Contract = (props) => {
                         <h5 className="card-title">Contract ID: {props.contract.id}</h5>
                         <h5 className="card-title">Supplier Name: {props.contract.supplier_name}</h5>
                         <h5 className="card-title">Value: {props.contract.value}</h5>
+                        <h5 className="card-title">Value: {props.contract.value_eur}</h5>
+                        <h5 className="card-title">Value: {props.contract.value_jpy}</h5>
                     </div>
                 </div>
 

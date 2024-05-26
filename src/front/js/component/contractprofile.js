@@ -16,7 +16,6 @@ export const ContractProfile = () => {
         }
     }, [contractId]);
 
-	console.log("Users Contracts:", store.users_contracts);
 
     return (
         <>
@@ -31,6 +30,8 @@ export const ContractProfile = () => {
                          <li>Software: {store.contract.software_name}</li>
                          <li>Contract Value: {store.contract.value}</li>
                          <li>Currency: {store.contract.currency}</li>
+                         <li>Contract Value EUR: {store.contract.value_eur}</li>
+                         <li>Contract Value JPY: {store.contract.value_jpy}</li>
                          <li>Business Unit: {store.contract.business_unit}</li>
                          <li>Contract Type: {store.contract.contract_type}</li>
                          <li>Contract Description: {store.contract.contract_description}</li>
