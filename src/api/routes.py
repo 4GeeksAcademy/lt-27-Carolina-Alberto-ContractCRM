@@ -11,6 +11,11 @@ from flask_jwt_extended import get_jwt
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended import JWTManager
 
+from urllib.request import Request, urlopen
+import json
+
+
+
 api = Blueprint('api', __name__)
 CORS(api)
 
@@ -24,7 +29,7 @@ def handle_hello():
 
     return jsonify(response_body), 200
 
-# ********************************************************* Login *************************************************************
+# ******************************************************************* Login *************************************************************
 @api.route("/login", methods=["POST"])
 def login():
     data = request.get_json()
@@ -38,7 +43,7 @@ def login():
         access_token = create_access_token(identity=email)
         return jsonify(jwt=access_token, user=user.serialize()), 200
 
-# ************************************************************** signup ************************************************************
+# ************************************************************** signup ******************************************************************
 @api.route("/signup", methods=["POST"])
 def signup():
     data = request.get_json()
@@ -57,11 +62,11 @@ def signup():
         access_token = create_access_token(identity=email)
         return jsonify(jwt = access_token, user = new_user.serialize()), 200
 
-# ************************************************ ROUTES FOR USERS *************************************************************
+# *********************************************************** ROUTES FOR USERS *************************************************************
 
 # GET all users
 @api.route('/users', methods=['GET'])
-@jwt_required()
+# @jwt_required()
 def getAllUsers():
     users = User.query.all()
     users = list(map(lambda x: x.serialize(), users))
@@ -69,7 +74,7 @@ def getAllUsers():
 
 # Create a new user
 @api.route('/users', methods=['POST'])
-@jwt_required()
+# @jwt_required()
 def createUser():
     data = request.get_json()
     new_user = User(name = data['name'], last_name = data['last_name'], email = data['email'], password = data['password'], isActive = True)
@@ -110,7 +115,7 @@ def deleteUser(user_id):
     db.session.commit()
     return jsonify({'message': 'User deleted successfully'}), 200
 
-# ************************************** ROUTES FOR ROLES *******************
+# **************************************************************** ROUTES FOR ROLES ********************************************************
 
 # GET all roles
 @api.route('/roles', methods=['GET'])
@@ -178,25 +183,67 @@ def get_one_role(role_id):
     else:
         return jsonify({"msg": "ROLE doesn't exist"}), 400
     
-# ******************* ROUTES FOR CONTRACTS *******************
+# ********************************************************* ROUTES FOR CONTRACTS **********************************************************
 
 # GET all contracts
+
+# @api.route('/contracts', methods=['GET'])
+# def get_contracts():
+#     all_contracts = Contract.query.all()
+#     print(all_contracts)
+#     results = [contract.serialize() for contract in all_contracts]
+#     return jsonify(results), 200
+
 @api.route('/contracts', methods=['GET'])
 def get_contracts():
+    exchange_rates = get_exchange_rates()
+    # print(exchange_rates)
     all_contracts = Contract.query.all()
+    print(all_contracts)
+    for contract in all_contracts : 
+        contract.value_eur = contract.value * exchange_rates.get("EUR", 1.0)
+        contract.value_jpy = contract.value * exchange_rates.get("JPY", 1.0)
+        print(contract.value * exchange_rates.get("EUR", 1.0))
+        print (contract.value_eur)
     results = [contract.serialize() for contract in all_contracts]
     return jsonify(results), 200
 
+
+def get_exchange_rates():
+    url = "https://api.freecurrencyapi.com/v1/latest?apikey=fca_live_k94eblhrGQeSI6DYyNJxooCT2n94CxHfBWPQeuHd"
+    hdr = {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'}
+    req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+    response = urlopen(req).read()
+    # print(response)
+    data = json.loads(response)
+    return data.get("data", {})
+
+
+
 # GET one contract
+# @api.route('/contracts/<int:contract_id>', methods=['GET'])
+# def get_one_contract(contract_id):
+#     contract = Contract.query.get(contract_id)
+#     if contract:
+#         return jsonify(contract.serialize()), 200
+#     else:
+#         return jsonify({"msg": "Contract doesn't exist"}), 400
+    
 @api.route('/contracts/<int:contract_id>', methods=['GET'])
 def get_one_contract(contract_id):
+    exchange_rates = get_exchange_rates()
     contract = Contract.query.get(contract_id)
     if contract:
+        contract.value_eur = contract.value * exchange_rates.get("EUR", 1.0)
+        contract.value_jpy = contract.value * exchange_rates.get("JPY", 1.0)
         return jsonify(contract.serialize()), 200
     else:
         return jsonify({"msg": "Contract doesn't exist"}), 400
 
-# Create a new contract
+
+
+
+# Create a new contract:
 @api.route('/contracts', methods=['POST'])
 def create_contract():
     data = request.get_json()
@@ -204,6 +251,8 @@ def create_contract():
     db.session.add(new_contract)
     db.session.commit()
     return jsonify(new_contract.serialize()), 201
+
+
 
 # Update a contract
 @api.route('/contracts/<int:contract_id>', methods=['PUT'])
@@ -228,7 +277,7 @@ def delete_contract(contract_id):
     else:
         return jsonify({"msg": "Contract doesn't exist"}), 400
 
-  # ******************************** ROUTES FOR USER_ROLE *************************
+  # ********************************************************* ROUTES FOR USER_ROLE ****************************************************************
 
   
 @api.route('/user_role/<int:user_role_id>', methods=['GET'])
@@ -288,7 +337,7 @@ def update_user_role(user_role_id):
 
 
 
-# ******************************** ROUTES FOR USER_CONTRACT *************************
+# ************************************************************ ROUTES FOR USER_CONTRACT **********************************************************
 
   
 @api.route('/user_contract', methods=['GET'])
