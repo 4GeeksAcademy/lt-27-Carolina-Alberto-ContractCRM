@@ -66,7 +66,7 @@ def signup():
 
 # GET all users
 @api.route('/users', methods=['GET'])
-# @jwt_required()
+@jwt_required()
 def getAllUsers():
     users = User.query.all()
     users = list(map(lambda x: x.serialize(), users))
@@ -74,7 +74,7 @@ def getAllUsers():
 
 # Create a new user
 @api.route('/users', methods=['POST'])
-# @jwt_required()
+@jwt_required()
 def createUser():
     data = request.get_json()
     new_user = User(name = data['name'], last_name = data['last_name'], email = data['email'], password = data['password'], isActive = True)

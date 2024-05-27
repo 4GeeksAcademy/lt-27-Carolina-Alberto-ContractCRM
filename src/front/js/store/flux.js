@@ -287,7 +287,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 						console.log(data);
 					}
 				})
+				.catch(error => {
+					console.error("Error en la solicitud:", error);
+				});
 			},
+
+
 			getContract: (contract_id) => {
 				console.log("un contrato desde flux", contract_id);
 				getActions().queryhandler("GET", "contracts/", contract_id, null)
@@ -375,6 +380,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 
 			createUserRole: (user_id, role_id) => {
+				console.log ("ejecutando createUserRole desde flux")
 				return getActions().queryhandler("POST", "user_role/", "", {"user_id": user_id, "role_id": role_id})
 					.catch((error) => console.error(error));
 			},
