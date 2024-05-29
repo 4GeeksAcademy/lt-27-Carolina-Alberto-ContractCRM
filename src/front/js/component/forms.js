@@ -14,25 +14,13 @@ export const Forms = props => {
     const [type, setType] = useState(props.type);
     const navigate = useNavigate();
 
-<<<<<<< FT09-Home
-=======
     useEffect(() => {
         if(store.jwt !== null){
             navigate("/user");
         }  else {
             actions.getRoles();
         }
->>>>>>> Develop
-
-        if(store.loggedUser.id){
-            role.map((role) => {
-                console.log(role)
-                actions.createUserRole(store.loggedUser.id, role.id)
-                console.log(store.loggedUser)
-            }) 
-        }
-
-    }, [store.jwt, store.loggedUser]);
+    }, [store.jwt]);
 
     
     function validateInputs(){
@@ -57,7 +45,8 @@ export const Forms = props => {
                             name: name,
                             last_name: last_name,
                             email: email,
-                            password: password
+                            password: password,
+                            roles: role
                         })
                         .then((result) => {
                             if(result){
@@ -143,25 +132,20 @@ export const Forms = props => {
                 </div>
                 <div className="form-group">
                     <label htmlFor="inputRoles">Role(s)</label>
-                    <select
-                    multiple
-                    className="form-control"
-                    id="inputRoles"
-                    value={role.map((role) => role.id)}
-                    onChange={(e) =>
-                        setRole(
-                        Array.from(e.target.selectedOptions, (option) =>
-                            store.roles.find((role) => role.id === parseInt(option.value))
-                        )
-                        )
-                    }
-                    >
-                    {store.roles.map((role) => (
-                        <option key={role.id} value={role.id}>
-                        {role.name}
-                        </option>
+                    
+                    {store.roles.map((item) => (
+                        <button className="btn btn-outline-secondary"
+                        type="btn"
+                        key={item.id}
+                        value={item.name}
+                        onClick={()=>{
+                            setRole(role.concat(item.name))
+                        }}
+                        >
+                        {item.name}
+                        </button>
                     ))}
-                    </select>
+                    
                 </div>
                 <div className="form-group">
                     <label htmlFor="inputPassword">Password</label>

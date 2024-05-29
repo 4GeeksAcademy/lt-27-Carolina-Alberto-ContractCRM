@@ -69,8 +69,9 @@ class Contract(db.Model):
     software_name = db.Column(db.String(120))
     value = db.Column(db.Float)
     currency = db.Column(db.String(120))
-    value_eur = db.Column(db.Integer)
-    value_jpy = db.Column(db.Integer)
+    value_eur = db.Column(db.Float)
+    value_jpy = db.Column(db.Float)
+    value_usd = db.Column(db.Float)
     contract_type = db.Column(db.String(120))
     contract_description = db.Column(db.Text)
     effective_date = db.Column(db.Date)
@@ -94,6 +95,7 @@ class Contract(db.Model):
             "software_name": self.software_name,
             "value": self.value,
             "currency": self.currency,
+            "value_usd": self.value_usd,
             "value_eur": self.value_eur,
             "value_jpy": self.value_jpy,
             "contract_type": self.contract_type,

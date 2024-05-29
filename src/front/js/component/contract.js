@@ -12,8 +12,9 @@ export const Contract = (props) => {
             <td>{props.contract.approval_area}</td>
             <td>{props.contract.next_}</td>
             <td>{props.contract.software_name}</td>
-            <td>{props.contract.value}</td>
-            <td>{props.contract.currency}</td>
+            <td>{props.contract.value_usd}</td>
+            <td>{props.contract.value_eur}</td>
+            <td>{props.contract.value_jpy}</td>
             <td>{props.contract.contract_description}</td>
             <td>{props.contract.effective_date}</td>
             <td>{props.contract.expiration_date}</td>
@@ -24,3 +25,4 @@ export const Contract = (props) => {
 
 	);
 };
+
