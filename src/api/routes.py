@@ -40,8 +40,12 @@ def login():
     if not user or not user.password == password :
         return jsonify({"msg": "Bad username or password"}), 401
     else:
+        user_roles = User_Role.query.filter_by(user_id=user.id).all()
+        results = [user_role.role.name for user_role in user_roles]
         access_token = create_access_token(identity=email)
-        return jsonify(jwt=access_token, user=user.serialize()), 200
+        user_data = user.serialize()
+        user_data["roles"] = results
+        return jsonify(jwt=access_token, user=user_data), 200
 
 # ************************************************************** signup ******************************************************************
 @api.route("/signup", methods=["POST"])
@@ -66,7 +70,7 @@ def signup():
 
 # GET all users
 @api.route('/users', methods=['GET'])
-@jwt_required()
+
 def getAllUsers():
     users = User.query.all()
     users = list(map(lambda x: x.serialize(), users))
@@ -74,7 +78,7 @@ def getAllUsers():
 
 # Create a new user
 @api.route('/users', methods=['POST'])
-@jwt_required()
+
 def createUser():
     data = request.get_json()
     new_user = User(name = data['name'], last_name = data['last_name'], email = data['email'], password = data['password'], isActive = True)
@@ -206,7 +210,12 @@ def get_contracts():
         print(contract.value * exchange_rates.get("EUR", 1.0))
         print (contract.value_eur)
     results = [contract.serialize() for contract in all_contracts]
-    return jsonify(results), 200
+    return results
+
+def get_all_ids():
+    all_contracts = Contract.query.all()
+    results = [contract.id for contract in all_contracts]
+    return results
 
 
 def get_exchange_rates():
@@ -279,12 +288,13 @@ def delete_contract(contract_id):
 
   # ********************************************************* ROUTES FOR USER_ROLE ****************************************************************
 
-  
-@api.route('/user_role/<int:user_role_id>', methods=['GET'])
-def get_one_user_role(user_role_id):
-    one_user_role = User_Role.query.filter_by(id=user_role_id).first()
-    if one_user_role:
-        return jsonify(one_user_role.serialize()), 200
+
+@api.route('/user_role/<int:user_id>', methods=['GET'])
+def get_all_roles_by_user(user_id):
+    user_roles = User_Role.query.filter_by(user_id=user_id).order_by(User_Role.id).all()
+    results = [{'id': user_role.id, 'role': user_role.role.serialize()["name"]} for user_role in user_roles]
+    if user_roles:
+        return results, 200
     else:
         return jsonify({"msg": "User & Role do not exist"}), 400
 
@@ -342,10 +352,23 @@ def update_user_role(user_role_id):
   
 @api.route('/user_contract', methods=['GET'])
 def get_users_contracts():
-    all_users_contracts = User_Contract.query.all()
+    all_users_contracts = User_Contract.query.order_by(User_Contract.contract_id).all()
     results = list(map(lambda elemento: elemento.serialize(), all_users_contracts))
     return jsonify(results), 200
 
+@api.route('/workflow', methods=['GET'])
+def last_status():
+    results=list(get_contracts())
+    #print(results)
+    statusList = []
+    for contract in results:
+        last_status = User_Contract.query.filter_by(contract_id=contract['id']).order_by(User_Contract.id.desc()).first()
+        if last_status:
+            statusList.append({"contract": contract, "data": last_status.serialize()})
+        else:
+            statusList.append({"contract": contract, "404": contract['id']})
+    
+    return jsonify(statusList), 200
 
 @api.route('/user_contract/<int:user_contract_id>', methods=['GET'])
 def get_one_user_contract(user_contract_id):
@@ -354,22 +377,86 @@ def get_one_user_contract(user_contract_id):
         return jsonify(one_user_contract.serialize()), 200
     else:
         return jsonify({"msg": "Contract status hasn't been modified by the user"}), 400
+
+@api.route('/workflow/<int:contract_id>', methods=['GET'])
+def workflow(contract_id):
+
+    contracts = User_Contract.query.filter_by(contract_id=contract_id).order_by(User_Contract.id.desc()).all()
+    results = list(map(lambda elemento: elemento.serialize(), contracts))
+    if contracts:
+        return jsonify(results), 200
+    else:
+        return jsonify({"msg": "Contract status hasn't been modified by the user"}), 400
+
+@api.route('/user_contracts/<int:contract_id>', methods=['GET'])
+def to_approve(contract_id):
+    contracts_state = User_Contract.query.filter_by(contract_id=contract_id).order_by(User_Contract.id.desc()).first()
+
+    if contracts_state:
+        return jsonify(contracts_state.serialize()["next_approval_area"]), 200
+    else:
+        return False
+
+
+def approvalHandler( approver , contract):
+    response, status_code = get_all_roles_by_user(approver)
+    permissions = response if status_code == 200 else []
+    area_to_approve = to_approve(contract)
+    print ("permissions:")
+    print (permissions)
+    print ("area_to_approve:")
+    print (area_to_approve)
     
+    if area_to_approve:
+        print ("true1")
+        if permissions.__contains__(area_to_approve) or any(permission['role'] == "operation" for permission in permissions):
+            print ("true2")
+            return True
+        else:
+            print ("false")
+            return False
+    elif any(permission['role'] == "operation" for permission in permissions):
+        print ("true3")
+        return "new"
+    else:
+        print ("error")
+        return False
+        
 
 @api.route('/user_contract', methods=['POST'])
 def create_user_contract():
     data = request.get_json()
-    add_user_contract = User_Contract(
-        user_id=data["user_id"], 
-        contract_id=data["contract_id"], 
-        update_date=data["update_date"], 
-        original_state=data["original_state"], 
-        new_state=data["new_state"], 
-        comments=data["comments"]
-        )
-    db.session.add(add_user_contract)
-    db.session.commit()
-    return jsonify(add_user_contract.serialize()), 200
+    message = approvalHandler(data["user_id"], data["contract_id"])
+    if message == True  :
+        add_user_contract = User_Contract(
+            user_id=data["user_id"], 
+            contract_id=data["contract_id"], 
+            update_date=data["update_date"], 
+            original_state=data["original_state"],
+            new_state=data["new_state"],
+            comments=data["comments"]
+            )
+        db.session.add(add_user_contract)
+        db.session.commit()
+        return jsonify(add_user_contract.serialize()), 200
+    
+    
+    elif message == "new":
+        add_user_contract = User_Contract(
+            user_id=data["user_id"], 
+            contract_id=data["contract_id"], 
+            update_date=data["update_date"], 
+            original_state=1,
+            new_state=2,
+            comments=data["comments"]
+            )
+        db.session.add(add_user_contract)
+        db.session.commit()
+        return jsonify(add_user_contract.serialize()), 200
+    else:
+        return jsonify({"msg": "User doesn't have the permissions to approve this contract"}), 400
+
+    
 
 
 @api.route('/user_contract/<int:user_contract_id>', methods=['DELETE'])

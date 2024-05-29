@@ -1,13 +1,13 @@
-import React, { useContext , useState } from "react";
+import React, { useContext , useEffect, useState } from "react";
 import { Context } from "../store/appContext";
 import { useNavigate } from "react-router-dom";
 
 
 export const CreateContract = () => {
 	const { store, actions } = useContext(Context);
-    const [id, setId] = useState("");
     const [status, setStatus] = useState("");
     const [software_name, setSoftwareName] = useState("");
+    const [supplier_name, setSupplierName] = useState("");
     const [value, setValue] = useState("");
     const [currency, setCurrency] = useState("");
     const [previus_contract, setPreviusContract] = useState("");
@@ -32,9 +32,10 @@ export const CreateContract = () => {
 		actions.newContract({
             status: status,
             software_name: software_name,
+            supplier_name: supplier_name,
             value: value,
             currency: currency,
-            previus_contract: previus_contract,
+            previous_contract_id: previus_contract,
             contract_type: contract_type,
             contract_description: contract_description,
             effective_date: effective_date,
@@ -48,14 +49,16 @@ export const CreateContract = () => {
             supplier_poc: supplier_poc,
             business_unit_poc: business_unit_poc,
             attachments: attachments,
-        })
-        .then(response => {
-            console.log(response);
-            if(response.id){
-                navigate('/user');
-            }
-        });  
+        }).then((result) => {navigate('/user');});
 	}
+
+    // useEffect(() => {
+    //     if (store.contracts.filter(contract => contract.id === id)){
+    //         console.log("contract created");
+    //         console.log(id)
+    //         navigate('/user');
+    //     }
+    // }, [store.contracts]);
 	
 	return (
 		<form>
@@ -78,6 +81,16 @@ export const CreateContract = () => {
 				onChange={(e)=>{setSoftwareName(e.target.value)}}
 				/>
 			</div>
+            <div className="form-group">
+				<label htmlFor="software_name">Supplier name</label>
+				<input type="text" 
+				className="form-control" 
+				id="software_name" 
+				value={supplier_name}
+				onChange={(e)=>{setSupplierName(e.target.value)}}
+				/>
+			</div>
+
 
             <div className="form-group">
                 <label htmlFor="value">Value</label>
@@ -104,7 +117,12 @@ export const CreateContract = () => {
                 className="form-control"
                 id="previus_contract"
                 value={previus_contract}
-                onChange={(e)=>{setPreviusContract(e.target.value)}}
+                onChange={(e)=>{
+                    if(e.target.value === "" || e.target.value === 0){
+                        setPreviusContract(null);
+                    }
+                    else
+                    setPreviusContract(e.target.value)}}
                 />
             </div>
 
