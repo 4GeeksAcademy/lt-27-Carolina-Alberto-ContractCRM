@@ -13,11 +13,6 @@ export const Forms = props => {
     const [type, setType] = useState(props.type);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        if(store.jwt !== null){
-            navigate("/user");
-        }
-    }, [store.jwt]);
 
     function validateInputs(){
         if(email === "" || password === ""){
@@ -43,12 +38,22 @@ export const Forms = props => {
                             email: email,
                             password: password
                         })
+                        .then((result) => {
+                            if(result){
+                                navigate("/home");
+                            }
+                        });
                     }
                 }
             } else {
                 actions.login({
                     email: email,
                     password:password
+                })
+                .then((result) => {
+                    if(result){
+                        navigate("/home");
+                    }
                 });
             }
         }

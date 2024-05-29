@@ -23,8 +23,7 @@ export const CreateUser = () => {
 			last_name: lastName,
 			email: email,
             password: password,
-        })
-        .then(response => {
+        }).then(response => {
             console.log(response);
             if(response.id){
                 navigate('/user');

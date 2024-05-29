@@ -8,19 +8,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 			loggedUser:{},
 			jwt: null,
 
-			message: null,
-			demo: [
-				{
-					title: "FIRST",
-					background: "white",
-					initial: "white"
-				},
-				{
-					title: "SECOND",
-					background: "white",
-					initial: "white"
-				}
-			],
+			homeContent:"operation",
+			workflow: [],
+
 			roles: [],
 			// editableRole: {},
 			users: [],
@@ -31,38 +21,113 @@ const getState = ({ getStore, getActions, setStore }) => {
 			users_contracts: [],
 			user_contract: [],
 		},
+
+		
 		actions: {
-			// Use getActions to call a function within a fuction
-			exampleFunction: () => {
-				getActions().changeColor(0, "green");
-			},
-
-			getMessage: async () => {
-				try{
-					// fetching data from the backend
-					const resp = await fetch(process.env.BACKEND_URL + "api/hello")
-					const data = await resp.json()
-					setStore({ message: data.message })
-					// don't forget to return something, that is how the async resolves
-					return data;
-				}catch(error){
-					console.log(error);
+			setContent: (content) => {
+				if(content === "operation" || content === "manager" || content === "finance" 
+				|| content === "budgetOwner" || content === "security" || content === "legal" 
+				|| content === "active"){
+					console.log("set content", content)
+					setStore({homeContent: content})
 				}
+				else{
+					console.log("Invalid content type")
+				}
+				
 			},
-			changeColor: (index, color) => {
-				//get the store
-				const store = getStore();
-
-				//we have to loop the entire demo array to look for the respective index
-				//and change its color
-				const demo = store.demo.map((elm, i) => {
-					if (i === index) elm.background = color;
-					return elm;
-				});
-
-				//reset the global store
-				setStore({ demo: demo });
-			},
+			// ******************************************************* queryhandler  & rquestParams action ***************************************************
+			/** Genera los parámetros de la solicitud para una petición HTTP.
+             *
+             * @param {string} method - El método HTTP a utilizar (por ejemplo, 'GET', 'POST', 'PUT', 'DELETE').
+             * @param {Object} data - El cuerpo de la solicitud. Si es null, la solicitud no tendrá cuerpo.
+             *
+             * @returns {Object} Un objeto que contiene los parámetros de la solicitud, incluyendo el método,
+             *                   el cuerpo (si se proporcionó) y las cabeceras necesarias. Si se ha establecido
+             *                   un token JWT en el store, también se incluirá en las cabeceras.
+             */
+            
+			requestParams: (method, data) => {
+                if (data === null) {
+                    if(getStore().jwt === null){
+                        return {
+                            method: method,
+                            headers: {
+                            "Content-Type": "application/json",
+                            "Accept": "application/json",
+                            }
+                        }
+                    }
+                    else if(getStore().jwt !== null){
+                        return {
+                            method: method,
+                            headers: {
+                            "Content-Type": "application/json",
+                            "Accept": "application/json",
+                            "Authorization": "Bearer "+getStore().jwt
+                            }
+                        }
+                    }
+                }
+                else {
+                    if(getStore().jwt === null){
+                        return {
+                            method: method,
+                            body: JSON.stringify(data),
+                            headers: {
+                            "Content-Type": "application/json",
+                            "Accept": "application/json",
+                            }
+                        }
+                    }
+                    else if(getStore().jwt !== null){
+                        return {
+                            method: method,
+                            body: JSON.stringify(data),
+                            headers: {
+                            "Content-Type": "application/json",
+                            "Accept": "application/json",
+                            "Authorization": "Bearer "+getStore().jwt
+                            }
+                        }
+                    }
+                }
+            },
+            /**
+             * Realiza una consulta HTTP a la API.
+             *
+             * @param {string} method - El método HTTP a utilizar para la consulta (GET, POST, PUT, DELETE).
+             * @param {string} route - El endpoint de la API al que se realizará la consulta.
+             * @param {string} id - El identificador del recurso a consultar. Si no se requiere, se puede pasar una cadena vacía.
+             * @param {Object} data - El cuerpo de la solicitud en formato de objeto. Si no se requiere, se puede pasar null.
+             *
+             * @returns {Promise} - Una promesa que se resuelve con un objeto que contiene el estado de la solicitud (true si la solicitud fue exitosa, false en caso contrario) y los datos de la respuesta de la API.
+             *
+             * @example
+             * // Realizar una consulta GET a la API.
+             * queryhandler("GET", "users", "1", null)
+             *
+             * @example
+             * // Realizar una consulta POST a la API.
+             * queryhandler("POST", "login/", "", { username: "user", password: "password" })
+             */
+            queryhandler: (method, route, id, data) => {
+                const url = process.env.BACKEND_URL+"api/"+route;
+                const resquestParams = getActions().requestParams(method, data);
+                return fetch(url + id, resquestParams)
+                .then((response) => {
+                    try {
+                        let isOk = response.ok;
+                        //console.log(response);
+                        return response.json().then((data) => {
+                        //console.log(data);
+                        return { status: isOk, data: data };
+                        });
+                    } catch (error) {
+                        console.log(error.message);
+                    }
+                });
+            },
 
 // ******************************** ACTIONS FOR ROLE *************************
 
@@ -140,128 +205,159 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 
 // ******************************** ACTIONS FOR USER *************************
+			newUser: (newUserData) => {
+				console.log("New user");
+				return getActions().queryhandler("POST", "users/", "", newUserData)
+				.then(({status, data}) => {
+					if (status) {
+						setStore({ users: getStore().users.concat(data) });
+						return status;
+					} else {
+						console.log("Error creating user");
+						console.log(data);
+						return status;
+					}
+				})
+			},
 
 			getUsers: () => {
 				console.log("todos los usuarios desde flux");
-				fetch(process.env.BACKEND_URL + "api/users")
-				.then(response => response.json())
-				.then(data => setStore({ users: data }))
+				getActions().queryhandler("GET", "users/", "", null)
+				.then(({status, data}) => {
+					if (status) {
+						setStore({ users: data });
+					} else {
+						console.log("Error loading users from backend");
+						console.log(data);
+					}
+				})
 			},
 
 
 			getUser: (user_id) => {
 				console.log("un usuario desde flux", user_id);
-				fetch(process.env.BACKEND_URL + "api/users/"+user_id)
-				.then(response => response.json())
-				.then(data => {
-					setStore({ user: data })
-					console.log(data)
-					})
+				getActions().queryhandler("GET", "users/", user_id, null)
+				.then(({status, data}) => {
+					if (status) {
+						setStore({ user: data });
+					} else {
+						console.log("Error loading user from backend");
+						console.log(data);
+					}
+				})
 			},
 
 			putUser: (editData) => {
-				console.log(editData);
-				const body = JSON.stringify({name: editData.name, last_name: editData.last_name,email: editData.email})
-				console.log(body)
-				fetch(process.env.BACKEND_URL + "api/users/" + editData.id, {
-					method: "PUT",
-					body: body,
-					headers: {
-					"Content-Type": "application/json",
+				getActions().queryhandler("PUT", "users/", editData.id, editData)
+				.then(({status, data}) => {
+					if (status) {
+						setStore({ users: getStore().users.map((user) => {
+							if (user.id === editData.id) {
+								return data;
+							} else {
+								return user;
+							}
+						}) });
+					} else {
+						console.log("Error updating user");
+						console.log(data);
 					}
-				})
-				.then ((response)=>response.json())
-				.then((data)=> setStore({ user: data }))
-	
+				})	
 			},
 
 			
 
 			deleteUser: (user_id) => {
-
-				fetch(process.env.BACKEND_URL + "api/users/" + user_id, {method: "DELETE"})
-				.then((response) => response.text())
-				setStore({ users: getStore().users.filter((user)=> user.id != user_id) });
-
+				console.log("Delete user");
+				getActions().queryhandler("DELETE", "users/", user_id, null)
+				.then(({status, data}) => {
+					if (status) {
+						setStore({ users: getStore().users.filter((user) => user.id !== user_id) });
+					} else {
+						console.log("Error deleting user");
+						console.log(data);
+					}
+				})
 			},
 
 // ******************************** ACTIONS FOR CONTRACTS *************************
 
 			getContracts: () => {
 				console.log("todos los contratos desde flux");
-
-				console.log(process.env.BACKEND_URL + "api/contracts");
-				fetch(process.env.BACKEND_URL + "api/contracts",{
-					headers: {
-					"Content-type": "application/json",
-					'Access-Control-Allow-Origin': '*',
-				}})
-				.then((response) => {
-					console.log("respuesta get contracts",response)
-					return response.json()
+				getActions().queryhandler("GET", "contracts/", "", null)
+				.then(({status, data}) => {
+					if (status) {
+						setStore({ contracts: data });
+					} else {
+						console.log("Error loading contracts from backend");
+						console.log(data);
+					}
 				})
-
-				.then(data => setStore({ contracts: data }))
 			},
 
 			getContract: (contract_id) => {
 				console.log("un contrato desde flux", contract_id);
-
-				fetch(process.env.BACKEND_URL + "api/contracts/" + contract_id,
-				{headers: {
-					"Content-type": "application/json",
-					'Access-Control-Allow-Origin': '*',
-				}})
-
-				.then(response => response.json())
-				.then(data => {
-					setStore({ contract: data })
-					console.log(data)
-					})
+				getActions().queryhandler("GET", "contracts/", contract_id, null)
+				.then(({status, data}) => {
+					if (status) {
+						setStore({ contract: data });
+					} else {
+						console.log("Error loading contract from backend");
+						console.log(data);
+					}
+				})
 			},
 
 			newContract: (editData) => {
-				console.log(editData);
-				const body = JSON.stringify(editData)
-				console.log(body)
-				fetch(process.env.BACKEND_URL + "api/contracts/" + editData.id, {
-					method: "PUT",
-					body: body,
-					headers: {
-					"Content-Type": "application/json",
+				console.log("New contract");
+				return getActions().queryhandler("POST", "contracts/", "", editData)
+				.then(({status, data}) => {
+					if (status) {
+						setStore({ contracts: getStore().contracts.concat(data) });
+						return status;
+					} else {
+						console.log("Error creating contract");
+						console.log(data);
 					}
 				})
-				.then ((response)=>response.json())
-				.then((data)=> setStore({ contract: getStore().contracts.concat(data) }))
 			},
 
 			updateContract: (editData, contract_id) => {
-				console.log(editData);
-				const body = JSON.stringify(editData)
-				console.log(body)
-				fetch(process.env.BACKEND_URL + "api/contracts/" + contract_id, {
-					method: "PUT",
-					body: body,
-					headers: {
-					"Content-Type": "application/json",
+				console.log("Update contract");
+				getActions().queryhandler("PUT", "contracts/", contract_id, editData)
+				.then(({status, data}) => {
+					if (status) {
+						setStore({ contracts: getStore().contracts.map((contract) => {
+							if (contract.id === contract_id) {
+								return data;
+							} else {
+								return contract;
+							}
+						}) });
+					} else {
+						console.log("Error updating contract");
+						console.log(data);
 					}
 				})
-				.then ((response)=>response.json())
-				.then((data)=> setStore({ contract: data }))
 			},
 
 			deleteContract: (contract_id) => {
-
-				fetch(process.env.BACKEND_URL + "api/contracts/" + contract_id, {method: "DELETE"})
-				.then((response) => response.text())
-				setStore({ contracts: getStore().contracts.filter((contract)=> contract.id != contract_id) });
-
+				console.log("Delete contract");
+				getActions().queryhandler("DELETE", "contracts/", contract_id, null)
+				.then(({status, data}) => {
+					if (status) {
+						setStore({ contracts: getStore().contracts.filter((contract) => contract.id !== contract_id) });
+					} else {
+						console.log("Error deleting contract");
+						console.log(data);
+					}
+				})
 			},
 
 // ******************************** ACTIONS FOR USER_ROLE *************************
 
 			getUserRole: () => {
-				console.log("se cargo pagina desde flux")
+				console.log("todos los user_role desde flux")
 				fetch(process.env.BACKEND_URL + "api/user_role")
 				.then ( (response)=> response.json())
 				.then ( (data)=> {
@@ -330,73 +426,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				.catch((error) => console.error("Error:", error));
 			},
 
-			requestParams: (method, data) => {
-				if (data === null) {
-					if(getStore().jwt === null){
-						return {
-							method: method,
-							headers: {
-							"Content-Type": "application/json",
-							"Accept": "application/json",
-							}
-						}
-					}
-					else if(getStore().jwt !== null){
-						return {
-							method: method,
-							headers: {
-							"Content-Type": "application/json",
-							"Accept": "application/json",
-							"Authorization": "Bearer "+getStore().jwt
-							}
-						}
-					}
-				}
-				else {
-					if(getStore().jwt === null){
-						return {
-							method: method,
-							body: JSON.stringify(data),
-							headers: {
-							"Content-Type": "application/json",
-							"Accept": "application/json",
-							}
-						}
-					}
-					else if(getStore().jwt !== null){
-						return {
-							method: method,
-							body: JSON.stringify(data),
-							headers: {
-							"Content-Type": "application/json",
-							"Accept": "application/json",
-							"Authorization": "Bearer "+getStore().jwt
-							}
-						}
-					}
-				}
-			},
-
-
-			queryhandler: (method, route, id, data) => {
-				const url = process.env.BACKEND_URL+"api/"+route;
-				const resquestParams = getActions().requestParams(method, data);
-				console.log(resquestParams);
-				return fetch(url + id, resquestParams)
-				.then((response) => {
-					try {
-						let requestStatus = response.ok;
-						console.log(response);
-						return response.json().then((data) => {
-						console.log(data);
-						return { status: requestStatus, data: data };
-						});
-					} catch (error) {
-						console.log(error.message);
-					}
-				});
-			},
-
+			
 			getUsers: () => {
 				console.log("todos los usuarios desde flux");
 				// fetch(process.env.BACKEND_URL + "api/users")
@@ -416,11 +446,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 			login: (data) => {
 				getActions().queryhandler("POST", "login/", "", data)
 				.then(({status, data}) => {
-						console.log(status);
-						console.log(data);
 						setStore({loggedUser: data.user, jwt: data.jwt});
-					
+						console.log(data);
 				});
+				return getActions().getWorkflow();
+
 			},
 			signup: (newUserData) => {
 				getActions().queryhandler("POST", "signup/", "", newUserData)
@@ -428,22 +458,43 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log(status);
 					console.log(data);
 					setStore({loggedUser: data.user, jwt: data.jwt});
-				
 				});
+				return getActions().getWorkflow();
 			},
 
 // ******************************** ACTIONS FOR USER_CONTRACT *************************
 
 			// ************action to get ALL user_contract from the model:
-			getUserContract: () => {
-				fetch(process.env.BACKEND_URL + "api/user_contract")
-				.then ( (response)=> response.json())
-				.then ( (data)=> {
-					console.log(data)
-					setStore({ users_contracts: data }) 
-					// console.log("users contracts desde flux", users_contracts)
+			getWorkflow: () => {
+				console.log("workflow desde flux");
+				return getActions().queryhandler("GET", "workflow", "", null)
+				.then(({status, data}) => {
+					if (status) {
+						let contracts = [];
+            			let workflow = [];
+						data.forEach(item => {
+							if (item.contract) {
+								contracts.push(item.contract);
+							}
+							if (item.data) {
+								workflow.push(item.data);
+							}
+							if (item['404']) {
+								workflow.push(item['404']);
+							}
+						});
+            			setStore({ contracts: contracts, workflow: workflow });
+						
+						console.log(getStore().contracts);
+						console.log(getStore().workflow);
+						return true;
+					} else {
+						console.log("Error loading workflow from backend");
+						console.log(data);
+						return false;
 					}
-				)	
+				})
+				
 			},
 
 			// ************action to get ONE user_contract from the model:

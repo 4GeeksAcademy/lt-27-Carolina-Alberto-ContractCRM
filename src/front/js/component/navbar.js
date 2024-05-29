@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { Context } from "../store/appContext";
 
 export const Navbar = () => {
+    const { store, actions } = useContext(Context);
     const [contractId, setContractId] = useState("");
 	const navigate = useNavigate();
 
@@ -37,6 +39,12 @@ export const Navbar = () => {
                         />
                     </div>
                     <i className="fa-solid fa-user fs-4 ms-5" style={{ color: "blue" }}></i>
+
+                    <div className="userData row">
+                        <p className="name">{store.loggedUser.name}</p>
+                        <p className="name">{store.loggedUser.id}</p>
+                        <p className="name">{store.loggedUser.email}</p>
+                    </div>
                 </div>
             </div>
         </nav>

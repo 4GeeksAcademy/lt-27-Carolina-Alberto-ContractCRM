@@ -19,9 +19,9 @@ class User(db.Model):
     def serialize(self):
         return {
             "id": self.id,
+            "email": self.email,
             "name": self.name,
-            "last_name": self.last_name,
-            "email": self.email
+            "last_name": self.last_name
             # do not serialize the password, its a security breach
         }
     
@@ -70,7 +70,7 @@ class Contract(db.Model):
     software_name = db.Column(db.String(120), nullable=False)
     value = db.Column(db.Float, nullable=False)
     currency = db.Column(db.String(120), nullable=False)
-    previous_contract_id = db.Column(db.Integer, db.ForeignKey('contract.id'))
+    previous_contract_id = db.Column(db.Integer, db.ForeignKey('contract.id'), nullable=True)
     contract_type = db.Column(db.String(120), nullable=False)
     contract_description = db.Column(db.Text, nullable=False)
     effective_date = db.Column(db.Date, nullable=False)
@@ -120,8 +120,8 @@ class User_Contract(db.Model):
     contract_id = Column(Integer, ForeignKey('contract.id'))
     contract = relationship(Contract)
     update_date = db.Column(db.Date, nullable=False)
-    original_state = db.Column(db.String(120), nullable=False)
-    new_state = db.Column(db.String(120), nullable=False)
+    original_state = db.Column(db.Integer, nullable=True)
+    new_state = db.Column(db.Integer, nullable=True)
     comments= db.Column(db.String, nullable=False)
 
     def __repr__(self):
@@ -129,13 +129,20 @@ class User_Contract(db.Model):
       
     def serialize(self):
         return {
-          "id": self.id,
-          "user_id": self.user_id,
-          "contract_id": self.contract_id,
-          "update_date": self.update_date,
-          "original_state": self.original_state,
-          "new_state": self.new_state,
-          "comments": self.comments,
-          "name": self.user.name,
-          "last_name": self.user.last_name,
+            "id": self.id,
+            "approver_user_id": self.user_id,
+            "contract_id": self.contract_id,
+            "software_name": self.contract.software_name,
+            "value": self.contract.value,
+            "currency": self.contract.currency,
+            "contract_description": self.contract.contract_description,
+            "effective_date": self.contract.effective_date,
+            "expiration_date": self.contract.expiration_date,
+            "business_unit": self.contract.business_unit,
+            "update_date": self.update_date,
+            "approval_area": self.original_state,
+            "next_": self.new_state,
+            "comments": self.comments,
+            "name": self.user.name + " " + self.user.last_name,
+            "approver": self.user.email,
         }
