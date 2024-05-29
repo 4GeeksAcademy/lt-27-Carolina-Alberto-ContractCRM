@@ -1,40 +1,83 @@
-import React, { useContext } from "react";
+import React, { useContext , useEffect, useState } from "react";
 import { Context } from "../store/appContext";
-import { Roleshome } from "../component/roleshome"
-import { Link, useNavigate } from "react-router-dom";
-import rigoImageUrl from "../../img/rigo-baby.jpg";
+import { ContractTable } from "../component/contractTable";
+import { useNavigate } from "react-router-dom";
 import "../../styles/home.css";
 
 
 export const Home = () => {
 	const { store, actions } = useContext(Context);
+	const [contractType, setContractType] = useState();
+	const navigate = useNavigate();
+
+	useEffect(() => {
+		console.log("cargo el home");
+
+		if (!store.loggedUser.id) {
+			navigate("/");
+		}
+		actions.getWorkflow()
+		.then(() => {
+			console.log("workflow cargado");
+		})
+	}, []);
+
+	useEffect(() => {
+        console.log("homeContent");
+        if(contractType !== store.homeContent){
+            console.log("contenido:" + store.homeContent);
+            setContractType(store.homeContent);
+        }
+    }, [store.homeContent]);
 
 	return (
-		<div className="text-center mt-5">
-			<h1>Hello Rigo!!</h1>
+		<div className="container">
+			<div className="row workflow">
+				<div className="col">
+					<button className="btn btn-primary"
+					onClick={() => {actions.setContent("operation")}}
+					>Pending Operation Approval</button>
+				</div>
+				<div className="col">
+					<button className="btn btn-primary"
+					onClick={() => {actions.setContent("manager")}}
+					>Pending Manager Approval</button>
+				</div>
+				<div className="col">
+					<button className="btn btn-primary"
+					onClick={() => {actions.setContent("finance")}}
+					>Pending finance Approval</button>
+				</div>
+				<div className="col">
+					<button className="btn btn-primary"
+					onClick={() => {actions.setContent("budgetOwner")}}
+					>Pending Budget Owner Approval</button>
+				</div>
+				<div className="col">
+					<button className="btn btn-primary"
+					onClick={() => {actions.setContent("security")}}
+					>Pending Security Approval</button>
+				</div>
+				<div className="col">
+					<button className="btn btn-primary"
+					onClick={() => {actions.setContent("legal")}}
+					>Pending Legal Approval</button>
+				</div>
+				<div className="col">
+					<button className="btn btn-primary"
+					onClick={() => {actions.setContent("active")}}
+					>Active Contracts</button>
+				</div>
+				
 
-			<div className="ml-auto">
-				<Link to="/roleshome">
-					<button className="btn btn-primary">ROLES PAGE</button>
-				</Link>
 			</div>
-
-			{/* <Roleshome /> */}
-
-
-			<p>
-				<img src={rigoImageUrl} />
-			</p>
-			<div className="alert alert-info">
-				{store.message || "Loading message from the backend (make sure your python backend is running)..."}
+			<div className="row">
+				<div className="col">
+					{contractType !== "" ? <ContractTable type={contractType} />: null}
+				</div>
 			</div>
-			<p>
-				This boilerplate comes with lots of documentation:{" "}
-				<a href="https://start.4geeksacademy.com/starters/react-flask">
-					Read documentation
-				</a>
-			</p>
 		</div>
+		
 	);
 };
 

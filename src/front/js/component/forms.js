@@ -14,12 +14,15 @@ export const Forms = props => {
     const [type, setType] = useState(props.type);
     const navigate = useNavigate();
 
+<<<<<<< FT09-Home
+=======
     useEffect(() => {
         if(store.jwt !== null){
             navigate("/user");
         }  else {
             actions.getRoles();
         }
+>>>>>>> Develop
 
         if(store.loggedUser.id){
             role.map((role) => {
@@ -56,12 +59,22 @@ export const Forms = props => {
                             email: email,
                             password: password
                         })
+                        .then((result) => {
+                            if(result){
+                                navigate("/home");
+                            }
+                        });
                     }
                 }
             } else {
                 actions.login({
                     email: email,
                     password:password
+                })
+                .then((result) => {
+                    if(result){
+                        navigate("/home");
+                    }
                 });
             }
         }

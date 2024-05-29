@@ -4,11 +4,13 @@ import { useNavigate } from "react-router-dom";
 
 
 export const CreateContract = () => {
+
     const { store, actions } = useContext(Context);
     const [id, setId] = useState("");
     const [status, setStatus] = useState("");
     const [supplier_name, setSupplierName] = useState("");
     const [software_name, setSoftwareName] = useState("");
+    const [supplier_name, setSupplierName] = useState("");
     const [value, setValue] = useState("");
     const [currency, setCurrency] = useState("");
     const [value_eur, setValue_eur] = useState("");
@@ -36,6 +38,7 @@ export const CreateContract = () => {
     ];
 
     const navigate = useNavigate();
+
 
     useEffect(() => {
         if (software_name !== "") {
@@ -79,6 +82,7 @@ export const CreateContract = () => {
         <form>
             <div className="form-group">
                 <label htmlFor="status">Status</label>
+
                 <input type="text"
                     className="form-control"
                     id="status"
@@ -100,6 +104,7 @@ export const CreateContract = () => {
             <div className="form-group">
                 <label htmlFor="software_name">Software name</label>
                 <input type="text"
+
                     className="form-control"
                     id="software_name"
                     value={software_name}
@@ -159,6 +164,7 @@ export const CreateContract = () => {
                     id="previous_contract"
                     value={previous_contract}
                     onChange={(e) => { setpreviousContract(e.target.value) }}
+
                 />
             </div>
 

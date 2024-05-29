@@ -7,6 +7,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 		store: {
 			loggedUser:{},
 			jwt: null,
+
+			homeContent:"operation",
+			workflow: [],
+
 			roles: [],
 			// editableRole: {},
 			users: [],
@@ -17,11 +21,22 @@ const getState = ({ getStore, getActions, setStore }) => {
 			users_contracts: [],
 			user_contract: [],
 		},
+
+		
 		actions: {
-
-			
-
-// ******************************************************* queryhandler  & rquestParams action ***************************************************
+			setContent: (content) => {
+				if(content === "operation" || content === "manager" || content === "finance" 
+				|| content === "budgetOwner" || content === "security" || content === "legal" 
+				|| content === "active"){
+					console.log("set content", content)
+					setStore({homeContent: content})
+				}
+				else{
+					console.log("Invalid content type")
+				}
+				
+			},
+			// ******************************************************* queryhandler  & rquestParams action ***************************************************
 			/** Genera los parámetros de la solicitud para una petición HTTP.
              *
              * @param {string} method - El método HTTP a utilizar (por ejemplo, 'GET', 'POST', 'PUT', 'DELETE').
@@ -98,15 +113,16 @@ const getState = ({ getStore, getActions, setStore }) => {
              */
             queryhandler: (method, route, id, data) => {
                 const url = process.env.BACKEND_URL+"api/"+route;
+				console.log(url);
                 const resquestParams = getActions().requestParams(method, data);
-                console.log(resquestParams);
+				console.log(resquestParams);
                 return fetch(url + id, resquestParams)
                 .then((response) => {
                     try {
                         let isOk = response.ok;
-                        //console.log(response);
+                        console.log(response);
                         return response.json().then((data) => {
-                        //console.log(data);
+                        console.log(data);
                         return { status: isOk, data: data };
                         });
                     } catch (error) {
@@ -114,27 +130,6 @@ const getState = ({ getStore, getActions, setStore }) => {
                     }
                 });
             },
-
-
-// *********************************************************** LOGIN & SIGNUP ************************************************************
-			login: (data) => {
-				getActions().queryhandler("POST", "login/", "", data)
-				.then(({status, data}) => {
-						console.log(status);
-						console.log(data);
-						setStore({loggedUser: data.user, jwt: data.jwt});
-					
-				});
-			},
-			signup: (newUserData) => {
-				getActions().queryhandler("POST", "signup/", "", newUserData)
-				.then(({status, data}) => {
-					console.log(status);
-					console.log(data);
-					setStore({loggedUser: data.user, jwt: data.jwt});
-				
-				});
-			},
 
 
 
@@ -227,41 +222,68 @@ const getState = ({ getStore, getActions, setStore }) => {
 					}
 				})
 			},
-					
-
-
-			deleteRole: (role_id) => {
-				getActions().queryhandler("DELETE", "roles/", role_id, null)
-				.then((response) => {
-					if (response.status) {
-						console.log ("Role was deleted sucessfully.");
-						fetch(process.env.BACKEND_URL + "api/roles")
-						.then ((response)=>response.json())
-							.then( (data)=>setStore({ roles: data}))
-					} else {
-						console.log ("Failed to delete role");
-					}
-				})
-					.catch((error) => console.error(error));
-			},
-
-
-
-			createRole: (newRoleName) => {
-				return getActions().queryhandler("POST", "roles/", "", {"name": newRoleName})
-					.then(() => getActions().getRoles())
-					.catch((error) => console.error(error));
-			},
-
-
 			
-			setEditable: (id, name)=> {
-				setStore ({editableRole:
-					{
-						id: id,
-						name: name
+
+
+// ******************************** ACTIONS FOR USER *************************
+			newUser: (newUserData) => {
+				console.log("New user");
+				return getActions().queryhandler("POST", "users/", "", newUserData)
+				.then(({status, data}) => {
+					if (status) {
+						setStore({ users: getStore().users.concat(data) });
+						return status;
+					} else {
+						console.log("Error creating user");
+						console.log(data);
+						return status;
 					}
 				})
+			},
+
+			getUsers: () => {
+				console.log("todos los usuarios desde flux");
+				getActions().queryhandler("GET", "users/", "", null)
+				.then(({status, data}) => {
+					if (status) {
+						setStore({ users: data });
+					} else {
+						console.log("Error loading users from backend");
+						console.log(data);
+					}
+				})
+			},
+
+
+			getUser: (user_id) => {
+				console.log("un usuario desde flux", user_id);
+				getActions().queryhandler("GET", "users/", user_id, null)
+				.then(({status, data}) => {
+					if (status) {
+						setStore({ user: data });
+					} else {
+						console.log("Error loading user from backend");
+						console.log(data);
+					}
+				})
+			},
+
+			putUser: (editData) => {
+				getActions().queryhandler("PUT", "users/", editData.id, editData)
+				.then(({status, data}) => {
+					if (status) {
+						setStore({ users: getStore().users.map((user) => {
+							if (user.id === editData.id) {
+								return data;
+							} else {
+								return user;
+							}
+						}) });
+					} else {
+						console.log("Error updating user");
+						console.log(data);
+					}
+				})	
 			},
 
 			
@@ -271,8 +293,18 @@ const getState = ({ getStore, getActions, setStore }) => {
 					.catch((error) => console.error(error));
 			},
 
-
-
+			deleteUser: (user_id) => {
+				console.log("Delete user");
+				getActions().queryhandler("DELETE", "users/", user_id, null)
+				.then(({status, data}) => {
+					if (status) {
+						setStore({ users: getStore().users.filter((user) => user.id !== user_id) });
+					} else {
+						console.log("Error deleting user");
+						console.log(data);
+					}
+				})
+			},
 
 // *********************************************************** ACTIONS FOR CONTRACTS ************************************************************
 
@@ -287,9 +319,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 						console.log(data);
 					}
 				})
-				.catch(error => {
-					console.error("Error en la solicitud:", error);
-				});
 			},
 
 
@@ -307,10 +336,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			newContract: (editData) => {
 				console.log("New contract");
-				getActions().queryhandler("POST", "contracts/", "", editData)
+				return getActions().queryhandler("POST", "contracts/", "", editData)
 				.then(({status, data}) => {
 					if (status) {
 						setStore({ contracts: getStore().contracts.concat(data) });
+						return status;
 					} else {
 						console.log("Error creating contract");
 						console.log(data);
@@ -349,17 +379,17 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 
 
-
-
-
 // ********************************************************* ACTIONS FOR USER_ROLE ****************************************************************************
 
 			getUserRole: () => {
-				return getActions().queryhandler("GET", "user_role", "", null)
-					.then((response) => {
-						setStore({ users_roles: response.data });
-					})
-					.catch((error) => console.error(error));
+				console.log("todos los user_role desde flux")
+				fetch(process.env.BACKEND_URL + "api/user_role")
+				.then ( (response)=> response.json())
+				.then ( (data)=> {
+					console.log(data)
+					setStore({ users_roles: data }) 
+					}
+				)	
 			},
 
 			deleteUserRole: (userRoleId) => {
@@ -385,27 +415,75 @@ const getState = ({ getStore, getActions, setStore }) => {
 					.catch((error) => console.error(error));
 			},
 
-
-
-			updateRoleUser: (user_role, user_id, role_id) => {
-				return getActions().queryhandler("PUT", "user_role/", user_role, { user_id, role_id })
-					.then(() => getActions().getUserRoles())
-					.catch((error) => console.error(error));
-			},
 			
+			getUsers: () => {
+				console.log("todos los usuarios desde flux");
+				// fetch(process.env.BACKEND_URL + "api/users")
+				// .then(response => response.json())
+				// .then(data => setStore({ users: data }))
+				getActions().queryhandler("GET", "users", "", null)
+				.then(({status, data}) => {
+					if (status) {
+						setStore({ users: data });
+					} else {
+						console.log("Error loading users from backend");
+						console.log(data);
+					}
+				})
+			},
 
+			login: (data) => {
+				getActions().queryhandler("POST", "login/", "", data)
+				.then(({status, data}) => {
+						setStore({loggedUser: data.user, jwt: data.jwt});
+						console.log(data);
+				});
+				return getActions().getWorkflow();
 
-// **************************************************** ACTIONS FOR USER_CONTRACT *****************************************************************
+			},
+			signup: (newUserData) => {
+				getActions().queryhandler("POST", "signup/", "", newUserData)
+				.then(({status, data}) => {
+					console.log(status);
+					console.log(data);
+					setStore({loggedUser: data.user, jwt: data.jwt});
+				});
+				return getActions().getWorkflow();
+			},
+
+// ******************************** ACTIONS FOR USER_CONTRACT *************************
 
 			// ************action to get ALL user_contract from the model:
-
-			getUserContract: () => {
-				return getActions().queryhandler("GET", "user_contract", "", null)
-					.then(({ status, data }) => {
-						if (status) setStore({ users_contracts: data });
-						else console.log("Error al obtener contratos de usuario desde el backend", data);
-					})
-					.catch((error) => console.error("Error:", error));
+			getWorkflow: () => {
+				console.log("workflow desde flux");
+				return getActions().queryhandler("GET", "workflow", "", null)
+				.then(({status, data}) => {
+					if (status) {
+						let contracts = [];
+            			let workflow = [];
+						data.forEach(item => {
+							if (item.contract) {
+								contracts.push(item.contract);
+							}
+							if (item.data) {
+								workflow.push(item.data);
+							}
+							if (item['404']) {
+								workflow.push(item['404']);
+							}
+						});
+            			setStore({ contracts: contracts, workflow: workflow });
+						
+						console.log(getStore().contracts);
+						console.log(getStore().workflow);
+						return true;
+					} else {
+						console.log("Error loading workflow from backend");
+						console.log(data);
+						return false;
+					}
+				})
+				
 			},
 
 

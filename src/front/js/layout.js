@@ -45,6 +45,7 @@ const Layout = () => {
                     <Navbar />
                     <Routes>  
                         <Route element={<Login />} path="/" />
+                        <Route element={<Home />} path="/home" />
                         <Route element={<UsersComponent />} path="/user" />
                         <Route element={<UpdateUser />} path="/updateUser/:user_id" />
                         <Route element={<CreateContract />} path="/newContract" />
