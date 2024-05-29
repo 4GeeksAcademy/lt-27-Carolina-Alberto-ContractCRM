@@ -16,13 +16,17 @@ export const Home = () => {
 		if (!store.loggedUser.id) {
 			navigate("/");
 		}
+		actions.getWorkflow()
+		.then(() => {
+			console.log("workflow cargado");
+		})
 	}, []);
 
 	useEffect(() => {
         console.log("homeContent");
         if(contractType !== store.homeContent){
             console.log("contenido:" + store.homeContent);
-            setContractType();
+            setContractType(store.homeContent);
         }
     }, [store.homeContent]);
 

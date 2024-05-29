@@ -4,6 +4,7 @@ import { Context } from "../store/appContext";
 import { Contract } from "../component/contract";
 import { useContext } from "react";
 import { useParams } from "react-router-dom";
+import { number } from "prop-types";
 
 export const ContractTable = (props) => {
     const { store, actions } = useContext(Context);
@@ -25,7 +26,7 @@ export const ContractTable = (props) => {
             console.log(props.type);
             if(props.type === "operation")
             {
-                setFilteredContracts(contracts.filter(contract => contract.next_ === 2 || contract.next_ === null));
+                setFilteredContracts(contracts.filter(contract => contract.next_ === 2 || contract === number));
                 console.log(filteredContracts)
             }
             if(props.type === "manager")
