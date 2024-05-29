@@ -6,11 +6,10 @@ db = SQLAlchemy()
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(80), nullable=False)
-    last_name = db.Column(db.String(80), nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(80), nullable=False)
-    isActive = db.Column(db.Boolean(), nullable=False)
+    name = db.Column(db.String(80))
+    last_name = db.Column(db.String(80))
+    email = db.Column(db.String(120), unique=True)
+    password = db.Column(db.String(80))
     # user_role = relationship(User_Role)
 
     def __repr__(self):
@@ -28,7 +27,7 @@ class User(db.Model):
 
 class Role(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(120), unique=True, nullable=False)
+    name = db.Column(db.String(120), unique=True)
     
 
     def __repr__(self):
@@ -65,43 +64,24 @@ class User_Role(db.Model):
     
 class Contract(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    status = db.Column(db.String(120), nullable=False)
-    supplier_name = db.Column(db.String(120), nullable=False)
-    software_name = db.Column(db.String(120), nullable=False)
-    value = db.Column(db.Float, nullable=False)
-    currency = db.Column(db.String(120), nullable=False)
-<<<<<<< FT09-Home
-    previous_contract_id = db.Column(db.Integer, db.ForeignKey('contract.id'), nullable=True)
-    contract_type = db.Column(db.String(120), nullable=False)
-    contract_description = db.Column(db.Text, nullable=False)
-    effective_date = db.Column(db.Date, nullable=False)
-    expiration_date = db.Column(db.Date, nullable=False)
-    contract_term = db.Column(db.Integer, nullable=False)
-    business_unit = db.Column(db.String(120), nullable=False)
-    notice_period = db.Column(db.Integer, nullable=False)
-    budget_owner = db.Column(db.String(120), nullable=False)
-    finance_approver = db.Column(db.String(120), nullable=False)
-    cost_centers = db.Column(db.String(120), nullable=False)
-    supplier_poc = db.Column(db.String(120), nullable=False)
-    business_unit_poc = db.Column(db.String(120), nullable=False)
-=======
-    value_eur = db.Column(db.Integer, nullable=True)
-    value_jpy = db.Column(db.Integer, nullable=True)
-    previous_contract_id = db.Column(db.Integer, db.ForeignKey('contract.id'))
-    contract_type = db.Column(db.String(120), nullable=True)
-    contract_description = db.Column(db.Text, nullable=True)
-    effective_date = db.Column(db.Date, nullable=True)
-    expiration_date = db.Column(db.Date, nullable=True)
-    contract_term = db.Column(db.Integer, nullable=True)
-    business_unit = db.Column(db.String(120), nullable=True)
-    notice_period = db.Column(db.Integer, nullable=True)
-    budget_owner = db.Column(db.String(120), nullable=True)
-    finance_approver = db.Column(db.String(120), nullable=True)
-    cost_centers = db.Column(db.String(120), nullable=True)
-    supplier_poc = db.Column(db.String(120), nullable=True)
-    business_unit_poc = db.Column(db.String(120), nullable=True)
->>>>>>> Develop
-    attachments = db.Column(db.String(120), nullable=True)
+    status = db.Column(db.String(120))
+    supplier_name = db.Column(db.String(120))
+    software_name = db.Column(db.String(120))
+    value = db.Column(db.Float)
+    currency = db.Column(db.String(120))
+    value_eur = db.Column(db.Integer)
+    value_jpy = db.Column(db.Integer)
+    contract_type = db.Column(db.String(120))
+    contract_description = db.Column(db.Text)
+    effective_date = db.Column(db.Date)
+    expiration_date = db.Column(db.Date)
+    contract_term = db.Column(db.Integer)
+    business_unit = db.Column(db.String(120))
+    notice_period = db.Column(db.Integer)
+    cost_centers = db.Column(db.Integer)
+    supplier_poc = db.Column(db.String(120))
+    business_unit_poc = db.Column(db.String(120))
+
 
     def __repr__(self):
         return f'<Contract {self.id}>'
@@ -116,7 +96,6 @@ class Contract(db.Model):
             "currency": self.currency,
             "value_eur": self.value_eur,
             "value_jpy": self.value_jpy,
-            "previous_contract_id": self.previous_contract_id,
             "contract_type": self.contract_type,
             "contract_description": self.contract_description,
             "effective_date": self.effective_date,
@@ -124,12 +103,10 @@ class Contract(db.Model):
             "contract_term": self.contract_term,
             "business_unit": self.business_unit,
             "notice_period": self.notice_period,
-            "budget_owner": self.budget_owner,
-            "finance_approver": self.finance_approver,
             "cost_centers": self.cost_centers,
             "supplier_poc": self.supplier_poc,
             "business_unit_poc": self.business_unit_poc,
-            "attachments": self.attachments,
+            
         }
 
 class User_Contract(db.Model):
@@ -139,10 +116,10 @@ class User_Contract(db.Model):
     user = relationship(User)
     contract_id = Column(Integer, ForeignKey('contract.id'))
     contract = relationship(Contract)
-    update_date = db.Column(db.Date, nullable=False)
+    update_date = db.Column(db.Date)
     original_state = db.Column(db.Integer, nullable=True)
     new_state = db.Column(db.Integer, nullable=True)
-    comments= db.Column(db.String, nullable=False)
+    comments= db.Column(db.String)
 
     def __repr__(self):
         return f'<User_Contract {self.id}>'
@@ -154,6 +131,8 @@ class User_Contract(db.Model):
             "contract_id": self.contract_id,
             "software_name": self.contract.software_name,
             "value": self.contract.value,
+            "eur": self.contract.value_eur,
+            "jpy": self.contract.value_jpy,
             "currency": self.contract.currency,
             "contract_description": self.contract.contract_description,
             "effective_date": self.contract.effective_date,

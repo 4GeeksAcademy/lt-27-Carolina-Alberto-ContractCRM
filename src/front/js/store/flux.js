@@ -7,13 +7,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 		store: {
 			loggedUser:{},
 			jwt: null,
-<<<<<<< FT09-Home
 
 			homeContent:"operation",
 			workflow: [],
 
-=======
->>>>>>> Develop
 			roles: [],
 			// editableRole: {},
 			users: [],
@@ -24,7 +21,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 			users_contracts: [],
 			user_contract: [],
 		},
-<<<<<<< FT09-Home
 
 		
 		actions: {
@@ -117,14 +113,16 @@ const getState = ({ getStore, getActions, setStore }) => {
              */
             queryhandler: (method, route, id, data) => {
                 const url = process.env.BACKEND_URL+"api/"+route;
+				console.log(url);
                 const resquestParams = getActions().requestParams(method, data);
+				console.log(resquestParams);
                 return fetch(url + id, resquestParams)
                 .then((response) => {
                     try {
                         let isOk = response.ok;
-                        //console.log(response);
+                        console.log(response);
                         return response.json().then((data) => {
-                        //console.log(data);
+                        console.log(data);
                         return { status: isOk, data: data };
                         });
                     } catch (error) {
@@ -132,126 +130,6 @@ const getState = ({ getStore, getActions, setStore }) => {
                     }
                 });
             },
-=======
-		actions: {
-
-			
-
-// ******************************************************* queryhandler  & rquestParams action ***************************************************
-			/** Genera los parámetros de la solicitud para una petición HTTP.
-             *
-             * @param {string} method - El método HTTP a utilizar (por ejemplo, 'GET', 'POST', 'PUT', 'DELETE').
-             * @param {Object} data - El cuerpo de la solicitud. Si es null, la solicitud no tendrá cuerpo.
-             *
-             * @returns {Object} Un objeto que contiene los parámetros de la solicitud, incluyendo el método,
-             *                   el cuerpo (si se proporcionó) y las cabeceras necesarias. Si se ha establecido
-             *                   un token JWT en el store, también se incluirá en las cabeceras.
-             */
-            
-			requestParams: (method, data) => {
-                if (data === null) {
-                    if(getStore().jwt === null){
-                        return {
-                            method: method,
-                            headers: {
-                            "Content-Type": "application/json",
-                            "Accept": "application/json",
-                            }
-                        }
-                    }
-                    else if(getStore().jwt !== null){
-                        return {
-                            method: method,
-                            headers: {
-                            "Content-Type": "application/json",
-                            "Accept": "application/json",
-                            "Authorization": "Bearer "+getStore().jwt
-                            }
-                        }
-                    }
-                }
-                else {
-                    if(getStore().jwt === null){
-                        return {
-                            method: method,
-                            body: JSON.stringify(data),
-                            headers: {
-                            "Content-Type": "application/json",
-                            "Accept": "application/json",
-                            }
-                        }
-                    }
-                    else if(getStore().jwt !== null){
-                        return {
-                            method: method,
-                            body: JSON.stringify(data),
-                            headers: {
-                            "Content-Type": "application/json",
-                            "Accept": "application/json",
-                            "Authorization": "Bearer "+getStore().jwt
-                            }
-                        }
-                    }
-                }
-            },
-            /**
-             * Realiza una consulta HTTP a la API.
-             *
-             * @param {string} method - El método HTTP a utilizar para la consulta (GET, POST, PUT, DELETE).
-             * @param {string} route - El endpoint de la API al que se realizará la consulta.
-             * @param {string} id - El identificador del recurso a consultar. Si no se requiere, se puede pasar una cadena vacía.
-             * @param {Object} data - El cuerpo de la solicitud en formato de objeto. Si no se requiere, se puede pasar null.
-             *
-             * @returns {Promise} - Una promesa que se resuelve con un objeto que contiene el estado de la solicitud (true si la solicitud fue exitosa, false en caso contrario) y los datos de la respuesta de la API.
-             *
-             * @example
-             * // Realizar una consulta GET a la API.
-             * queryhandler("GET", "users", "1", null)
-             *
-             * @example
-             * // Realizar una consulta POST a la API.
-             * queryhandler("POST", "login/", "", { username: "user", password: "password" })
-             */
-            queryhandler: (method, route, id, data) => {
-                const url = process.env.BACKEND_URL+"api/"+route;
-                const resquestParams = getActions().requestParams(method, data);
-                console.log(resquestParams);
-                return fetch(url + id, resquestParams)
-                .then((response) => {
-                    try {
-                        let isOk = response.ok;
-                        //console.log(response);
-                        return response.json().then((data) => {
-                        //console.log(data);
-                        return { status: isOk, data: data };
-                        });
-                    } catch (error) {
-                        console.log(error.message);
-                    }
-                });
-            },
-
-
-// *********************************************************** LOGIN & SIGNUP ************************************************************
-			login: (data) => {
-				getActions().queryhandler("POST", "login/", "", data)
-				.then(({status, data}) => {
-						console.log(status);
-						console.log(data);
-						setStore({loggedUser: data.user, jwt: data.jwt});
-					
-				});
-			},
-			signup: (newUserData) => {
-				getActions().queryhandler("POST", "signup/", "", newUserData)
-				.then(({status, data}) => {
-					console.log(status);
-					console.log(data);
-					setStore({loggedUser: data.user, jwt: data.jwt});
-				
-				});
-			},
->>>>>>> Develop
 
 
 
@@ -344,10 +222,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 					}
 				})
 			},
-					
+			
 
 
-<<<<<<< FT09-Home
 // ******************************** ACTIONS FOR USER *************************
 			newUser: (newUserData) => {
 				console.log("New user");
@@ -407,40 +284,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 						console.log(data);
 					}
 				})	
-=======
-			deleteRole: (role_id) => {
-				getActions().queryhandler("DELETE", "roles/", role_id, null)
-				.then((response) => {
-					if (response.status) {
-						console.log ("Role was deleted sucessfully.");
-						fetch(process.env.BACKEND_URL + "api/roles")
-						.then ((response)=>response.json())
-							.then( (data)=>setStore({ roles: data}))
-					} else {
-						console.log ("Failed to delete role");
-					}
-				})
-					.catch((error) => console.error(error));
-			},
-
-
-
-			createRole: (newRoleName) => {
-				return getActions().queryhandler("POST", "roles/", "", {"name": newRoleName})
-					.then(() => getActions().getRoles())
-					.catch((error) => console.error(error));
-			},
-
-
-			
-			setEditable: (id, name)=> {
-				setStore ({editableRole:
-					{
-						id: id,
-						name: name
-					}
-				})
->>>>>>> Develop
 			},
 
 			
@@ -450,7 +293,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 					.catch((error) => console.error(error));
 			},
 
-<<<<<<< FT09-Home
 			deleteUser: (user_id) => {
 				console.log("Delete user");
 				getActions().queryhandler("DELETE", "users/", user_id, null)
@@ -463,10 +305,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 					}
 				})
 			},
-=======
-
-
->>>>>>> Develop
 
 // *********************************************************** ACTIONS FOR CONTRACTS ************************************************************
 
@@ -481,12 +319,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 						console.log(data);
 					}
 				})
-<<<<<<< FT09-Home
-=======
-				.catch(error => {
-					console.error("Error en la solicitud:", error);
-				});
->>>>>>> Develop
 			},
 
 
@@ -504,18 +336,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			newContract: (editData) => {
 				console.log("New contract");
-<<<<<<< FT09-Home
 				return getActions().queryhandler("POST", "contracts/", "", editData)
 				.then(({status, data}) => {
 					if (status) {
 						setStore({ contracts: getStore().contracts.concat(data) });
 						return status;
-=======
-				getActions().queryhandler("POST", "contracts/", "", editData)
-				.then(({status, data}) => {
-					if (status) {
-						setStore({ contracts: getStore().contracts.concat(data) });
->>>>>>> Develop
 					} else {
 						console.log("Error creating contract");
 						console.log(data);
@@ -552,18 +377,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 					}
 				})
 			},
-<<<<<<< FT09-Home
-=======
-
-
-
->>>>>>> Develop
 
 
 // ********************************************************* ACTIONS FOR USER_ROLE ****************************************************************************
 
 			getUserRole: () => {
-<<<<<<< FT09-Home
 				console.log("todos los user_role desde flux")
 				fetch(process.env.BACKEND_URL + "api/user_role")
 				.then ( (response)=> response.json())
@@ -572,13 +390,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 					setStore({ users_roles: data }) 
 					}
 				)	
-=======
-				return getActions().queryhandler("GET", "user_role", "", null)
-					.then((response) => {
-						setStore({ users_roles: response.data });
-					})
-					.catch((error) => console.error(error));
->>>>>>> Develop
 			},
 
 			deleteUserRole: (userRoleId) => {
@@ -604,7 +415,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 					.catch((error) => console.error(error));
 			},
 
-<<<<<<< FT09-Home
 			
 			getUsers: () => {
 				console.log("todos los usuarios desde flux");
@@ -674,29 +484,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 					}
 				})
 				
-=======
-
-
-			updateRoleUser: (user_role, user_id, role_id) => {
-				return getActions().queryhandler("PUT", "user_role/", user_role, { user_id, role_id })
-					.then(() => getActions().getUserRoles())
-					.catch((error) => console.error(error));
-			},
-			
-
-
-// **************************************************** ACTIONS FOR USER_CONTRACT *****************************************************************
-
-			// ************action to get ALL user_contract from the model:
-
-			getUserContract: () => {
-				return getActions().queryhandler("GET", "user_contract", "", null)
-					.then(({ status, data }) => {
-						if (status) setStore({ users_contracts: data });
-						else console.log("Error al obtener contratos de usuario desde el backend", data);
-					})
-					.catch((error) => console.error("Error:", error));
->>>>>>> Develop
 			},
 
 
