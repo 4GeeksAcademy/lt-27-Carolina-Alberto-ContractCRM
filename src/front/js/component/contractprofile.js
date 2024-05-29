@@ -12,7 +12,7 @@ export const ContractProfile = () => {
     useEffect(() => {
         if (contractId) {
             actions.getContract(contractId);
-			actions.getUserContract();
+			actions.getWorkflow();
         }
     }, [contractId]);
 

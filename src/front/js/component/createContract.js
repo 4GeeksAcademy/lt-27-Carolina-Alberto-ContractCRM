@@ -10,12 +10,8 @@ export const CreateContract = () => {
     const [status, setStatus] = useState("");
     const [supplier_name, setSupplierName] = useState("");
     const [software_name, setSoftwareName] = useState("");
-    const [supplier_name, setSupplierName] = useState("");
     const [value, setValue] = useState("");
     const [currency, setCurrency] = useState("");
-    const [value_eur, setValue_eur] = useState("");
-    const [value_jpy, setValue_jpy] = useState("");
-    const [previous_contract, setpreviousContract] = useState("");
     const [contract_type, setContractType] = useState("");
     const [contract_description, setContractDescription] = useState("");
     const [effective_date, setEffectiveDate] = useState("");
@@ -23,12 +19,9 @@ export const CreateContract = () => {
     const [contract_term, setContractTerm] = useState("");
     const [business_unit, setBusinessUnit] = useState("");
     const [notice_period, setNoticePeriod] = useState("");
-    const [budget_owner, setBudgetOwner] = useState("");
-    const [finance_approver, setFinanceApprover] = useState("");
     const [cost_centers, setCostCenters] = useState("");
     const [supplier_poc, setSupplierPoc] = useState("");
     const [business_unit_poc, setBusinessUnitPoc] = useState("");
-    const [attachments, setAttachments] = useState("");
 
     const currencies = [
         "AUD", "BGN", "BRL", "CAD", "CHF", "CNY", "CZK", "DKK", "EUR", "GBP",
@@ -54,9 +47,9 @@ export const CreateContract = () => {
                 software_name: software_name,
                 value: value,
                 currency: currency,
-                value_eur: value_eur,
-                value_jpy: value_jpy,
-                previous_contract_id: previous_contract,
+                // value_eur: 0,
+                // value_jpy: 0,
+                // value_usd: 0,
                 contract_type: contract_type,
                 contract_description: contract_description,
                 effective_date: effective_date,
@@ -64,12 +57,9 @@ export const CreateContract = () => {
                 contract_term: contract_term,
                 business_unit: business_unit,
                 notice_period: notice_period,
-                budget_owner: budget_owner,
-                finance_approver: finance_approver,
                 cost_centers: cost_centers,
                 supplier_poc: supplier_poc,
-                business_unit_poc: business_unit_poc,
-                attachments: attachments,
+                business_unit_poc: business_unit_poc
             })
         } catch (e) {
             console.log("Error", e)
@@ -129,7 +119,7 @@ export const CreateContract = () => {
             </div>
 
             <div className="form-group">
-                <label htmlFor="value">Value (USD)</label>
+                <label htmlFor="value">Value</label>
                 <input type="number"
                     className="form-control"
                     id="value"
@@ -137,7 +127,7 @@ export const CreateContract = () => {
                     onChange={(e) => { setValue(e.target.value) }}
                 />
             </div>
-            <div className="form-group">
+            {/* <div className="form-group">
                 <label htmlFor="value_eur">Value (EUR)</label>
                 <input
                     type="number"
@@ -156,17 +146,7 @@ export const CreateContract = () => {
                     value={value_jpy}
                     onChange={(e) => setValue_jpy(e.target.value)}
                 />
-            </div>
-            <div className="form-group">
-                <label htmlFor="previous_contract">Previous contract id</label>
-                <input type="number"
-                    className="form-control"
-                    id="previous_contract"
-                    value={previous_contract}
-                    onChange={(e) => { setpreviousContract(e.target.value) }}
-
-                />
-            </div>
+            </div> */}
 
             <div className="form-group">
                 <label htmlFor="contract_type">Contract type</label>
@@ -238,25 +218,6 @@ export const CreateContract = () => {
                 />
             </div>
 
-            <div className="form-group">
-                <label htmlFor="budget_owner">Budget owner</label>
-                <input type="text"
-                    className="form-control"
-                    id="budget_owner"
-                    value={budget_owner}
-                    onChange={(e) => { setBudgetOwner(e.target.value) }}
-                />
-            </div>
-
-            <div className="form-group">
-                <label htmlFor="finance_approver">Finance approver</label>
-                <input type="text"
-                    className="form-control"
-                    id="finance_approver"
-                    value={finance_approver}
-                    onChange={(e) => { setFinanceApprover(e.target.value) }}
-                />
-            </div>
 
             <div className="form-group">
                 <label htmlFor="cost_centers">Cost centers</label>
@@ -279,22 +240,12 @@ export const CreateContract = () => {
             </div>
 
             <div className="form-group">
-                <label htmlFor="business_unit_poc">business_unit_poc</label>
+                <label htmlFor="business_unit_poc">Business Unit POC</label>
                 <input type="text"
                     className="form-control"
                     id="business_unit_poc"
                     value={business_unit_poc}
                     onChange={(e) => { setBusinessUnitPoc(e.target.value) }}
-                />
-            </div>
-
-            <div className="form-group">
-                <label htmlFor="attachments">attachments</label>
-                <input type="text"
-                    className="form-control"
-                    id="attachments"
-                    value={attachments}
-                    onChange={(e) => { setAttachments(e.target.value) }}
                 />
             </div>
 
