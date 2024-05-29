@@ -10,12 +10,33 @@ export const Forms = props => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+    const [role, setRole] = useState([]);
     const [type, setType] = useState(props.type);
     const navigate = useNavigate();
 
+<<<<<<< FT09-Home
+=======
+    useEffect(() => {
+        if(store.jwt !== null){
+            navigate("/user");
+        }  else {
+            actions.getRoles();
+        }
+>>>>>>> Develop
 
+        if(store.loggedUser.id){
+            role.map((role) => {
+                console.log(role)
+                actions.createUserRole(store.loggedUser.id, role.id)
+                console.log(store.loggedUser)
+            }) 
+        }
+
+    }, [store.jwt, store.loggedUser]);
+
+    
     function validateInputs(){
-        if(email === "" || password === ""){
+        if(email === "" || password === "" || role.length === 0){
             alert("Please fill all the fields");
         }
         if (!email.match(/^.+@.+\..{2,}$/)) {
@@ -58,6 +79,8 @@ export const Forms = props => {
             }
         }
     }
+
+
     
     function contentForm(){
         if(type === "login"){
@@ -119,6 +142,28 @@ export const Forms = props => {
                     />
                 </div>
                 <div className="form-group">
+                    <label htmlFor="inputRoles">Role(s)</label>
+                    <select
+                    multiple
+                    className="form-control"
+                    id="inputRoles"
+                    value={role.map((role) => role.id)}
+                    onChange={(e) =>
+                        setRole(
+                        Array.from(e.target.selectedOptions, (option) =>
+                            store.roles.find((role) => role.id === parseInt(option.value))
+                        )
+                        )
+                    }
+                    >
+                    {store.roles.map((role) => (
+                        <option key={role.id} value={role.id}>
+                        {role.name}
+                        </option>
+                    ))}
+                    </select>
+                </div>
+                <div className="form-group">
                     <label htmlFor="inputPassword">Password</label>
                     <input type="password" 
                     className="form-control" 
@@ -140,7 +185,7 @@ export const Forms = props => {
                 className="btn btn-primary btn-block" 
                 onClick={(e) => {
                     e.preventDefault();
-                    validateInputs(name, last_name, email, password, confirmPassword);
+                    validateInputs(name, last_name, email, password, confirmPassword, role);
                 }}
                 >
                     Sign up

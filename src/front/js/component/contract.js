@@ -21,5 +21,6 @@ export const Contract = (props) => {
             <td>{props.contract.comments}</td>
             <td>{}</td>
             </tr>
+
 	);
 };

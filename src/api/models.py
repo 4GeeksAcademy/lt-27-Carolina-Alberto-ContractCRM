@@ -70,6 +70,7 @@ class Contract(db.Model):
     software_name = db.Column(db.String(120), nullable=False)
     value = db.Column(db.Float, nullable=False)
     currency = db.Column(db.String(120), nullable=False)
+<<<<<<< FT09-Home
     previous_contract_id = db.Column(db.Integer, db.ForeignKey('contract.id'), nullable=True)
     contract_type = db.Column(db.String(120), nullable=False)
     contract_description = db.Column(db.Text, nullable=False)
@@ -83,6 +84,23 @@ class Contract(db.Model):
     cost_centers = db.Column(db.String(120), nullable=False)
     supplier_poc = db.Column(db.String(120), nullable=False)
     business_unit_poc = db.Column(db.String(120), nullable=False)
+=======
+    value_eur = db.Column(db.Integer, nullable=True)
+    value_jpy = db.Column(db.Integer, nullable=True)
+    previous_contract_id = db.Column(db.Integer, db.ForeignKey('contract.id'))
+    contract_type = db.Column(db.String(120), nullable=True)
+    contract_description = db.Column(db.Text, nullable=True)
+    effective_date = db.Column(db.Date, nullable=True)
+    expiration_date = db.Column(db.Date, nullable=True)
+    contract_term = db.Column(db.Integer, nullable=True)
+    business_unit = db.Column(db.String(120), nullable=True)
+    notice_period = db.Column(db.Integer, nullable=True)
+    budget_owner = db.Column(db.String(120), nullable=True)
+    finance_approver = db.Column(db.String(120), nullable=True)
+    cost_centers = db.Column(db.String(120), nullable=True)
+    supplier_poc = db.Column(db.String(120), nullable=True)
+    business_unit_poc = db.Column(db.String(120), nullable=True)
+>>>>>>> Develop
     attachments = db.Column(db.String(120), nullable=True)
 
     def __repr__(self):
@@ -96,6 +114,8 @@ class Contract(db.Model):
             "software_name": self.software_name,
             "value": self.value,
             "currency": self.currency,
+            "value_eur": self.value_eur,
+            "value_jpy": self.value_jpy,
             "previous_contract_id": self.previous_contract_id,
             "contract_type": self.contract_type,
             "contract_description": self.contract_description,
