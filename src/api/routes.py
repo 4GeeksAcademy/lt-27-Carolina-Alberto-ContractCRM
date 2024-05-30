@@ -48,6 +48,12 @@ def login():
         return jsonify(jwt=access_token, user=user_data), 200
 
 # ************************************************************** signup ******************************************************************
+
+def newrole(user_id,role_id):
+    user_role = User_Role(user_id=user_id, role_id=role_id)
+    db.session.add(user_role)
+    db.session.commit()
+
 @api.route("/signup", methods=["POST"])
 def signup():
     data = request.get_json()
@@ -55,14 +61,17 @@ def signup():
     password = data["password"]
     name = data["name"]
     last_name = data["last_name"]
+    roles= data["roles"]
     user = User.query.filter_by(email=email).first()
     
     if user:
         return jsonify({"msg": "User already exists"}), 400
     else:
-        new_user = User(email=email, password=password, name=name, last_name=last_name, isActive=True)
+        new_user = User(email=email, password=password, name=name, last_name=last_name)
         db.session.add(new_user)
         db.session.commit()
+        for role in roles:
+            newrole(new_user.id, data["role_id"])
         access_token = create_access_token(identity=email)
         return jsonify(jwt = access_token, user = new_user.serialize()), 200
 
@@ -439,8 +448,6 @@ def create_user_contract():
         db.session.add(add_user_contract)
         db.session.commit()
         return jsonify(add_user_contract.serialize()), 200
-    
-    
     elif message == "new":
         add_user_contract = User_Contract(
             user_id=data["user_id"], 

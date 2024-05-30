@@ -24,18 +24,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 		
 		actions: {
-			setContent: (content) => {
-				if(content === "operation" || content === "manager" || content === "finance" 
-				|| content === "budgetOwner" || content === "security" || content === "legal" 
-				|| content === "active"){
-					console.log("set content", content)
-					setStore({homeContent: content})
-				}
-				else{
-					console.log("Invalid content type")
-				}
-				
-			},
 			// ******************************************************* queryhandler  & rquestParams action ***************************************************
 			/** Genera los parámetros de la solicitud para una petición HTTP.
              *
@@ -113,16 +101,16 @@ const getState = ({ getStore, getActions, setStore }) => {
              */
             queryhandler: (method, route, id, data) => {
                 const url = process.env.BACKEND_URL+"api/"+route;
-				console.log(url);
+				console.log("peticion: "+url);
                 const resquestParams = getActions().requestParams(method, data);
-				console.log(resquestParams);
+				//console.log(resquestParams);
                 return fetch(url + id, resquestParams)
                 .then((response) => {
                     try {
                         let isOk = response.ok;
-                        console.log(response);
+                        //console.log(response);
                         return response.json().then((data) => {
-                        console.log(data);
+                        //console.log(data);
                         return { status: isOk, data: data };
                         });
                     } catch (error) {
@@ -131,7 +119,85 @@ const getState = ({ getStore, getActions, setStore }) => {
                 });
             },
 
+// *********************************************************** ACTIONS FOR LOGIN ****************************************************************
+			login: (data) => {
+				return getActions().queryhandler("POST", "login/", "", data)
+				.then(({status, data}) => {
+						setStore({loggedUser: data.user, jwt: data.jwt});
+						return getActions().getWorkflow();
+				});
 
+			},
+			signup: (newUserData) => {
+				return getActions().queryhandler("POST", "signup/", "", newUserData)
+				.then(({status, data}) => {
+					console.log(status);
+					console.log(data);
+					setStore({loggedUser: data.user, jwt: data.jwt});
+					return getActions().getWorkflow();
+				});
+				
+},
+
+//****************************************WORK FLOW ****************************************/
+
+
+			getWorkflow: () => {
+				console.log("workflow desde flux");
+				return getActions().queryhandler("GET", "workflow", "", null)
+				.then(({status, data}) => {
+					if (status) {
+						let contracts = [];
+						let workflow = [];
+						data.forEach(item => {
+							if (item.contract) {
+								contracts.push(item.contract);
+							}
+							if (item.data) {
+								workflow.push(item.data);
+							}
+							if (item['404']) {
+								workflow.push(item['404']);
+							}
+						});
+						setStore({ contracts: contracts, workflow: workflow });
+						
+						console.log(getStore().contracts);
+						console.log(getStore().workflow);
+						return true;
+					} else {
+						console.log("Error loading workflow from backend");
+						console.log(data);
+						return false;
+					}
+				})
+				
+			},
+
+			setContent: (content) => {
+				if(content === "operation" || content === "manager" || content === "finance" 
+				|| content === "budgetOwner" || content === "security" || content === "legal" 
+				|| content === "active"){
+					console.log("set content", content)
+					setStore({homeContent: content})
+				}
+				else{
+					console.log("Invalid content type")
+				}
+				
+			},
+
+// *********************************************************** Approve Contracts ****************************************************************
+
+			approveContract: (data) => {
+				getActions().queryhandler("POST", "user_contract/", "", data)
+				.then(({status, data}) => {
+					if (status) {
+						console.log("Contract approved successfully.");
+					} else {
+						console.log("Error approving contract");
+					}});
+			},
 
 
 // *********************************************************** ACTIONS FOR USER ****************************************************************
@@ -432,59 +498,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 				})
 			},
 
-			login: (data) => {
-				getActions().queryhandler("POST", "login/", "", data)
-				.then(({status, data}) => {
-						setStore({loggedUser: data.user, jwt: data.jwt});
-						console.log(data);
-				});
-				return getActions().getWorkflow();
-
-			},
-			signup: (newUserData) => {
-				getActions().queryhandler("POST", "signup/", "", newUserData)
-				.then(({status, data}) => {
-					console.log(status);
-					console.log(data);
-					setStore({loggedUser: data.user, jwt: data.jwt});
-				});
-				return getActions().getWorkflow();
-			},
+			
 
 // ******************************** ACTIONS FOR USER_CONTRACT *************************
 
 			// ************action to get ALL user_contract from the model:
-			getWorkflow: () => {
-				console.log("workflow desde flux");
-				return getActions().queryhandler("GET", "workflow", "", null)
-				.then(({status, data}) => {
-					if (status) {
-						let contracts = [];
-            			let workflow = [];
-						data.forEach(item => {
-							if (item.contract) {
-								contracts.push(item.contract);
-							}
-							if (item.data) {
-								workflow.push(item.data);
-							}
-							if (item['404']) {
-								workflow.push(item['404']);
-							}
-						});
-            			setStore({ contracts: contracts, workflow: workflow });
-						
-						console.log(getStore().contracts);
-						console.log(getStore().workflow);
-						return true;
-					} else {
-						console.log("Error loading workflow from backend");
-						console.log(data);
-						return false;
-					}
-				})
-				
-			},
+			
 
 
 			getOneUserContract: (userContractId) => {

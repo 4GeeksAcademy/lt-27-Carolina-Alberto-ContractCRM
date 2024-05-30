@@ -2,6 +2,7 @@ import React, { useContext , useEffect, useState } from "react";
 import { Context } from "../store/appContext";
 import { ContractTable } from "../component/contractTable";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "../../styles/home.css";
 
 
@@ -13,13 +14,9 @@ export const Home = () => {
 	useEffect(() => {
 		console.log("cargo el home");
 
-		if (!store.loggedUser.id) {
+		if (!typeof store.loggedUser.id === "undefined") {
 			navigate("/");
 		}
-		actions.getWorkflow()
-		.then(() => {
-			console.log("workflow cargado");
-		})
 	}, []);
 
 	useEffect(() => {
@@ -73,7 +70,7 @@ export const Home = () => {
 			</div>
 			<div className="row">
 				<div className="col">
-					{contractType !== "" ? <ContractTable type={contractType} />: null}
+					{contractType !== "" ? <ContractTable type={contractType} contracts={store.contracts} workflow={store.workflow} />: null}
 				</div>
 			</div>
 		</div>
