@@ -21,6 +21,7 @@ export const Forms = props => {
             actions.getRoles();
         }
 
+
     }, [store.jwt]);
 
     const handleRoleClick = (roleId) => {
@@ -30,6 +31,7 @@ export const Forms = props => {
             setSelectedRoles([...selectedRoles, roleId]);
         }
     };
+
 
     
     function validateInputs(){
@@ -52,7 +54,9 @@ export const Forms = props => {
                             last_name: last_name,
                             email: email,
                             password: password,
+
                             roles: selectedRoles
+
                         })
                         .then((result) => {
                             if(result){
@@ -138,6 +142,7 @@ export const Forms = props => {
                 </div>
                 <div className="form-group">
                     <label htmlFor="inputRoles">Role(s)</label>
+
                     <div className="roles" id="inputRoles">
                         {store.roles.map((role) => (
                             <button 
@@ -150,6 +155,7 @@ export const Forms = props => {
                             </button>
                         ))}
                     </div>
+
                 </div>
                 <div className="form-group">
                     <label htmlFor="inputPassword">Password</label>

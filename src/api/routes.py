@@ -52,6 +52,7 @@ def login():
 def newrole(user_id,role_id):
     user_role = User_Role(user_id=user_id, role_id=role_id)
     db.session.add(user_role)
+
     db.session.commit()
 
 @api.route("/signup", methods=["POST"])
@@ -61,7 +62,9 @@ def signup():
     password = data["password"]
     name = data["name"]
     last_name = data["last_name"]
+
     roles= data["roles"]
+
     user = User.query.filter_by(email=email).first()
     
     if user:
@@ -70,12 +73,14 @@ def signup():
         new_user = User(email=email, password=password, name=name, last_name=last_name)
         db.session.add(new_user)
         db.session.commit()
+
         for role in roles:
             newrole(new_user.id, data["role_id"])
         access_token = create_access_token(identity=email)
         return jsonify(jwt = access_token, user = new_user.serialize()), 200
 
-# *********************************************************** ROUTES FOR USERS *************************************************************
+
+        #         ), 2    # *********************************************************** ROUTES FOR USERS *************************************************************
 
 # GET all users
 @api.route('/users', methods=['GET'])
@@ -209,27 +214,31 @@ def get_one_role(role_id):
 
 @api.route('/contracts', methods=['GET'])
 def get_contracts():
-    exchange_rates = get_exchange_rates()
-    # print(exchange_rates)
     all_contracts = Contract.query.all()
     print(all_contracts)
-    for contract in all_contracts : 
-        contract.value_eur = contract.value * exchange_rates.get("EUR", 1.0)
-        contract.value_jpy = contract.value * exchange_rates.get("JPY", 1.0)
-        print(contract.value * exchange_rates.get("EUR", 1.0))
-        print (contract.value_eur)
+    for contract in all_contracts:
+        if contract.currency == "USD":
+            exchange_rates = get_exchange_rates("USD")
+            contract.value_usd = contract.value
+            contract.value_eur = contract.value * exchange_rates.get("EUR", 1.0)
+            contract.value_jpy = contract.value * exchange_rates.get("JPY", 1.0)
+        elif contract.currency == "EUR":
+            exchange_rates = get_exchange_rates("EUR")
+            contract.value_eur = contract.value
+            contract.value_jpy = contract.value * exchange_rates.get("JPY", 1.0)
+            contract.value_usd = contract.value * exchange_rates.get("USD", 1.0)
+        elif contract.currency == "JPY":
+            exchange_rates = get_exchange_rates("JPY")
+            contract.value_jpy = contract.value
+            contract.value_eur = contract.value * exchange_rates.get("EUR", 1.0)
+            contract.value_usd = contract.value * exchange_rates.get("USD", 1.0)
+
     results = [contract.serialize() for contract in all_contracts]
     return results
 
-def get_all_ids():
-    all_contracts = Contract.query.all()
-    results = [contract.id for contract in all_contracts]
-    return results
 
-
-def get_exchange_rates():
-    url = "https://api.freecurrencyapi.com/v1/latest?apikey=fca_live_k94eblhrGQeSI6DYyNJxooCT2n94CxHfBWPQeuHd"
-    hdr = {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'}
+def get_exchange_rates(base_currency = "USD"):
+    url = "https://api.freecurrencyapi.com/v1/latest?apikey=fca_live_k94eblhrGQeSI6DYyNJxooCT2n94CxHfBWPQeuHd&base_currency=" + base_currency
     req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
     response = urlopen(req).read()
     # print(response)
@@ -268,7 +277,7 @@ def create_contract():
     new_contract = Contract(**data)
     db.session.add(new_contract)
     db.session.commit()
-    return jsonify(new_contract.serialize()), 201
+    return jsonify(new_contract.serialize()), 200
 
 
 
@@ -294,6 +303,8 @@ def delete_contract(contract_id):
         return jsonify({"msg": "Contract deleted successfully"}), 200
     else:
         return jsonify({"msg": "Contract doesn't exist"}), 400
+
+
 
   # ********************************************************* ROUTES FOR USER_ROLE ****************************************************************
 
