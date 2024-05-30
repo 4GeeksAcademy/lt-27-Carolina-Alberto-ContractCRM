@@ -1,9 +1,40 @@
-import React, {useContext, useEffect} from "react";
-import { Link } from "react-router-dom";
+import React, {useContext, useState} from "react";
 import { Context } from "../store/appContext";
 
 export const Contract = (props) => {
     const { store, actions } = useContext(Context);
+    const [userId, setUserId] = useState();
+    const [coments, setComents] = useState();
+
+    let fechaActual = new Date().toISOString().split('T')[0];
+    console.log(fechaActual);
+
+    function approve (){
+        actions.approveContract(
+            {"user_id": userId,
+            "contract_id": props.contract.id,
+            "update_date":  fechaActual,
+            "original_state": props.contract.next_,
+            "new_state": props.contract.next_ + 1,
+            "comments":coments});
+    }
+
+    function isOperation(){
+        // if(store.user.roles.includes("Operation")){
+        //     return (
+        //     <button
+        //     type="button"
+        //     className="btn btn-primary"
+        //     onClick={() => {
+        //         setComents(prompt("Please enter your comments"));
+
+        //     }}
+        //     >Approve</button>
+        // );
+        // }
+        // return false;
+    
+    }
 	return (
         <tr>
             <th scope="row">{props.contract.id}</th>
@@ -20,7 +51,7 @@ export const Contract = (props) => {
             <td>{props.contract.expiration_date}</td>
             <td>{props.contract.business_unit}</td>
             <td>{props.contract.comments}</td>
-            <td>{}</td>
+            <td>{isOperation()}</td>
             </tr>
 
 	);

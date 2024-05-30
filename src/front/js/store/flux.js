@@ -24,18 +24,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 
 		actions: {
-			setContent: (content) => {
-				if (content === "operation" || content === "manager" || content === "finance"
-					|| content === "budgetOwner" || content === "security" || content === "legal"
-					|| content === "active") {
-					console.log("set content", content)
-					setStore({ homeContent: content })
-				}
-				else {
-					console.log("Invalid content type")
-				}
 
-			},
 			// ******************************************************* queryhandler  & rquestParams action ***************************************************
 			/** Genera los parámetros de la solicitud para una petición HTTP.
 			 *
@@ -48,90 +37,181 @@ const getState = ({ getStore, getActions, setStore }) => {
 			 */
 
 			requestParams: (method, data) => {
-				if (data === null) {
-					if (getStore().jwt === null) {
-						return {
-							method: method,
-							headers: {
-								"Content-Type": "application/json",
-								"Accept": "application/json",
-							}
-						}
-					}
-					else if (getStore().jwt !== null) {
-						return {
-							method: method,
-							headers: {
-								"Content-Type": "application/json",
-								"Accept": "application/json",
-								"Authorization": "Bearer " + getStore().jwt
-							}
-						}
-					}
+
+                if (data === null) {
+                    if(getStore().jwt === null){
+                        return {
+                            method: method,
+                            headers: {
+                            "Content-Type": "application/json",
+                            "Accept": "application/json",
+                            }
+                        }
+                    }
+                    else if(getStore().jwt !== null){
+                        return {
+                            method: method,
+                            headers: {
+                            "Content-Type": "application/json",
+                            "Accept": "application/json",
+                            "Authorization": "Bearer "+getStore().jwt
+                            }
+                        }
+                    }
+                }
+                else {
+                    if(getStore().jwt === null){
+                        return {
+                            method: method,
+                            body: JSON.stringify(data),
+                            headers: {
+                            "Content-Type": "application/json",
+                            "Accept": "application/json",
+                            }
+                        }
+                    }
+                    else if(getStore().jwt !== null){
+                        return {
+                            method: method,
+                            body: JSON.stringify(data),
+                            headers: {
+                            "Content-Type": "application/json",
+                            "Accept": "application/json",
+                            "Authorization": "Bearer "+getStore().jwt
+                            }
+                        }
+                    }
+                }
+            },
+            /**
+             * Realiza una consulta HTTP a la API.
+             *
+             * @param {string} method - El método HTTP a utilizar para la consulta (GET, POST, PUT, DELETE).
+             * @param {string} route - El endpoint de la API al que se realizará la consulta.
+             * @param {string} id - El identificador del recurso a consultar. Si no se requiere, se puede pasar una cadena vacía.
+             * @param {Object} data - El cuerpo de la solicitud en formato de objeto. Si no se requiere, se puede pasar null.
+             *
+             * @returns {Promise} - Una promesa que se resuelve con un objeto que contiene el estado de la solicitud (true si la solicitud fue exitosa, false en caso contrario) y los datos de la respuesta de la API.
+             *
+             * @example
+             * // Realizar una consulta GET a la API.
+             * queryhandler("GET", "users", "1", null)
+             *
+             * @example
+             * // Realizar una consulta POST a la API.
+             * queryhandler("POST", "login/", "", { username: "user", password: "password" })
+             */
+            queryhandler: (method, route, id, data) => {
+                const url = process.env.BACKEND_URL+"api/"+route;
+				console.log("peticion: "+url);
+                const resquestParams = getActions().requestParams(method, data);
+				//console.log(resquestParams);
+                return fetch(url + id, resquestParams)
+                .then((response) => {
+                    try {
+                        let isOk = response.ok;
+                        //console.log(response);
+                        return response.json().then((data) => {
+                        //console.log(data);
+                        return { status: isOk, data: data };
+                        });
+                    } catch (error) {
+                        console.log(error.message);
+                    }
+                });
+            },
+setContent: (content) => {
+				if (content === "operation" || content === "manager" || content === "finance"
+					|| content === "budgetOwner" || content === "security" || content === "legal"
+					|| content === "active") {
+					console.log("set content", content)
+					setStore({ homeContent: content })
 				}
 				else {
-					if (getStore().jwt === null) {
-						return {
-							method: method,
-							body: JSON.stringify(data),
-							headers: {
-								"Content-Type": "application/json",
-								"Accept": "application/json",
-							}
-						}
-					}
-					else if (getStore().jwt !== null) {
-						return {
-							method: method,
-							body: JSON.stringify(data),
-							headers: {
-								"Content-Type": "application/json",
-								"Accept": "application/json",
-								"Authorization": "Bearer " + getStore().jwt
-							}
-						}
-					}
+					console.log("Invalid content type")
 				}
-			},
-			/**
-			 * Realiza una consulta HTTP a la API.
-			 *
-			 * @param {string} method - El método HTTP a utilizar para la consulta (GET, POST, PUT, DELETE).
-			 * @param {string} route - El endpoint de la API al que se realizará la consulta.
-			 * @param {string} id - El identificador del recurso a consultar. Si no se requiere, se puede pasar una cadena vacía.
-			 * @param {Object} data - El cuerpo de la solicitud en formato de objeto. Si no se requiere, se puede pasar null.
-			 *
-			 * @returns {Promise} - Una promesa que se resuelve con un objeto que contiene el estado de la solicitud (true si la solicitud fue exitosa, false en caso contrario) y los datos de la respuesta de la API.
-			 *
-			 * @example
-			 * // Realizar una consulta GET a la API.
-			 * queryhandler("GET", "users", "1", null)
-			 *
-			 * @example
-			 * // Realizar una consulta POST a la API.
-			 * queryhandler("POST", "login/", "", { username: "user", password: "password" })
-			 */
-			queryhandler: (method, route, id, data) => {
-				const url = process.env.BACKEND_URL + "api/" + route;
-				console.log(url);
-				const resquestParams = getActions().requestParams(method, data);
-				console.log(resquestParams);
-				return fetch(url + id, resquestParams)
-					.then((response) => {
-						try {
-							let isOk = response.ok;
-							console.log(response);
-							return response.json().then((data) => {
-								console.log(data);
-								return { status: isOk, data: data };
-							});
-						} catch (error) {
-							console.log(error.message);
-						}
-					});
+
 			},
 
+// *********************************************************** ACTIONS FOR LOGIN ****************************************************************
+			login: (data) => {
+				return getActions().queryhandler("POST", "login/", "", data)
+				.then(({status, data}) => {
+						setStore({loggedUser: data.user, jwt: data.jwt});
+						return getActions().getWorkflow();
+				});
 
+			},
+			signup: (newUserData) => {
+				return getActions().queryhandler("POST", "signup/", "", newUserData)
+				.then(({status, data}) => {
+					console.log(status);
+					console.log(data);
+					setStore({loggedUser: data.user, jwt: data.jwt});
+					return getActions().getWorkflow();
+				});
+				
+},
+
+//****************************************WORK FLOW ****************************************/
+
+
+			getWorkflow: () => {
+				console.log("workflow desde flux");
+				return getActions().queryhandler("GET", "workflow", "", null)
+				.then(({status, data}) => {
+					if (status) {
+						let contracts = [];
+						let workflow = [];
+						data.forEach(item => {
+							if (item.contract) {
+								contracts.push(item.contract);
+							}
+							if (item.data) {
+								workflow.push(item.data);
+							}
+							if (item['404']) {
+								workflow.push(item['404']);
+							}
+						});
+						setStore({ contracts: contracts, workflow: workflow });
+						
+						console.log(getStore().contracts);
+						console.log(getStore().workflow);
+						return true;
+					} else {
+						console.log("Error loading workflow from backend");
+						console.log(data);
+						return false;
+					}
+				})
+				
+			},
+
+			setContent: (content) => {
+				if(content === "operation" || content === "manager" || content === "finance" 
+				|| content === "budgetOwner" || content === "security" || content === "legal" 
+				|| content === "active"){
+					console.log("set content", content)
+					setStore({homeContent: content})
+				}
+				else{
+					console.log("Invalid content type")
+				}
+				
+			},
+
+// *********************************************************** Approve Contracts ****************************************************************
+
+			approveContract: (data) => {
+				getActions().queryhandler("POST", "user_contract/", "", data)
+				.then(({status, data}) => {
+					if (status) {
+						console.log("Contract approved successfully.");
+					} else {
+						console.log("Error approving contract");
+					}});
+			},
 
 
 			// *********************************************************** ACTIONS FOR USER ****************************************************************
@@ -463,59 +543,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 					})
 			},
 
-			login: (data) => {
-				getActions().queryhandler("POST", "login/", "", data)
-					.then(({ status, data }) => {
-						setStore({ loggedUser: data.user, jwt: data.jwt });
-						console.log(data);
-					});
-				return getActions().getWorkflow();
 
-			},
-			signup: (newUserData) => {
-				getActions().queryhandler("POST", "signup/", "", newUserData)
-					.then(({ status, data }) => {
-						console.log(status);
-						console.log(data);
-						setStore({ loggedUser: data.user, jwt: data.jwt });
-					});
-				return getActions().getWorkflow();
-			},
 
 			// ******************************** ACTIONS FOR USER_CONTRACT *************************
 
 			// ************action to get ALL user_contract from the model:
-			getWorkflow: () => {
-				console.log("workflow desde flux");
-				return getActions().queryhandler("GET", "workflow", "", null)
-					.then(({ status, data }) => {
-						if (status) {
-							let contracts = [];
-							let workflow = [];
-							data.forEach(item => {
-								if (item.contract) {
-									contracts.push(item.contract);
-								}
-								if (item.data) {
-									workflow.push(item.data);
-								}
-								if (item['404']) {
-									workflow.push(item['404']);
-								}
-							});
-							setStore({ contracts: contracts, workflow: workflow });
-
-							console.log(getStore().contracts);
-							console.log(getStore().workflow);
-							return true;
-						} else {
-							console.log("Error loading workflow from backend");
-							console.log(data);
-							return false;
-						}
-					})
-
-			},
 
 
 			getOneUserContract: (userContractId) => {

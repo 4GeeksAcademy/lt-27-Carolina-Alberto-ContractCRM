@@ -10,23 +10,31 @@ export const Forms = props => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-    const [role, setRole] = useState([]);
     const [type, setType] = useState(props.type);
+    const [selectedRoles, setSelectedRoles] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
         if(store.jwt !== null){
-            navigate("/user");
+            navigate("/");
         }  else {
             actions.getRoles();
         }
+
+
     }, [store.jwt]);
+
+    const handleRoleClick = (roleId) => {
+        if (selectedRoles.includes(roleId)) {
+            setSelectedRoles(selectedRoles.filter(role => role !== roleId));
+        } else {
+            setSelectedRoles([...selectedRoles, roleId]);
+        }
+    };
+
 
     
     function validateInputs(){
-        if(email === "" || password === "" || role.length === 0){
-            alert("Please fill all the fields");
-        }
         if (!email.match(/^.+@.+\..{2,}$/)) {
             alert("Please enter a valid email");
         }
@@ -35,7 +43,7 @@ export const Forms = props => {
         }
         else {
             if (type === "signup") {
-                if (name === "" || last_name === "" || confirmPassword === "") {
+                if (name === "" || last_name === "" || confirmPassword === "" || selectedRoles.length === 0 ) {
                     alert("Please fill all the fields");
                 } else {
                     if (password !== confirmPassword) {
@@ -46,7 +54,9 @@ export const Forms = props => {
                             last_name: last_name,
                             email: email,
                             password: password,
-                            roles: role
+
+                            roles: selectedRoles
+
                         })
                         .then((result) => {
                             if(result){
@@ -132,20 +142,20 @@ export const Forms = props => {
                 </div>
                 <div className="form-group">
                     <label htmlFor="inputRoles">Role(s)</label>
-                    
-                    {store.roles.map((item) => (
-                        <button className="btn btn-outline-secondary"
-                        type="btn"
-                        key={item.id}
-                        value={item.name}
-                        onClick={()=>{
-                            setRole(role.concat(item.name))
-                        }}
-                        >
-                        {item.name}
-                        </button>
-                    ))}
-                    
+
+                    <div className="roles" id="inputRoles">
+                        {store.roles.map((role) => (
+                            <button 
+                                key={role.id} 
+                                value={role.id} 
+                                onClick={() => handleRoleClick(role.id)}
+                                className={selectedRoles.includes(role.id) ? 'selected' : ''}
+                            >
+                                {role.name}
+                            </button>
+                        ))}
+                    </div>
+
                 </div>
                 <div className="form-group">
                     <label htmlFor="inputPassword">Password</label>
@@ -169,7 +179,7 @@ export const Forms = props => {
                 className="btn btn-primary btn-block" 
                 onClick={(e) => {
                     e.preventDefault();
-                    validateInputs(name, last_name, email, password, confirmPassword, role);
+                    validateInputs(name, last_name, email, password, confirmPassword, selectedRoles);
                 }}
                 >
                     Sign up
