@@ -12,7 +12,7 @@ export const Newuserrole = (user_id, role_id) => {
 
         const save = (e) => {
             actions.createUserRole(userId, roleId); 
-            navigate("/Usersrolescomponent");
+            navigate("/admin");
         }
 
     useEffect(()=>{
@@ -23,6 +23,7 @@ export const Newuserrole = (user_id, role_id) => {
 
 	return (
 		<>
+            <main id="main" className="main mt-5 pt-5">
 				<div className="container mt-5" style={{width: "34rem"}}>
                     <div className="border border-secundary">
                         <div className="my-5 mx-3">
@@ -39,13 +40,14 @@ export const Newuserrole = (user_id, role_id) => {
                                 <button className="btn btn-primary btn-sm" onClick={save}>
                                     Submit
                                 </button>
-                                <Link to="/Usersrolescomponent">  
-                                    <span> or get back to Users_Roles List</span>
+                                <Link to="/admin">  
+                                    <span> or get back to Admin</span>
                                 </Link> 
                             </div>
                         </div>
                     </div>
                 </div>
+            </main>
 		</>
 	);
 };

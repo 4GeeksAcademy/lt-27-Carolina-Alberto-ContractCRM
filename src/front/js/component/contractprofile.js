@@ -19,7 +19,7 @@ export const ContractProfile = () => {
 
     return (
         <>
-            <h1>ContractProfile component</h1>
+            <h1 className="test">Contract Profile</h1>
             <div style={{ display: "flex" }}>
                 {/* Columna 1 */}
                 <div style={{ flex: 1 }}>

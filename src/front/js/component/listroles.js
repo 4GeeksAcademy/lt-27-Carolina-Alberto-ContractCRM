@@ -25,7 +25,7 @@ export const ListRoles = () => {
 
 	return (
 		<>
-			<h3 >List</h3>
+			<h1 className="border-bottom border-blue border-4 mt-2 mb-5" style={{color: "blue"}}>List</h1>
 			<div className="container">
 				<div className="row border border-light ">
 					
@@ -44,9 +44,8 @@ export const ListRoles = () => {
 								</div>
 							</div> 
 						)}
-					
 				</div>
-			</div>
+			</div>	
 		</>
 	);
 };

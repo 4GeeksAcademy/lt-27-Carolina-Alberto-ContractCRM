@@ -9,10 +9,9 @@ export const Roleshome = () => {
 
 	return (
 		<div className="container">
-			<div className="text-center mt-5">	
+			<div className="text-center">	
 				<div>
 					<div className="container">
-						<h1>ROLES</h1>
 						<div>
 							<Link to="/createrole">
 								<button className="btn btn-success mb-3">Add new role</button>

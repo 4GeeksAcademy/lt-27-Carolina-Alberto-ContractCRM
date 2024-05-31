@@ -14,15 +14,15 @@ export const Forms = props => {
     const [selectedRoles, setSelectedRoles] = useState([]);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        if(store.jwt !== null){
-            navigate("/");
-        }  else {
-            actions.getRoles();
-        }
+    // useEffect(() => {
+    //     if(store.jwt !== null){
+    //         navigate("/");
+    //     }  else {
+    //         actions.getRoles();
+    //     }
 
 
-    }, [store.jwt]);
+    // }, [store.jwt]);
 
     const handleRoleClick = (roleId) => {
         if (selectedRoles.includes(roleId)) {

@@ -311,6 +311,41 @@ setContent: (content) => {
 					.catch((error) => console.error(error));
 			},
 
+			createRole: (newRoleName) => {
+				console.log(newRoleName)
+						
+				fetch(process.env.BACKEND_URL + "api/roles/", {
+					method: "POST",
+					body: JSON.stringify({"name": newRoleName}),
+					headers: {
+					"Content-Type": "application/json"
+					}
+        		})
+				.then ((response)=>response.json())
+					.then(  ()=>  getActions().getRoles())
+			},
+			deleteRole: (role_id) => {
+				console.log("delete role",role_id)
+
+				// console.log(store.contacts.filter( (contacts, contactsIndex)=> contactsIndex != indexToDelete))
+				// setStore({ contacts: store.contacts.filter( (contacts, contactsIndex)=> contactsIndex != indexToDelete) });
+					
+				const requestOptions = {
+				  method: "DELETE",
+				  redirect: "follow"
+				};
+				
+				fetch(process.env.BACKEND_URL + "api/roles/" + role_id, requestOptions)
+				  .then((response) => response.text())
+				  .then((result) => {
+					console.log(result)
+					fetch(process.env.BACKEND_URL + "api/roles")
+					.then ((response)=>response.json())
+						.then( (data)=>setStore({ roles: data}))
+						})
+				  .catch((error) => console.error(error));
+			},
+
 
 
 			// ******************************** ACTIONS FOR USER *************************

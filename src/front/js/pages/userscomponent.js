@@ -17,22 +17,22 @@ export const UsersComponent = () => {
 	
 	return (
 		<>
-			<h1>users</h1>
+			
 			<Link to="/newUser">  
-                <span> create new user</span>
+                <span className="btn btn-success btn-lg  mb-5 mt-4 "> Create New User</span>
             </Link> 
 			<ul>
 				{store.users.map((user)=> <User key={user.id} user={user}></User>)}
 			</ul>
-			<h1>contracts</h1>
+			{/* <h1>contracts</h1>
 			<Link to="/newContract">  
 				<span> create new contract</span>
 			</Link>
 			<ul>
 				{store.contracts.map((contract)=> <Contract key={contract.id} contract={contract}></Contract>)}
-			</ul>
+			</ul> */}
 			<Link to="/">
-				<span className="btn btn-primary btn-lg" href="#" role="button">
+				<span className="btn btn-primary btn-md" href="#" role="button">
 					Back home
 				</span>
 			</Link>
