@@ -8,22 +8,23 @@ export const CreateRole = () => {
 
 
 	/// Constantes para la funcion de CreateRole o la API de POST /// 
-	const [newData, setNewData] = useState ('');
+	const [newData, setNewData] = useState('');
 
-        const navigate = useNavigate();
+	const navigate = useNavigate();
 
-        const save = (e) => {
-            actions.createRole(newData); 
-            navigate("/rolescomponent");
-        }
+	const save = (e) => {
+		actions.createRole(newData);
+		navigate("/admin");
+	}
 
 	return (
 		<>
-				<div className="container mt-5" style={{width: "22rem"}}>
+			<main id="main" className="main mt-5 pt-5">
+				<div className="container mt-5" style={{ width: "22rem" }}>
 					<div className="border border-secundary">
-						<h3 className="text-center mt-5"style= {{color: "gray"}}>Create a New Role</h3>
+						<h3 className="text-center mt-5" style={{ color: "gray" }}>Create a New Role</h3>
 						<div className="d-flex justify-content-center">
-							<input type="text" className="text-center form-control mt-5" style={{width: "18rem"}} placeholder="New Role Name" onChange={e => setNewData(e.target.value)}/>
+							<input type="text" className="text-center form-control mt-5" style={{ width: "18rem" }} placeholder="New Role Name" onChange={e => setNewData(e.target.value)} />
 						</div>
 						<div className="d-flex justify-content-center">
 							<button className="btn btn-primary btn-sm mt-2 mb-5" onClick={save}>
@@ -33,13 +34,14 @@ export const CreateRole = () => {
 					</div>
 
 					<div>
-						<Link to="/rolescomponent">
+						<Link to="/admin">
 							<button className="btn btn-secondary btn-sm my-5">
-							or get back to ROLES-home
+								or get back to Admin Page
 							</button>
 						</Link>
 					</div>
 				</div>
+			</main>
 		</>
 	);
 };

@@ -26,7 +26,13 @@ import { Login } from "./pages/login";
 import { UpdateContract } from "./component/updateContract";
 import { UsersRolesList } from "./component/usersRolesList";
 import { ContractProfile } from "./component/contractprofile";
-
+import { SideBar } from "./component/sidebar";
+import { ContractsDetails } from "./component/contractsdetails";
+import { Admin } from "./pages/admin";
+import { Faq } from "./pages/faq";
+import { Contact } from "./pages/contact";
+import { ManagerApproval } from "./component/managerapproval";
+import { ContractNotStarted } from "./component/contractnotstarted";
 
 
 
@@ -43,6 +49,7 @@ const Layout = () => {
             <BrowserRouter basename={basename}>
                 <ScrollToTop>
                     <Navbar />
+                    
                     <Routes>  
                         <Route element={<Login />} path="/" />
                         <Route element={<Home />} path="/home" />
@@ -65,10 +72,15 @@ const Layout = () => {
                         <Route element={<UpdateUserRole />} path="/updateuserrole/:user_role_id" />
                         <Route element={<Rolescomponent />} path="/rolescomponent" />
                         <Route element={<ContractProfile />} path="/contracts/:contractId" />
-   
-                        
-                
+                        <Route element={<ContractsDetails />} path="/contractsdetails" />
+                        <Route element={<Admin />} path="/admin" />
+                        <Route element={<Faq />} path="/faq" />
+                        <Route element={<Contact />} path="/contact" />
+                        <Route element={<ManagerApproval />} path="/managerapproval" />
+                        <Route element={<ContractNotStarted />} path="/contractnotstarted" />
                     </Routes>
+                  
+                    <SideBar />
                     {/* <Footer /> */}
                 </ScrollToTop>
             </BrowserRouter>

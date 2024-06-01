@@ -24,10 +24,15 @@ export const CreateContract = () => {
     const [business_unit_poc, setBusinessUnitPoc] = useState("");
 
     const currencies = [
-        "AUD", "BGN", "BRL", "CAD", "CHF", "CNY", "CZK", "DKK", "EUR", "GBP",
-        "HKD", "HRK", "HUF", "IDR", "ILS", "INR", "ISK", "JPY", "KRW", "MXN",
-        "MYR", "NOK", "NZD", "PHP", "PLN", "RON", "RUB", "SEK", "SGD", "THB",
-        "TRY", "USD", "ZAR"
+        "EUR", "JPY", "USD"
+    ];
+
+    const bus = [
+        "Accounting", "HR", "IT", "Marketing", "Sales", "Supply_Chain"
+    ];
+
+    const contractType = [
+        "Software", "Professional_Services", "Storage", "Non_disclosure_agreement", "Leases", "Networking"
     ];
 
     const navigate = useNavigate();
@@ -35,7 +40,7 @@ export const CreateContract = () => {
 
     useEffect(() => {
         if (software_name !== "") {
-            navigate('/user');
+            navigate('/contractsdetails');
         }
     }, [store.contracts])
 
@@ -69,96 +74,106 @@ export const CreateContract = () => {
     }
 
     return (
+        <main id="main" className="main mt-5 pt-5">
+            <nav>
+                <ol className="breadcrumb">
+                    <li className="breadcrumb-item">Home/Dashboard</li>
+                    <li className="breadcrumb-item active">Create a contract</li>
+                </ol>
+            </nav>
+        <h1 className="border-bottom border-blue border-4 mt-1" style={{color: "blue"}}>New Contract</h1>
         <form>
-            <div className="form-group">
-                <label htmlFor="status">Status</label>
+            <div className="row">
+                <div className="form-group mt-3 col-2">
+                    <label htmlFor="status">Status</label>
 
-                <input type="text"
-                    className="form-control"
-                    id="status"
-                    value={status}
-                    onChange={(e) => { setStatus(e.target.value) }}
-                />
+                    <input type="text"
+                        className="form-control"
+                        id="status"
+                        value={status}
+                        onChange={(e) => { setStatus(e.target.value) }}
+                    />
+                </div>
+                <div className="form-group mt-3 col-6">
+                    <label htmlFor="status">Supplier Name</label>
+                    <input type="text"
+                        className="form-control"
+                        id="supplier_name"
+                        value={supplier_name}
+                        onChange={(e) => { setSupplierName(e.target.value) }}
+                    />
+                </div>
+                <div className="form-group mt-3 col-4">
+                    <label htmlFor="software_name">Software name</label>
+                    <input type="text"
+
+                        className="form-control"
+                        id="software_name"
+                        value={software_name}
+                        onChange={(e) => { setSoftwareName(e.target.value) }}
+                    />
+                </div>
             </div>
-
-            <div className="form-group">
-                <label htmlFor="status">Supplier Name</label>
-                <input type="text"
-                    className="form-control"
-                    id="supplier_name"
-                    value={supplier_name}
-                    onChange={(e) => { setSupplierName(e.target.value) }}
-                />
-            </div>
-
-            <div className="form-group">
-                <label htmlFor="software_name">Software name</label>
-                <input type="text"
-
-                    className="form-control"
-                    id="software_name"
-                    value={software_name}
-                    onChange={(e) => { setSoftwareName(e.target.value) }}
-                />
-            </div>
-
-
-
-            <div className="form-group">
-                <label htmlFor="currency">Currency</label>
-                <select
-                    className="form-control"
-                    id="currency"
-                    value={currency}
-                    onChange={(e) => { setCurrency(e.target.value) }}>
-                    <option value="">Select a currency</option>
-                    {currencies.map((curr) => (
-                        <option key={curr} value={curr}>{curr}</option>
-                    ))}
-                </select>
-            </div>
-
-            <div className="form-group">
-                <label htmlFor="value">Value</label>
-                <input type="number"
-                    className="form-control"
-                    id="value"
-                    value={value}
-                    onChange={(e) => { setValue(e.target.value) }}
-                />
-            </div>
-            {/* <div className="form-group">
-                <label htmlFor="value_eur">Value (EUR)</label>
-                <input
-                    type="number"
-                    className="form-control"
-                    id="value_eur"
-                    value={value_eur}
-                    onChange={(e) => setValue_eur(e.target.value)}
-                />
-            </div>
-            <div className="form-group">
-                <label htmlFor="value_jpy">Value (JPY)</label>
-                <input
-                    type="number"
-                    className="form-control"
-                    id="value_jpy"
-                    value={value_jpy}
-                    onChange={(e) => setValue_jpy(e.target.value)}
-                />
-            </div> */}
-
-            <div className="form-group">
+            <div className="row">
+                <div className="form-group mt-3 col-4">
+                    <label htmlFor="currency">Currency</label>
+                    <select
+                        className="form-control"
+                        id="currency"
+                        value={currency}
+                        onChange={(e) => { setCurrency(e.target.value) }}>
+                        <option value="">Select a currency</option>
+                        {currencies.map((curr) => (
+                            <option key={curr} value={curr}>{curr}</option>
+                        ))}
+                    </select>
+                </div>
+                <div className="form-group mt-3 col-4">
+                    <label htmlFor="value">Value $</label>
+                        <input type="number"
+                            className="form-control"
+                            id="value"
+                            value={value}
+                            onChange={(e) => { setValue(e.target.value) }}
+                        />
+                         
+                </div>
+                {/* <div className="form-group">
+                    <label htmlFor="value_eur">Value (EUR)</label>
+                    <input
+                        type="number"
+                        className="form-control"
+                        id="value_eur"
+                        value={value_eur}
+                        onChange={(e) => setValue_eur(e.target.value)}
+                    />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="value_jpy">Value (JPY)</label>
+                    <input
+                        type="number"
+                        className="form-control"
+                        id="value_jpy"
+                        value={value_jpy}
+                        onChange={(e) => setValue_jpy(e.target.value)}
+                    />
+                </div> */}
+            <div className="form-group mt-3 col-4">
                 <label htmlFor="contract_type">Contract type</label>
-                <input type="text"
+                <select
                     className="form-control"
                     id="contract_type"
                     value={contract_type}
-                    onChange={(e) => { setContractType(e.target.value) }}
-                />
+                    onChange={(e) => setContractType(e.target.value)}
+                >
+                    <option value="" disabled>Select a contract type</option>
+                    {contractType.map(type => (
+                        <option key={type} value={type}>{type}</option>
+                    ))}
+                </select>
             </div>
-
-            <div className="form-group">
+            </div>
+            <div className="form-group mt-3">
                 <label htmlFor="contract_description">Contract description</label>
                 <input type="text"
                     className="form-control"
@@ -167,70 +182,76 @@ export const CreateContract = () => {
                     onChange={(e) => { setContractDescription(e.target.value) }}
                 />
             </div>
-
-            <div className="form-group">
-                <label htmlFor="effective_date">Effective date</label>
-                <input type="text"
-                    className="form-control"
-                    id="effective_date"
-                    value={effective_date}
-                    onChange={(e) => { setEffectiveDate(e.target.value) }}
-                />
+            <div className="row">
+                <div className="form-group mt-3 col-4">
+                    <label htmlFor="effective_date">Effective date</label>
+                    <input type="text"
+                        className="form-control"
+                        id="effective_date"
+                        placeholder="YYYY-MM-DD"
+                        value={effective_date}
+                        onChange={(e) => { setEffectiveDate(e.target.value) }}
+                    />
+                </div>
+                <div className="form-group mt-3 col-4">
+                    <label htmlFor="expiration_date">Expiration date</label>
+                    <input type="text"
+                        className="form-control"
+                        id="expiration_date"
+                        placeholder="YYYY-MM-DD"
+                        value={expiration_date}
+                        onChange={(e) => { setExpirationDate(e.target.value) }}
+                    />
+                </div>
+                <div className="form-group mt-3 col-4">
+                    <label htmlFor="contract_term">Term (months)</label>
+                    <input type="number"
+                        className="form-control"
+                        id="contract_term"
+                        placeholder="12345"
+                        value={contract_term}
+                        onChange={(e) => { setContractTerm(e.target.value) }}
+                    />
+                </div>
             </div>
-
-            <div className="form-group">
-                <label htmlFor="expiration_date">Expiration date</label>
-                <input type="text"
-                    className="form-control"
-                    id="expiration_date"
-                    value={expiration_date}
-                    onChange={(e) => { setExpirationDate(e.target.value) }}
-                />
+            <div className="row">
+                <div className="form-group mt-3 col-8">
+                    <label htmlFor="business_unit">Business Unit</label>
+                    <select
+                        className="form-control"
+                        id="business_unit"
+                        value={business_unit}
+                        onChange={(e) => setBusinessUnit(e.target.value)}
+                    >
+                        <option value="" disabled>Select a Business Unit</option>
+                        {bus.map(unit => (
+                            <option key={unit} value={unit}>{unit}</option>
+                        ))}
+                    </select>
+                </div>
+                <div className="form-group mt-3  col-2">
+                    <label htmlFor="notice_period">Notice period</label>
+                    <input type="number"
+                        className="form-control"
+                        id="notice_period"
+                        placeholder="12345"
+                        value={notice_period}
+                        onChange={(e) => { setNoticePeriod(e.target.value) }}
+                    />
+                </div>
+                <div className="form-group mt-3  col-2">
+                    <label htmlFor="cost_centers">Cost Center</label>
+                    <input type="text"
+                        className="form-control"
+                        id="cost_centers"
+                        placeholder="12345"
+                        value={cost_centers}
+                        onChange={(e) => { setCostCenters(e.target.value) }}
+                    />
+                </div>
             </div>
-
-            <div className="form-group">
-                <label htmlFor="contract_term">Contract term</label>
-                <input type="number"
-                    className="form-control"
-                    id="contract_term"
-                    value={contract_term}
-                    onChange={(e) => { setContractTerm(e.target.value) }}
-                />
-            </div>
-
-            <div className="form-group">
-                <label htmlFor="business_unit">Business unit</label>
-                <input type="text"
-                    className="form-control"
-                    id="business_unit"
-                    value={business_unit}
-                    onChange={(e) => { setBusinessUnit(e.target.value) }}
-                />
-            </div>
-
-            <div className="form-group">
-                <label htmlFor="notice_period">Notice period</label>
-                <input type="number"
-                    className="form-control"
-                    id="notice_period"
-                    value={notice_period}
-                    onChange={(e) => { setNoticePeriod(e.target.value) }}
-                />
-            </div>
-
-
-            <div className="form-group">
-                <label htmlFor="cost_centers">Cost centers</label>
-                <input type="text"
-                    className="form-control"
-                    id="cost_centers"
-                    value={cost_centers}
-                    onChange={(e) => { setCostCenters(e.target.value) }}
-                />
-            </div>
-
-            <div className="form-group">
-                <label htmlFor="supplier_poc">Supplier poc</label>
+            <div className="form-group mt-3">
+                <label htmlFor="supplier_poc">Supplier POC</label>
                 <input type="text"
                     className="form-control"
                     id="supplier_poc"
@@ -238,8 +259,7 @@ export const CreateContract = () => {
                     onChange={(e) => { setSupplierPoc(e.target.value) }}
                 />
             </div>
-
-            <div className="form-group">
+            <div className="form-group mt-3">
                 <label htmlFor="business_unit_poc">Business Unit POC</label>
                 <input type="text"
                     className="form-control"
@@ -248,15 +268,15 @@ export const CreateContract = () => {
                     onChange={(e) => { setBusinessUnitPoc(e.target.value) }}
                 />
             </div>
-
-
             <button type="submit"
-                className="btn btn-primary"
+                className="btn btn-primary my-3"
                 onClick={(e) => {
                     e.preventDefault();
                     create();
                 }}
             >Submit</button>
         </form>
+
+        </main>
     );
 };

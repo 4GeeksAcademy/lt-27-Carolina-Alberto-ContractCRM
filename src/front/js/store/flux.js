@@ -311,6 +311,41 @@ setContent: (content) => {
 					.catch((error) => console.error(error));
 			},
 
+			createRole: (newRoleName) => {
+				console.log(newRoleName)
+						
+				fetch(process.env.BACKEND_URL + "api/roles/", {
+					method: "POST",
+					body: JSON.stringify({"name": newRoleName}),
+					headers: {
+					"Content-Type": "application/json"
+					}
+        		})
+				.then ((response)=>response.json())
+					.then(  ()=>  getActions().getRoles())
+			},
+			deleteRole: (role_id) => {
+				console.log("delete role",role_id)
+
+				// console.log(store.contacts.filter( (contacts, contactsIndex)=> contactsIndex != indexToDelete))
+				// setStore({ contacts: store.contacts.filter( (contacts, contactsIndex)=> contactsIndex != indexToDelete) });
+					
+				const requestOptions = {
+				  method: "DELETE",
+				  redirect: "follow"
+				};
+				
+				fetch(process.env.BACKEND_URL + "api/roles/" + role_id, requestOptions)
+				  .then((response) => response.text())
+				  .then((result) => {
+					console.log(result)
+					fetch(process.env.BACKEND_URL + "api/roles")
+					.then ((response)=>response.json())
+						.then( (data)=>setStore({ roles: data}))
+						})
+				  .catch((error) => console.error(error));
+			},
+
 
 
 			// ******************************** ACTIONS FOR USER *************************
@@ -421,6 +456,8 @@ setContent: (content) => {
 					})
 			},
 
+
+			// (CARO la agrego en la ultima semana porque no encontro la formula, no esta segura si se renombro)
 			newContract: (editData) => {
 				console.log(editData);
 
@@ -547,7 +584,19 @@ setContent: (content) => {
 
 			// ******************************** ACTIONS FOR USER_CONTRACT *************************
 
-			// ************action to get ALL user_contract from the model:
+			// ************action to get ALL user_contract from the model(CARO la agrego en la ultima semana porque no encontro la formula, no esta segura si se renombro)
+
+			getUserContract: () => {
+				return getActions().queryhandler("GET", "user_contract", "", null)
+					.then(({ status, data }) => {
+						if (status) setStore({ users_contracts: data });
+						else console.log("Error al obtener contratos de usuario desde el backend", data);
+					})
+					.catch((error) => console.error("Error:", error));
+			},
+
+
+
 
 
 			getOneUserContract: (userContractId) => {

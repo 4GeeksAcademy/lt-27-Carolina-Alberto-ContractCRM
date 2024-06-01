@@ -22,7 +22,7 @@ export const EditRole = () => {
 
     const update = (e) => {
         actions.putRole(editData, params.role_id); 
-        navigate("/rolescomponent");
+        navigate("/admin");
     }
 
     const getRoleToEdit = () => {
@@ -34,6 +34,7 @@ export const EditRole = () => {
 
 	return (
 		<>
+                <main id="main" className="main mt-5 pt-5">
                 <div className="container mt-5" style={{width: "28rem"}}>
 					<div className="border border-secundary">
 						<h3 className="text-center mt-5" style= {{color: "blue"}}>Edit Role Name</h3>
@@ -52,13 +53,14 @@ export const EditRole = () => {
                     </div>
 
                     <div>
-						<Link to="/rolescomponent">
+						<Link to="/admin">
 							<button className="btn btn-secondary btn-sm my-5">
 							or get back to ROLES-home
 							</button>
 						</Link>
 					</div>
 				</div>
+                </main>
                 
 		</>
 	);

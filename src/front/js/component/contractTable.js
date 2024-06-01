@@ -70,83 +70,135 @@ export const ContractTable = (props) => {
 
 	return (
         <>
-            <div className="container">
-                <table className="workFlowtable">
-                <thead>
-                    <tr>
 
-                    <th scope="col">Contract ID</th>
-                    <th scope="col">Approver</th>
-                    <th scope="col">Approval date</th>
-                    <th scope="col">Approval area</th>
-                    <th scope="col">Next Approval Area</th>
-                    <th scope="col">Software Name</th>
-
-                    <th scope="col">Value</th>
-                    <th scope="col">Currency</th>
-                    <th scope="col">Contract description</th>
-                    <th scope="col">Effective date</th>
-                    <th scope="col">Expiration date</th>
-                    <th scope="col">Business unit</th>
-                    <th scope="col">Approver Comments</th>
-                    <th scope="col">actions</th>
-
-                    </tr>
-                </thead>
-                <tbody>
-                    {filteredContracts.length === 0 ? (
-                        <tr>
-                            <td colSpan="14">No hay contratos pendientes de aprobación</td>
-                        </tr>
-                    ) : (
-                        filteredContracts.map((contract, index) => {
-                            console.log(contract);
-                            return (
-                                <Contract key={index} contract={contract} />
-                            );
-                        })
-                    )}
-                </tbody>
-                </table>
-            </div>
-            <div className="container">
-                <table className="table">
-                <thead>
-                    <tr>
-                    <th scope="col">Contract ID</th>
-                    <th scope="col">status</th>
-                    <th scope="col">Approval date</th>
-                    <th scope="col">Approval area</th>
-                    <th scope="col">Next Approval Area</th>
-                    <th scope="col">Software Name</th>
-                    <th scope="col">Value</th>
-                    <th scope="col">Currency</th>
-
-                    <th scope="col">Contract description</th>
-                    <th scope="col">Effective date</th>
-                    <th scope="col">Expiration date</th>
-                    <th scope="col">Business unit</th>
-                    <th scope="col">Approver Comments</th>
-                    <th scope="col">actions</th>
+            
+                <div class="col-12">
+                    <div class="card recent-sales overflow-auto">
+                        <div class="card-body">
+                            <h5 class="card-title">All Contracts <span>| Total</span></h5>
+                            <div class="datatable-wrapper datatable-loading no-footer sortable searchable fixed-columns">
+                                <div class="datatable-top">
+                                    <div class="datatable-dropdown">
+                                        <label>
+                                            <select class="datatable-selector" name="per-page"><option value="5">5</option><option value="10" selected="">10</option><option value="15">15</option><option value="-1">All</option></select> entries per page
+                                        </label>
+                                    </div>
+                                    <div class="datatable-search">
+                                        <input class="datatable-input" placeholder="Search..." type="search" name="search" title="Search within table"/>
+                                    </div>
+                                </div>
+                                <div className="datatable-container">
+                                    <table className="table">
+                                        <thead>
+                                            <tr>
+                                            <th scope="col">Contract ID</th>
+                                            <th scope="col">status</th>
+                                            <th scope="col">Approval date</th>
+                                            <th scope="col">Approval area</th>
+                                            <th scope="col">Next Approval Area</th>
+                                            <th scope="col">Software Name</th>
+                                            <th scope="col">Value</th>
+                                            <th scope="col">Currency</th>
+                                            <th scope="col">Contract description</th>
+                                            <th scope="col">Effective date</th>
+                                            <th scope="col">Expiration date</th>
+                                            <th scope="col">Business unit</th>
+                                            <th scope="col">Approver Comments</th>
+                                            <th scope="col">actions</th>
 
 
-                    </tr>
-                </thead>
-                <tbody>
-                    {props.contracts.map((contract, index) => {
-                        let newflag = false;
-                        if(new_.includes(contract.id)){
-                            newflag = true;
-                        }
-                        return (
-                            <Contract key={index} contract={contract} new={newflag}/>
-                        );
-                    })}
-                </tbody>
-                </table>
-            </div>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {props.contracts.map((contract, index) => {
+                                                let newflag = false;
+                                                if(new_.includes(contract.id)){
+                                                    newflag = true;
+                                                }
+                                                return (
+                                                    <Contract key={index} contract={contract} new={newflag}/>
+                                                );
+                                            })}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="datatable-bottom">
+                                    <div class="datatable-info">Showing 1 to 5 of 5 entries</div>
+                                    <nav class="datatable-pagination">
+                                        <ul class="datatable-pagination-list"></ul>
+                                    </nav>
+                                </div>
+                            </div>
+                        </div>
+                     </div>
+                </div>
+            
+
+            
+                <div class="col-12">
+                    <div class="card recent-sales overflow-auto">
+                        <div class="card-body">
+                            <h5 class="card-title">Contracts pending to approve <span>| Total</span></h5>
+                            <div class="datatable-wrapper datatable-loading no-footer sortable searchable fixed-columns">
+                                <div class="datatable-top">
+                                    <div class="datatable-dropdown">
+                                        <label>
+                                            <select class="datatable-selector" name="per-page"><option value="5">5</option><option value="10" selected="">10</option><option value="15">15</option><option value="-1">All</option></select> entries per page
+                                        </label>
+                                    </div>
+                                    <div class="datatable-search">
+                                        <input class="datatable-input" placeholder="Search..." type="search" name="search" title="Search within table"/>
+                                    </div>
+                                </div>
+                                <div className="datatable-container"></div>
+                                    <table className="table table-borderless datatable">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Contract ID</th>
+                                                <th scope="col">Approver</th>
+                                                <th scope="col">Approval date</th>
+                                                <th scope="col">Approval area</th>
+                                                <th scope="col">Next Approval Area</th>
+                                                <th scope="col">Software Name</th>
+                                                <th scope="col">Value</th>
+                                                <th scope="col">Currency</th>
+                                                <th scope="col">Contract description</th>
+                                                <th scope="col">Effective date</th>
+                                                <th scope="col">Expiration date</th>
+                                                <th scope="col">Business unit</th>
+                                                <th scope="col">Approver Comments</th>
+                                                <th scope="col">actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {filteredContracts.length === 0 ? (
+                                                <tr>
+                                                    <td colSpan="14">No hay contratos pendientes de aprobación</td>
+                                                </tr>
+                                            ) : (
+                                                filteredContracts.map((contract, index) => {
+                                                    console.log(contract);
+                                                    return (
+                                                        <Contract key={index} contract={contract} />
+                                                    );
+                                                })
+                                            )}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            <div class="datatable-bottom">
+                                <div class="datatable-info">Showing 1 to 5 of 5 entries</div>
+                                <nav class="datatable-pagination">
+                                    <ul class="datatable-pagination-list"></ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
+
+
+
         </>
-
-
     );
 };

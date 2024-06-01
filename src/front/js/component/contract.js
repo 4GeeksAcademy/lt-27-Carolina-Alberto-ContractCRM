@@ -36,24 +36,48 @@ export const Contract = (props) => {
     
     }
 	return (
-        <tr>
-            <th scope="row">{props.contract.id}</th>
-            <td>{props.contract.approver}</td>
-            <td>{props.contract.update_date}</td>
-            <td>{props.contract.approval_area}</td>
-            <td>{props.contract.next_}</td>
-            <td>{props.contract.software_name}</td>
-            <td>{props.contract.value_usd}</td>
-            <td>{props.contract.value_eur}</td>
-            <td>{props.contract.value_jpy}</td>
-            <td>{props.contract.contract_description}</td>
-            <td>{props.contract.effective_date}</td>
-            <td>{props.contract.expiration_date}</td>
-            <td>{props.contract.business_unit}</td>
-            <td>{props.contract.comments}</td>
-            <td>{isOperation()}</td>
-            </tr>
-
+        <>
+    
+                        <tr>
+                            <th scope="row">{props.contract.id}</th>
+                            <td>{props.contract.status}</td>
+                            <td>{props.contract.supplier_name}</td>
+                            <td>{props.contract.software_name}</td>
+                            <td>{props.contract.value_usd}</td>
+                            <td>{props.contract.value_eur}</td>
+                            <td>{props.contract.value_jpy}</td>
+                            <td>{props.contract.contract_type}</td>
+                            <td>{props.contract.contract_description}</td>
+                            <td>{props.contract.effective_date}</td>
+                            <td>{props.contract.expiration_date}</td>
+                            <td>{props.contract.contract_term}</td>
+                            <td>{props.contract.business_unit}</td>
+                            <td>{props.contract.notice_period}</td>
+                            <td>{props.contract.cost_centers}</td>
+                            <td>{props.contract.supplier_poc}</td>
+                            <td>{props.contract.business_unit_poc}</td>
+                            <td>{isOperation()}</td>
+                        </tr>
+                    
+        </>
 	);
 };
+
+{/* <tr>
+<th scope="row">{props.contract.id}</th>
+<td>{props.contract.approver}</td>
+<td>{props.contract.update_date}</td>
+<td>{props.contract.approval_area}</td>
+<td>{props.contract.next_}</td>
+<td>{props.contract.software_name}</td>
+<td>{props.contract.value_usd}</td>
+<td>{props.contract.value_eur}</td>
+<td>{props.contract.value_jpy}</td>
+<td>{props.contract.contract_description}</td>
+<td>{props.contract.effective_date}</td>
+<td>{props.contract.expiration_date}</td>
+<td>{props.contract.business_unit}</td>
+<td>{props.contract.comments}</td>
+<td>{isOperation()}</td>
+</tr> */}
 
