@@ -23,7 +23,13 @@ export const SideBar = () => {
                         </a>
                         <ul id="components-nav" className="nav-content collapse " data-bs-parent="#sidebar-nav">
                             <li>
-                                <a href="components-alerts.html">
+                                <a href="contractnotstarted">
+                                    <i className="bi bi-circle"></i>
+                                    <span>Not Started</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="managerapproval">
                                     <i className="bi bi-circle"></i>
                                     <span>Manager</span>
                                 </a>

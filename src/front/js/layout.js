@@ -31,6 +31,8 @@ import { ContractsDetails } from "./component/contractsdetails";
 import { Admin } from "./pages/admin";
 import { Faq } from "./pages/faq";
 import { Contact } from "./pages/contact";
+import { ManagerApproval } from "./component/managerapproval";
+import { ContractNotStarted } from "./component/contractnotstarted";
 
 
 
@@ -74,6 +76,8 @@ const Layout = () => {
                         <Route element={<Admin />} path="/admin" />
                         <Route element={<Faq />} path="/faq" />
                         <Route element={<Contact />} path="/contact" />
+                        <Route element={<ManagerApproval />} path="/managerapproval" />
+                        <Route element={<ContractNotStarted />} path="/contractnotstarted" />
                     </Routes>
                   
                     <SideBar />

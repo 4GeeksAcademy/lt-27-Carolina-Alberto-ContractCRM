@@ -28,11 +28,11 @@ export const CreateContract = () => {
     ];
 
     const bus = [
-        "Accounting", "Human Resources", "IT", "Marketing", "Sales", "Supply Chain"
+        "Accounting", "HR", "IT", "Marketing", "Sales", "Supply_Chain"
     ];
 
     const contractType = [
-        "Software", "Professional Services", "Storage", "Non-disclosure agreement", "Leases"
+        "Software", "Professional_Services", "Storage", "Non_disclosure_agreement", "Leases", "Networking"
     ];
 
     const navigate = useNavigate();
@@ -40,7 +40,7 @@ export const CreateContract = () => {
 
     useEffect(() => {
         if (software_name !== "") {
-            navigate('/user');
+            navigate('/contractsdetails');
         }
     }, [store.contracts])
 
@@ -75,6 +75,12 @@ export const CreateContract = () => {
 
     return (
         <main id="main" className="main mt-5 pt-5">
+            <nav>
+                <ol className="breadcrumb">
+                    <li className="breadcrumb-item">Home/Dashboard</li>
+                    <li className="breadcrumb-item active">Create a contract</li>
+                </ol>
+            </nav>
         <h1 className="border-bottom border-blue border-4 mt-1" style={{color: "blue"}}>New Contract</h1>
         <form>
             <div className="row">

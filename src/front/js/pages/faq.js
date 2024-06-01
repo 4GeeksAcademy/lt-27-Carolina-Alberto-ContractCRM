@@ -4,16 +4,16 @@ export const Faq = () => {
     return(
         <>
         <main id="main" className="main">
-
+  
             <div className="pagetitle">
-            <h1>Frequently Asked Questions</h1>
-            <nav>
-                <ol className="breadcrumb">
-                <li className="breadcrumb-item"><a href="index.html">Home</a></li>
-                <li className="breadcrumb-item">Pages</li>
-                <li className="breadcrumb-item active">Frequently Asked Questions</li>
-                </ol>
-            </nav>
+                <h1>Frequently Asked Questions</h1>
+                <nav>
+                    <ol className="breadcrumb">
+                    <li className="breadcrumb-item"><a href="index.html">Home</a></li>
+                    <li className="breadcrumb-item">Pages</li>
+                    <li className="breadcrumb-item active">Frequently Asked Questions</li>
+                    </ol>
+                </nav>
             </div>
             {/* <!-- End Page Title --> */}
 

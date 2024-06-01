@@ -247,6 +247,87 @@ def get_exchange_rates(base_currency = "USD"):
 
 
 
+@api.route('/contracts_by_bu', methods=['GET'])
+def get_contracts_by_bu():
+    all_contracts_by_bu = Contract.query.all()
+   
+    bus = {
+        "Accounting":0, "HR":0, "IT":0, "Marketing":0, "Sales":0, "Supply_Chain":0
+    }
+
+    for contract in all_contracts_by_bu:
+        if contract.business_unit == "Accounting":
+            bus ["Accounting"] += 1
+        if contract.business_unit == "HR":
+            bus ["HR"] += 1
+        if contract.business_unit == "IT":
+            bus ["IT"] += 1
+        if contract.business_unit == "Marketing":
+            bus ["Marketing"] += 1
+        if contract.business_unit == "Sales":
+            bus ["Sales"] += 1
+        if contract.business_unit == "Supply_Chain":
+            bus ["Supply_Chain"] += 1   
+
+    return jsonify(bus)
+
+
+
+@api.route('/contracts_by_type', methods=['GET'])
+def get_contracts_by_type():
+    all_contracts_by_type = Contract.query.all()
+   
+    type = {
+        "Software":0, "Professional_Services":0, "Storage":0, "Non_disclosure_agreement":0, "Leases":0, "Networking":0,
+    }
+
+    for contract in all_contracts_by_type:
+        if contract.contract_type == "Software":
+            type ["Software"] += 1
+        if contract.contract_type == "Professional_Services":
+            type ["Professional_Services"] += 1
+        if contract.contract_type == "Storage":
+            type ["Storage"] += 1
+        if contract.contract_type == "Non_disclosure_agreement":
+            type ["Non_disclosure_agreement"] += 1
+        if contract.contract_type == "Leases":
+            type ["Leases"] += 1
+        if contract.contract_type == "Networking":
+            type ["Networking"] += 1
+            
+
+    return jsonify(type)
+
+
+# @api.route('/contracts_by_status', methods=['GET'])
+# def get_contracts_by_status():
+#     all_contracts_by_status = Contract.query.all()
+   
+#     status = {
+#         "Approvals_workflow_not_started":0, "Pending_Manager_approval":0, "Pending_Finanace_approval":0, "Pending_Budget_Owner_approval":0, "Pending_Security_approval":0, "Pending_Legal_approval":0, "Active":0,
+#     }
+
+#     for contract in all_contracts_by_status:
+#         if contract.status == "Approvals_workflow_not_started":
+#             type ["Approvals_workflow_not_started"] += 1
+#         if contract.status == "Pending_Manager_approval":
+#             type ["Pending_Manager_approval"] += 1
+#         if contract.status == "Pending_Finanace_approval":
+#             type ["Pending_Finanace_approval"] += 1
+#         if contract.status == "Pending_Budget_Owner_approval":
+#             type ["Pending_Budget_Owner_approval"] += 1
+#         if contract.status == "Pending_Security_approval":
+#             type ["Pending_Security_approval"] += 1
+#         if contract.status == "Pending_Legal_approval":
+#             type ["Pending_Legal_approval"] += 1
+#         if contract.status == "Active":
+#             type ["Active"] += 1
+            
+
+#     return jsonify(status)
+
+
+
 # GET one contract
 # @api.route('/contracts/<int:contract_id>', methods=['GET'])
 # def get_one_contract(contract_id):

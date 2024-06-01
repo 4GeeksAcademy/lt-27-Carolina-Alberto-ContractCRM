@@ -6,6 +6,16 @@ import { Usersrolescomponent } from "./usersrolescomponent";
 export const Admin = () => {
     return (
         <main id="main" className="main mt-5 pt-5">
+            <div className="pagetitle">
+            <h1>Admin</h1>
+            <nav>
+                <ol className="breadcrumb">
+                <li className="breadcrumb-item"><a href="index.html">Home</a></li>
+                <li className="breadcrumb-item">Pages</li>
+                <li className="breadcrumb-item active">Admin</li>
+                </ol>
+            </nav>
+            </div>
             <div className="col-xl-8">
                 <div className="card">
                     <div className="card-body pt-3">

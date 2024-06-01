@@ -456,6 +456,8 @@ setContent: (content) => {
 					})
 			},
 
+
+			// (CARO la agrego en la ultima semana porque no encontro la formula, no esta segura si se renombro)
 			newContract: (editData) => {
 				console.log(editData);
 
@@ -582,7 +584,19 @@ setContent: (content) => {
 
 			// ******************************** ACTIONS FOR USER_CONTRACT *************************
 
-			// ************action to get ALL user_contract from the model:
+			// ************action to get ALL user_contract from the model(CARO la agrego en la ultima semana porque no encontro la formula, no esta segura si se renombro)
+
+			getUserContract: () => {
+				return getActions().queryhandler("GET", "user_contract", "", null)
+					.then(({ status, data }) => {
+						if (status) setStore({ users_contracts: data });
+						else console.log("Error al obtener contratos de usuario desde el backend", data);
+					})
+					.catch((error) => console.error("Error:", error));
+			},
+
+
+
 
 
 			getOneUserContract: (userContractId) => {

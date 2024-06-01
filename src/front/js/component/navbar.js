@@ -48,7 +48,7 @@ export const Navbar = () => {
                 <ul className="d-flex align-items-center">
                     <li className="nav-item dropdown pe-3">
                         <a className="nav-link nav-profile d-flex align-items-center pe-0 show" href="#" data-bs-toggle="dropdown">
-                            <i className="fa-solid fa-user fs-4 ms-5" style={{ color: "blue" }}></i>
+                            <i className="fa-solid fa-user fs-4 ms-5" style={{ color: "gray" }}></i>
                             <span className="d-none d-md-block dropdown-toggle ps-2">{store.loggedUser.name}</span>
                         </a>
                         {/* <!-- End Profile Iamge Icon --> */}
