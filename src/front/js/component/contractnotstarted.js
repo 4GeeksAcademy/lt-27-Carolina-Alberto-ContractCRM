@@ -13,7 +13,7 @@ export const ContractNotStarted = () => {
     actions.getContracts();
   }, [])
 
-  const pendingManagerApprovalContracts = store.contracts.filter(contract => contract.status === "Approvals_workflow_not_started");
+  const filterbystatus = store.contracts.filter(contract => contract.status === "Approvals_workflow_not_started");
 
   return (
     <>
@@ -22,7 +22,7 @@ export const ContractNotStarted = () => {
           <ol className="breadcrumb">
             <li className="breadcrumb-item">Home/Dashboard</li>
             <li className="breadcrumb-item active">Contracts to approve</li>
-            <li className="breadcrumb-item active">Manager</li>
+            <li className="breadcrumb-item active">Not started</li>
           </ol>
         </nav>
         <h1 className="border-bottom border-blue border-4 mt-2 mb-5" style={{ color: "blue" }}>Contracts not started</h1>
@@ -53,7 +53,7 @@ export const ContractNotStarted = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {pendingManagerApprovalContracts.map((contract) => <Contract key={contract.id} contract={contract}></Contract>)}
+                  {filterbystatus.map((contract) => <Contract key={contract.id} contract={contract}></Contract>)}
                 </tbody>
               </table>
               {/* <!-- End Table with stripped rows --> */}

@@ -35,25 +35,25 @@ export const SideBar = () => {
                                 </a>
                             </li>
                             <li>
-                                <a href="components-accordion.html">
+                                <a href="financeapproval">
                                     <i className="bi bi-circle"></i>
                                     <span>Finance</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="components-badges.html">
+                                <a href="budgetownerapproval">
                                     <i className="bi bi-circle"></i>
-                                    <span>Busget Owner</span>
+                                    <span>Budget Owner</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="components-breadcrumbs.html">
+                                <a href="securityapproval">
                                     <i className="bi bi-circle"></i>
                                     <span>Security</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="components-buttons.html">
+                                <a href="legalapproval">
                                     <i className="bi bi-circle"></i>
                                     <span>Legal</span>
                                 </a>

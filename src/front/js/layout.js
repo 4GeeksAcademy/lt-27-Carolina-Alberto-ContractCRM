@@ -33,6 +33,10 @@ import { Faq } from "./pages/faq";
 import { Contact } from "./pages/contact";
 import { ManagerApproval } from "./component/managerapproval";
 import { ContractNotStarted } from "./component/contractnotstarted";
+import { FinanceApproval } from "./component/financeapproval";
+import { BudgetOwnerApproval } from "./component/budgetownerapproval";
+import { SecurityApproval } from "./component/securityapproval";
+import { LegalApproval } from "./component/legalapproval";
 
 
 
@@ -78,6 +82,10 @@ const Layout = () => {
                         <Route element={<Contact />} path="/contact" />
                         <Route element={<ManagerApproval />} path="/managerapproval" />
                         <Route element={<ContractNotStarted />} path="/contractnotstarted" />
+                        <Route element={<FinanceApproval />} path="/financeapproval" />
+                        <Route element={<BudgetOwnerApproval />} path="/budgetownerapproval" />
+                        <Route element={<SecurityApproval />} path="/securityapproval" />
+                        <Route element={<LegalApproval />} path="/legalapproval" />
                     </Routes>
                   
                     <SideBar />
