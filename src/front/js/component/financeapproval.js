@@ -4,16 +4,16 @@ import { Contract } from "../component/contract";
 
 
 
-export const ManagerApproval = () => {
+export const FinanceApproval = () => {
   const { store, actions } = useContext(Context);
 
   useEffect(() => {
-    console.log("se cargo la pag ManagerApproval")
+    console.log("se cargo la pag FinanceApproval")
     actions.getUsers();
     actions.getContracts();
   }, [])
 
-  const filterbystatus = store.contracts.filter(contract => contract.status === "Pending_Manager_approval");
+  const filterbystatus = store.contracts.filter(contract => contract.status === "Pending_Finance_approval");
 
   return (
     <>
@@ -22,10 +22,10 @@ export const ManagerApproval = () => {
           <ol className="breadcrumb">
             <li className="breadcrumb-item">Home/Dashboard</li>
             <li className="breadcrumb-item active">Contracts to approve</li>
-            <li className="breadcrumb-item active">Manager</li>
+            <li className="breadcrumb-item active">Finance</li>
           </ol>
         </nav>
-        <h1 className="border-bottom border-blue border-4 mt-2 mb-5" style={{ color: "blue" }}>Pending Manager Approval</h1>
+        <h1 className="border-bottom border-blue border-4 mt-2 mb-5" style={{ color: "blue" }}>Pending Finance Approval</h1>
         <ul>
           <div class="card">
             <div class="card-body">
