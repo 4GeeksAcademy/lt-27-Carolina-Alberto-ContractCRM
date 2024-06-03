@@ -18,6 +18,7 @@ import "../assets/vendor/quill/quill.snow.css";
 import "../assets/vendor/quill/quill.bubble.css";
 import "../assets/vendor/remixicon/remixicon.css";
 import "../assets/vendor/simple-datatables/style.css";
+import "../img/SoloLogo.png";
 
 //   <!-- Template Main CSS File -->
 import "../assets/css/style.css";

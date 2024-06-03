@@ -390,12 +390,11 @@ def delete_contract(contract_id):
   # ********************************************************* ROUTES FOR USER_ROLE ****************************************************************
 
 
-@api.route('/user_role/<int:user_id>', methods=['GET'])
-def get_all_roles_by_user(user_id):
-    user_roles = User_Role.query.filter_by(user_id=user_id).order_by(User_Role.id).all()
-    results = [{'id': user_role.id, 'role': user_role.role.serialize()["name"]} for user_role in user_roles]
-    if user_roles:
-        return results, 200
+@api.route('/user_role/<int:user_role_id>', methods=['GET'])
+def get_all_roles_by_user(user_role_id):
+    user_role = User_Role.query.filter_by(id=user_role_id).first()
+    if user_role:
+        return user_role.serialize(), 200
     else:
         return jsonify({"msg": "User & Role do not exist"}), 400
 

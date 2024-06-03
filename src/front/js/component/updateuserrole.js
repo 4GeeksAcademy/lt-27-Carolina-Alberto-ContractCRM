@@ -10,17 +10,18 @@ export const UpdateUserRole = () => {
 	const { actions,store } = useContext(Context);
 	const [editData, setEditData] = useState ({});
 
-    const [UserId, setUserId] = useState ({});
-    const [RoleId, setRoleId] = useState ({});
+    const [UserId, setUserId] = useState ("");
+    const [RoleId, setRoleId] = useState ("");
   
-    const infoInput = (e) => {
-        setEditData ({...editData,[e.target.name]: e.target.value});
-    };
+    // const infoInput = (e) => {
+    //     setEditData ({...editData,[e.target.name]: e.target.value});
+    // };
 
 
     const navigate = useNavigate();
 
     const update = (e) => {
+
         actions.updateRoleUser(params.user_role_id, UserId, RoleId,); 
         navigate("/Usersrolescomponent/");
     }
@@ -29,6 +30,7 @@ export const UpdateUserRole = () => {
         fetch(process.env.BACKEND_URL + `api/user_role/${params.user_role_id}`)
 				.then ( (response)=> response.json())
 				.then ( (data)=> {
+                    console.log(data)
                     setUserId(data.user_id)
                     setRoleId(data.role_id)
 					setEditData(data) 
@@ -41,8 +43,9 @@ export const UpdateUserRole = () => {
 
 	return (
 		<>
+            <main id="main" className="main mt-5">
 				<div className="container" style={{width: "28rem"}}>
-                    <div className="border border-secundary">
+                    <div className="border border-secundary mt-5">
                         <h4 className="text-center mt-5" style= {{color: "blue"}}>Edit User & Role</h4>
                         <div className="mx-4">
                             <div className="mt-1">
@@ -63,14 +66,14 @@ export const UpdateUserRole = () => {
                                     <div className="btn btn-primary mt-5" onClick={update}>
                                         Update
                                     </div>
-                                <Link to="/Usersrolescomponent">  
-                                    <div> or get back to Users_Roles List</div>
+                                <Link to="/admin">  
+                                    <div> or get back to ADMIN page</div>
                                 </Link>
                             </div> 
                         </div>
                     </div>
                 </div>
-                
+            </main> 
 		</>
 	);
 };

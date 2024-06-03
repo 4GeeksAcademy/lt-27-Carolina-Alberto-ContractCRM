@@ -41,7 +41,7 @@ export const Newuserrole = (user_id, role_id) => {
                                     Submit
                                 </button>
                                 <Link to="/admin">  
-                                    <span> or get back to Admin</span>
+                                    <span> or get back to ADMIN page</span>
                                 </Link> 
                             </div>
                         </div>

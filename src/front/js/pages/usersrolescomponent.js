@@ -10,7 +10,7 @@ export const Usersrolescomponent = () => {
 
 	useEffect(()=>{
 		actions.getUserRole();
-	},[store.users_roles])
+	},[])
 
 
 
