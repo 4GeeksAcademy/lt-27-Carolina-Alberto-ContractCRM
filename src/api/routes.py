@@ -238,12 +238,15 @@ def get_contracts():
 
 
 def get_exchange_rates(base_currency = "USD"):
-    url = "https://api.freecurrencyapi.com/v1/latest?apikey=fca_live_k94eblhrGQeSI6DYyNJxooCT2n94CxHfBWPQeuHd&base_currency=" + base_currency
+    url = f"https://api.currencyapi.com/v3/latest?apikey=fca_live_k94eblhrGQeSI6DYyNJxooCT2n94CxHfBWPQeuHd&base_currency={base_currency}"
     req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
-    response = urlopen(req).read()
-    # print(response)
-    data = json.loads(response)
-    return data.get("data", {})
+    try:
+        response = urlopen(req).read()
+        data = json.loads(response)
+        return data.get("data", {}).get("rates", {})
+    except Exception as e:
+        print(f"Error fetching exchange rates: {e}")
+        return {}
 
 
 
