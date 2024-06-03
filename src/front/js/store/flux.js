@@ -138,6 +138,12 @@ setContent: (content) => {
 				return getActions().queryhandler("POST", "login/", "", data)
 				.then(({status, data}) => {
 						setStore({loggedUser: data.user, jwt: data.jwt});
+						localStorage.setItem("jwt", getStore().jwt);
+						localStorage.setItem("name", getStore().loggedUser.name);
+						localStorage.setItem("email", getStore().loggedUser.email);
+						localStorage.setItem("id", getStore().loggedUser.id)
+						console.log(data.user.roles)
+						localStorage.setItem("roles", JSON.stringify(data.user.roles))
 						return getActions().getWorkflow();
 				});
 
@@ -151,7 +157,20 @@ setContent: (content) => {
 					return getActions().getWorkflow();
 				});
 				
-},
+			},
+
+
+
+
+
+			userContainsRole: (role) => {
+				if("roles" in localStorage){
+					return localStorage.getItem("roles").includes(role);
+				}
+				return false;
+			},
+
+
 
 //****************************************WORK FLOW ****************************************/
 
@@ -530,11 +549,9 @@ setContent: (content) => {
 			// ********************************************************* ACTIONS FOR USER_ROLE ****************************************************************************
 
 			getUserRole: () => {
-				console.log("todos los user_role desde flux")
 				fetch(process.env.BACKEND_URL + "api/user_role")
 					.then((response) => response.json())
 					.then((data) => {
-						console.log(data)
 						setStore({ users_roles: data })
 					}
 					)
@@ -563,6 +580,26 @@ setContent: (content) => {
 					.catch((error) => console.error(error));
 			},
 
+			updateRoleUser: (user_role, user_id, role_id) => {
+				console.log(user_role)
+				console.log(user_id)
+				console.log(role_id)
+				const body = JSON.stringify({
+					user_id : user_id,
+					role_id : role_id, 	
+				})
+				console.log(body)
+				fetch(process.env.BACKEND_URL + "api/user_role/" + user_role, {
+					method: "PUT",
+					body: body,
+					headers: {
+					"Content-Type": "application/json",
+					}
+				})
+				.then ((response)=>response.json())
+				.then((data)=> getActions().getUserRole())
+				.catch((error) => console.error("Error:", error));
+			},
 
 			getUsers: () => {
 				console.log("todos los usuarios desde flux");

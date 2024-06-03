@@ -19,48 +19,107 @@ export const ContractProfile = () => {
 
     return (
         <>
-            <h1 className="test">Contract Profile</h1>
-            <div style={{ display: "flex" }}>
-                {/* Columna 1 */}
-                <div style={{ flex: 1 }}>
-                    <ul style={{ listStyleType: "none" }}>
-                        <li>Contract ID: {store.contract.id ? store.contract.id : "Contract doesn't exist"}</li>
-                        <li>Contract Status: {store.contract.status}</li>
-                        <li>Supplier: {store.contract.supplier_name}</li>
-                        <li>Software: {store.contract.software_name}</li>
-                        <li>Currency: {store.contract.currency}</li>
-                        <li>Contract Value USD: {store.contract.value}</li>                     
-                        <li>Contract Value EUR: {store.contract.value_eur}</li>
-                        <li>Contract Value JPY: {store.contract.value_jpy}</li>
-                        <li>Business Unit: {store.contract.business_unit}</li>
-                        <li>Contract Type: {store.contract.contract_type}</li>
-                        <li>Contract Description: {store.contract.contract_description}</li>
-                    </ul>
+            <main id="main" className="main mt-5 pt-5">
+            <h1 className="border-bottom border-blue border-4 mt-1" style={{color: "blue"}}>Contract Profile</h1>
+                <div style={{ display: "flex", justifyContent: "center" }}>
+                    <div style={{ display: "flex" }}>
+                        {/* Columna 1 */}
+                        <div style={{ flex: 1 }}>
+                            <table style={{ borderCollapse: "collapse", border: "1px solid #ddd" }}>
+                                <tbody>
+                                    <tr>
+                                        <td style={{ fontWeight: "bold", width: "200px", border: "1px solid #ddd", padding: "8px" }}>Contract ID:</td>
+                                        <td style={{ border: "1px solid #ddd", padding: "8px", width: "400px" }}>{store.contract.id ? store.contract.id : "Contract doesn't exist"}</td>
+                                    </tr>
+                                    <tr>
+                                        <td style={{ fontWeight: "bold", width: "200px", border: "1px solid #ddd", padding: "8px" }}>Contract Status:</td>
+                                        <td style={{ border: "1px solid #ddd", padding: "8px", width: "400px" }}>{store.contract.status}</td>
+                                    </tr>
+                                    <tr>
+                                        <td style={{ fontWeight: "bold", width: "200px", border: "1px solid #ddd", padding: "8px" }}>Supplier:</td>
+                                        <td style={{ border: "1px solid #ddd", padding: "8px", width: "400px" }}>{store.contract.supplier_name}</td>
+                                    </tr>
+                                    <tr>
+                                        <td style={{ fontWeight: "bold", width: "200px", border: "1px solid #ddd", padding: "8px" }}>Software:</td>
+                                        <td style={{ border: "1px solid #ddd", padding: "8px", width: "400px" }}>{store.contract.software_name}</td>
+                                    </tr>
+                                    <tr>
+                                        <td style={{ fontWeight: "bold", width: "200px", border: "1px solid #ddd", padding: "8px" }}>Contract Value USD:</td>
+                                        <td style={{ border: "1px solid #ddd", padding: "8px", width: "400px" }}>{store.contract.value}</td>
+                                    </tr>
+                                    <tr>
+                                        <td style={{ fontWeight: "bold", width: "200px", border: "1px solid #ddd", padding: "8px" }}>Contract Value EUR:</td>
+                                        <td style={{ border: "1px solid #ddd", padding: "8px", width: "400px" }}>{store.contract.value_eur}</td>
+                                    </tr>
+                                    <tr>
+                                        <td style={{ fontWeight: "bold", width: "200px", border: "1px solid #ddd", padding: "8px" }}>Contract Value JPY:</td>
+                                        <td style={{ border: "1px solid #ddd", padding: "8px", width: "400px" }}>{store.contract.value_jpy}</td>
+                                    </tr>
+                                    <tr>
+                                        <td style={{ fontWeight: "bold", width: "200px", border: "1px solid #ddd", padding: "8px" }}>Business Unit:</td>
+                                        <td style={{ border: "1px solid #ddd", padding: "8px", width: "400px" }}>{store.contract.business_unit}</td>
+                                    </tr>
+                                    <tr>
+                                        <td style={{ fontWeight: "bold", width: "200px", border: "1px solid #ddd", padding: "8px" }}>Contract Type:</td>
+                                        <td style={{ border: "1px solid #ddd", padding: "8px", width: "400px" }}>{store.contract.contract_type}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+
+                        {/* Columna 2 */}
+                        <div style={{ flex: 1 }}>
+                            <table style={{ borderCollapse: "collapse", border: "1px solid #ddd" }}>
+                                <tbody>
+                                    <tr>
+                                        <td style={{ fontWeight: "bold", width: "200px", border: "1px solid #ddd", padding: "8px" }}>Effective Date:</td>
+                                        <td style={{ border: "1px solid #ddd", padding: "8px", width: "400px" }}>{store.contract.effective_date}</td>
+                                    </tr>
+                                    <tr>
+                                        <td style={{ fontWeight: "bold", width: "200px", border: "1px solid #ddd", padding: "8px" }}>Expiration Date:</td>
+                                        <td style={{ border: "1px solid #ddd", padding: "8px", width: "400px" }}>{store.contract.expiration_date}</td>
+                                    </tr>
+                                    <tr>
+                                        <td style={{ fontWeight: "bold", width: "200px", border: "1px solid #ddd", padding: "8px" }}>Contract Term:</td>
+                                        <td style={{ border: "1px solid #ddd", padding: "8px", width: "400px" }}>{store.contract.contract_term}</td>
+                                    </tr>
+                                    <tr>
+                                        <td style={{ fontWeight: "bold", width: "200px", border: "1px solid #ddd", padding: "8px" }}>Notice Period:</td>
+                                        <td style={{ border: "1px solid #ddd", padding: "8px", width: "400px" }}>{store.contract.notice_period}</td>
+                                    </tr>
+                                    <tr>
+                                        <td style={{ fontWeight: "bold", width: "200px", border: "1px solid #ddd", padding: "8px" }}>Cost Centers:</td>
+                                        <td style={{ border: "1px solid #ddd", padding: "8px", width: "400px" }}>{store.contract.cost_centers}</td>
+                                    </tr>
+                                    <tr>
+                                        <td style={{ fontWeight: "bold", width: "200px", border: "1px solid #ddd", padding: "8px" }}>Supplier POC:</td>
+                                        <td style={{ border: "1px solid #ddd", padding: "8px", width: "400px" }}>{store.contract.supplier_poc}</td>
+                                    </tr>
+                                    <tr>
+                                        <td style={{ fontWeight: "bold", width: "200px", border: "1px solid #ddd", padding: "8px" }}>Business Unit POC:</td>
+                                        <td style={{ border: "1px solid #ddd", padding: "8px", width: "400px" }}>{store.contract.business_unit_poc}</td>
+                                    </tr>
+                                    <tr>
+                                        <td style={{ fontWeight: "bold", width: "200px", border: "1px solid #ddd", padding: "8px" }}>Contract Description:</td>
+                                        <td style={{ border: "1px solid #ddd", padding: "8px", width: "400px" }}>{store.contract.contract_description}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+
+                    </div>
+                    <div>
+                        {Array.isArray(store.users_contracts) &&
+                            store.users_contracts
+                                .filter((usercontract) => usercontract.contract_id === parseInt(contractId))
+                                .map((usercontract2) => (
+                                    <UserContract key={usercontract2.id} users_contracts={usercontract2} />
+                                ))}
+                    </div>
                 </div>
-                {/* Columna 2 */}
-                <div style={{ flex: 1 }}>
-                    <ul style={{ listStyleType: "none" }}>
-				           <li>Effective Date: {store.contract.effective_date}</li>
-                         <li>Expiration Date: {store.contract.expiration_date}</li>
-                         <li>Contract Term: {store.contract.contract_term}</li>
-                         <li>Notice Period: {store.contract.notice_period}</li>
-                         <li>Budget Owner: {store.contract.budget_owner}</li>
-                         <li>Finance Approver: {store.contract.finance_approver}</li>
-                         <li>Cost Centers: {store.contract.cost_centers}</li>
-                         <li>Supplier POC: {store.contract.supplier_poc}</li>
-                         <li>Business Unit POC: {store.contract.business_unit_poc}</li>
-                         <li>Attachments: {store.contract.attachments}</li>
-                    </ul>
-                </div>
-            </div>
-            <div>
-                {Array.isArray(store.users_contracts) &&
-                    store.users_contracts
-						.filter((usercontract) => usercontract.contract_id === parseInt(contractId))
-						.map((usercontract2) => (
-							<UserContract key={usercontract2.id} users_contracts={usercontract2} />
-						))}
-            </div>
+            </main>
         </>
     );
 };

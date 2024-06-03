@@ -55,7 +55,7 @@ export const EditRole = () => {
                     <div>
 						<Link to="/admin">
 							<button className="btn btn-secondary btn-sm my-5">
-							or get back to ROLES-home
+							or get back to ADMIN page
 							</button>
 						</Link>
 					</div>

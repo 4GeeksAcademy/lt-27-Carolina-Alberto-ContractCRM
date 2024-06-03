@@ -1,11 +1,26 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Context } from "../store/appContext";
 
+
 export const Navbar = () => {
+    
+
+    if(localStorage.getItem("jwt") === null) {
+        return(<div></div>)
+    }
+
+    const clearLocalStorage = () =>{
+        localStorage.removeItem("jwt");
+    }
+
     const { store, actions } = useContext(Context);
     const [contractId, setContractId] = useState("");
 	const navigate = useNavigate();
+  
+
+
+
 
     const handleKeyPress = (event) => {
         if (event.key === "Enter") {
@@ -18,15 +33,17 @@ export const Navbar = () => {
         setContractId(event.target.value);
     };
 
+
+
+
     return (
 
         <header id="header" className="header fixed-top d-flex align-items-center">
             <div className="d-flex align-items-center justify-content-between">
                 <a href="index.html" className="logo d-flex align-items-center">
-                    <img src="../assets/img/SoloLogo.png" alt=""/>
+                    <img src={"../SoloLogo.png"}/>
                     <span className="d-none d-lg-block">ContractsCRM</span>
                 </a>
-                <i className="bi bi-list toggle-sidebar-btn"></i>
             </div>
             {/* <!-- End Logo --> */}
 
@@ -39,7 +56,7 @@ export const Navbar = () => {
                             onChange={handleInputChange}
                             onKeyDown={handleKeyPress}
                     />
-                    <button type="submit" title="Search"><i className="bi bi-search"></i></button>
+                    <button type="submit" title="Search"><i className="fa-solid fa-magnifying-glass"></i></button>
                 </form>
             </div>
             {/* <!-- End Search Bar --> */}
@@ -47,22 +64,23 @@ export const Navbar = () => {
             <nav className="header-nav ms-auto">
                 <ul className="d-flex align-items-center">
                     <li className="nav-item dropdown pe-3">
-                        <a className="nav-link nav-profile d-flex align-items-center pe-0 show" href="#" data-bs-toggle="dropdown">
+                        <a className="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
                             <i className="fa-solid fa-user fs-4 ms-5" style={{ color: "gray" }}></i>
-                            <span className="d-none d-md-block dropdown-toggle ps-2">{store.loggedUser.name}</span>
+                            <span className="d-none d-md-block dropdown-toggle ps-2">{localStorage.getItem("name")}</span>
                         </a>
                         {/* <!-- End Profile Iamge Icon --> */}
 
-                        <ul className="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile show" style={{ position: 'absolute', inset: '0px 0px auto auto', margin: '0px', transform: 'translate(-16px, 38px)' }}>
+                        <ul className="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile" style={{ position: 'absolute', inset: '0px 0px auto auto', margin: '0px', transform: 'translate(-16px, 38px)' }}>
                             <li className="dropdown-header">
-                                <h6>{store.loggedUser.email}</h6>
-                                <span>User ID: {store.loggedUser.id}</span>
+                                <h6>{localStorage.getItem("email")}</h6>
+                                <span>User ID: {localStorage.getItem("id")}</span>
                             </li>
+                
                             <li>
                                 <hr className="dropdown-divider"/>
                             </li>
                             <li>
-                                <a className="dropdown-item d-flex align-items-center" href="#">
+                                <a className="dropdown-item d-flex align-items-center" href="/" onClick={clearLocalStorage}>
                                     <i className="bi bi-box-arrow-right"></i>
                                     <span>Sign Out</span>
                                 </a>
@@ -74,7 +92,6 @@ export const Navbar = () => {
                 </ul>
             </nav>
         </header>
-
     );
 };
 

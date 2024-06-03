@@ -1,8 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-
-
 import { Link } from "react-router-dom";
-
 import { Context } from "../store/appContext";
 
 export const ListRoles = () => {
@@ -27,25 +24,24 @@ export const ListRoles = () => {
 		<>
 			<h1 className="border-bottom border-blue border-4 mt-2 mb-5" style={{color: "blue"}}>List</h1>
 			<div className="container">
-				<div className="row border border-light ">
-					
-						{ store.roles.map( (elemento) => 	
-							<div key={elemento.id}>
-								<div className="col-5 border border-light">
-									<Link to={"/editrole/" + elemento.id}>  
-										<i className="fa-solid fa-pen-to-square" type="button"/>
-									</Link> 
-									<i className="fa-solid fa-trash" type="button" 
-										onClick={() => actions.deleteRole(elemento.id)}
-									/>
-								</div>
-								<div className="col-5 border border-light">
-									{elemento.name}
-								</div>
-							</div> 
-						)}
-				</div>
-			</div>	
+				{store.roles.map((elemento) => (
+					<div key={elemento.id} className="row bottom-border">
+						<div className="col-1">
+							<Link to={"/editrole/" + elemento.id}>
+								<i className="fa-solid fa-pen-to-square" type="button" />
+							</Link>
+						</div>
+						<div className="col-1">
+							<i className="fa-solid fa-trash" type="button" onClick={() => actions.deleteRole(elemento.id)} />
+						</div>
+						<div className="col-4">
+							{elemento.name}
+						</div>
+					</div>
+				))}
+			</div>
+
+
 		</>
 	);
 };

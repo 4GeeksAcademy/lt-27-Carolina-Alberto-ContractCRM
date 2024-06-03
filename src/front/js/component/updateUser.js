@@ -1,6 +1,7 @@
 import React, { useContext , useEffect, useState } from "react";
 import { Context } from "../store/appContext";
 import { useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 
 export const UpdateUser = (props) => {
@@ -35,6 +36,8 @@ export const UpdateUser = (props) => {
 	},[store.user])
 	
 	return (
+		<main id="main" className="main mt-5">
+		<h1 className="border-bottom border-blue border-4 mt-5 mb-5" style={{color: "blue"}}>Update User Information</h1>
 		<form>
 			<div className="form-group">
 				<label htmlFor="name">Name</label>
@@ -45,7 +48,7 @@ export const UpdateUser = (props) => {
 				onChange={(e)=>{setName(e.target.value)}}
 				/>
 			</div>
-			<div className="form-group">
+			<div className="form-group mt-2">
 				<label htmlFor="last_name">Last Name</label>
 				<input type="text" 
 				className="form-control" 
@@ -55,7 +58,7 @@ export const UpdateUser = (props) => {
 				/>
 			</div>
 
-			<div className="form-group">
+			<div className="form-group mt-2">
 				<label htmlFor="email">Email address</label>
 				<input type="text" 
 				className="form-control" 
@@ -65,12 +68,16 @@ export const UpdateUser = (props) => {
 				/>
 			</div>			
 			<button type="submit" 
-			className="btn btn-primary"
+			className="btn btn-primary  mt-3"
 			onClick={(e)=>{
 				e.preventDefault();
 				update();
 			}}
 			>Submit</button>
+			<Link to="/admin">  
+				<div> or get back to Users</div>
+			</Link>
 		</form>
+		</main>
 	);
 };

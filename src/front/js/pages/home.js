@@ -33,7 +33,6 @@ export const Home = () => {
 		}
 	}, [store.homeContent]);
 
-
 	return (
 		<>
 			<div>
@@ -55,17 +54,17 @@ export const Home = () => {
 							<div className="col-lg-8">
 								<div className="row">
 									{/* <!-- Sales Card --> */}
-									<div className="col-xxl-4 col-md-6">
+									<div className="col-xxl-6 col-md-6">
 										<div className="card info-card sales-card">
 											<div className="card-body">
 												<h5 className="card-title">Contracts <span>| Total</span></h5>
 
 												<div className="d-flex align-items-center">
 													<div className="card-icon rounded-circle d-flex align-items-center justify-content-center">
-														<i className="bi bi-cart"></i>
+													<i class="fa-solid fa-circle-check fa-2xl" style={{color: "#315c7d"}}></i>
 													</div>
 													<div className="ps-3">
-														<h6>145</h6>
+														<h6>{store.contracts.length}</h6>
 													</div>
 												</div>
 											</div>
@@ -74,16 +73,16 @@ export const Home = () => {
 									{/* <!-- End Sales Card --> */}
 
 									{/* <!-- Revenue Card --> */}
-									<div className="col-xxl-4 col-md-6">
+									<div className="col-xxl-6 col-md-6">
 										<div className="card info-card revenue-card">
 											<div className="card-body">
-												<h5 className="card-title">Revenue <span>| Total</span></h5>
+												<h5 className="card-title">Revenue (USD) <span>| Total</span></h5>
 												<div className="d-flex align-items-center">
 													<div className="card-icon rounded-circle d-flex align-items-center justify-content-center">
-														<i className="bi bi-currency-dollar"></i>
+													<i class="fa-solid fa-sack-dollar fa-2xl" style={{color: "#315c7d"}}></i>
 													</div>
 													<div className="ps-3">
-														<h6>$3,264</h6>
+														<h6>{store.contracts.length == 0 ? 0 : store.contracts.map((contract) => contract.value_usd).reduce((amt, curr) => amt + curr)}</h6>
 													</div>
 												</div>
 											</div>
@@ -92,7 +91,7 @@ export const Home = () => {
 									{/* <!-- End Revenue Card --> */}
 
 									{/* <!-- Customers Card --> */}
-									<div className="col-xxl-4 col-md-6">
+									{/* <div className="col-xxl-4 col-md-6">
 										<div className="card info-card customers-card">
 											<div className="card-body">
 												<h5 className="card-title">Customers <span>| This Year</span></h5>
@@ -106,19 +105,19 @@ export const Home = () => {
 												</div>
 											</div>
 										</div>
-									</div>
+									</div> */}
 									{/* <!-- End Customers Card --> */}
 								</div>
 
 								{/* <!-- Bar Chart --> */}
-								<div className="col-lg-6">
+								{/* <div className="col-lg-6">
 									<div className="card">
 										<div className="card-body">
 											<h5 className="card-title">Contracts | Pending to approve</h5>
 											{/* <BarChart/> */}
-										</div>
+										{/* </div>
 									</div>
-								</div>
+								</div> */} 
 								{/* <!-- End Bar Chart --> */}
 
 

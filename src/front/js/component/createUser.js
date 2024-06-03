@@ -1,6 +1,7 @@
 import React, { useContext , useState } from "react";
 import { Context } from "../store/appContext";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 
 export const CreateUser = () => {
@@ -32,6 +33,8 @@ export const CreateUser = () => {
 	}
 	
 	return (
+		<main id="main" className="main mt-5">
+		<h1 className="border-bottom border-blue border-4 mt-1 mb-5" style={{color: "blue"}}>Create a User</h1>
 		<form>
 			<div className="form-group">
 				<label htmlFor="name">Name</label>
@@ -81,12 +84,16 @@ export const CreateUser = () => {
                 />
             </div>
 			<button type="submit" 
-			className="btn btn-primary"
+			className="btn btn-primary mt-3"
 			onClick={(e)=>{
 				e.preventDefault();
 				create();
 			}}
 			>Submit</button>
 		</form>
+		<Link to="/admin">  
+			<div> or get back to Users</div>
+		</Link>
+		</main>
 	);
 };
