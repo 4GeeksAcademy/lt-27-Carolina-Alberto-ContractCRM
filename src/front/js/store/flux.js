@@ -1,5 +1,6 @@
 import { renderToReadableStream } from "react-dom/server";
 import { EditRole } from "../component/editrole";
+import { J } from "../../assets/vendor/chart.js/chunks/helpers.segment";
 
 
 const getState = ({ getStore, getActions, setStore }) => {
@@ -38,89 +39,89 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 			requestParams: (method, data) => {
 
-                if (data === null) {
-                    if(getStore().jwt === null){
-                        return {
-                            method: method,
-                            headers: {
-                            "Content-Type": "application/json",
-                            "Accept": "application/json",
-                            }
-                        }
-                    }
-                    else if(getStore().jwt !== null){
-                        return {
-                            method: method,
-                            headers: {
-                            "Content-Type": "application/json",
-                            "Accept": "application/json",
-                            "Authorization": "Bearer "+getStore().jwt
-                            }
-                        }
-                    }
-                }
-                else {
-                    if(getStore().jwt === null){
-                        return {
-                            method: method,
-                            body: JSON.stringify(data),
-                            headers: {
-                            "Content-Type": "application/json",
-                            "Accept": "application/json",
-                            }
-                        }
-                    }
-                    else if(getStore().jwt !== null){
-                        return {
-                            method: method,
-                            body: JSON.stringify(data),
-                            headers: {
-                            "Content-Type": "application/json",
-                            "Accept": "application/json",
-                            "Authorization": "Bearer "+getStore().jwt
-                            }
-                        }
-                    }
-                }
-            },
-            /**
-             * Realiza una consulta HTTP a la API.
-             *
-             * @param {string} method - El método HTTP a utilizar para la consulta (GET, POST, PUT, DELETE).
-             * @param {string} route - El endpoint de la API al que se realizará la consulta.
-             * @param {string} id - El identificador del recurso a consultar. Si no se requiere, se puede pasar una cadena vacía.
-             * @param {Object} data - El cuerpo de la solicitud en formato de objeto. Si no se requiere, se puede pasar null.
-             *
-             * @returns {Promise} - Una promesa que se resuelve con un objeto que contiene el estado de la solicitud (true si la solicitud fue exitosa, false en caso contrario) y los datos de la respuesta de la API.
-             *
-             * @example
-             * // Realizar una consulta GET a la API.
-             * queryhandler("GET", "users", "1", null)
-             *
-             * @example
-             * // Realizar una consulta POST a la API.
-             * queryhandler("POST", "login/", "", { username: "user", password: "password" })
-             */
-            queryhandler: (method, route, id, data) => {
-                const url = process.env.BACKEND_URL+"api/"+route;
-				console.log("peticion: "+url);
-                const resquestParams = getActions().requestParams(method, data);
+				if (data === null) {
+					if (getStore().jwt === null) {
+						return {
+							method: method,
+							headers: {
+								"Content-Type": "application/json",
+								"Accept": "application/json",
+							}
+						}
+					}
+					else if (getStore().jwt !== null) {
+						return {
+							method: method,
+							headers: {
+								"Content-Type": "application/json",
+								"Accept": "application/json",
+								"Authorization": "Bearer " + getStore().jwt
+							}
+						}
+					}
+				}
+				else {
+					if (getStore().jwt === null) {
+						return {
+							method: method,
+							body: JSON.stringify(data),
+							headers: {
+								"Content-Type": "application/json",
+								"Accept": "application/json",
+							}
+						}
+					}
+					else if (getStore().jwt !== null) {
+						return {
+							method: method,
+							body: JSON.stringify(data),
+							headers: {
+								"Content-Type": "application/json",
+								"Accept": "application/json",
+								"Authorization": "Bearer " + getStore().jwt
+							}
+						}
+					}
+				}
+			},
+			/**
+			 * Realiza una consulta HTTP a la API.
+			 *
+			 * @param {string} method - El método HTTP a utilizar para la consulta (GET, POST, PUT, DELETE).
+			 * @param {string} route - El endpoint de la API al que se realizará la consulta.
+			 * @param {string} id - El identificador del recurso a consultar. Si no se requiere, se puede pasar una cadena vacía.
+			 * @param {Object} data - El cuerpo de la solicitud en formato de objeto. Si no se requiere, se puede pasar null.
+			 *
+			 * @returns {Promise} - Una promesa que se resuelve con un objeto que contiene el estado de la solicitud (true si la solicitud fue exitosa, false en caso contrario) y los datos de la respuesta de la API.
+			 *
+			 * @example
+			 * // Realizar una consulta GET a la API.
+			 * queryhandler("GET", "users", "1", null)
+			 *
+			 * @example
+			 * // Realizar una consulta POST a la API.
+			 * queryhandler("POST", "login/", "", { username: "user", password: "password" })
+			 */
+			queryhandler: (method, route, id, data) => {
+				const url = process.env.BACKEND_URL + "api/" + route;
+				console.log("peticion: " + url);
+				const resquestParams = getActions().requestParams(method, data);
 				//console.log(resquestParams);
-                return fetch(url + id, resquestParams)
-                .then((response) => {
-                    try {
-                        let isOk = response.ok;
-                        //console.log(response);
-                        return response.json().then((data) => {
-                        //console.log(data);
-                        return { status: isOk, data: data };
-                        });
-                    } catch (error) {
-                        console.log(error.message);
-                    }
-                });
-            },
-setContent: (content) => {
+				return fetch(url + id, resquestParams)
+					.then((response) => {
+						try {
+							let isOk = response.ok;
+							//console.log(response);
+							return response.json().then((data) => {
+								//console.log(data);
+								return { status: isOk, data: data };
+							});
+						} catch (error) {
+							console.log(error.message);
+						}
+					});
+			},
+			setContent: (content) => {
 				if (content === "operation" || content === "manager" || content === "finance"
 					|| content === "budgetOwner" || content === "security" || content === "legal"
 					|| content === "active") {
@@ -133,30 +134,38 @@ setContent: (content) => {
 
 			},
 
-// *********************************************************** ACTIONS FOR LOGIN ****************************************************************
+			// *********************************************************** ACTIONS FOR LOGIN ****************************************************************
 			login: (data) => {
 				return getActions().queryhandler("POST", "login/", "", data)
-				.then(({status, data}) => {
-						setStore({loggedUser: data.user, jwt: data.jwt});
+					.then(({ status, data }) => {
+						setStore({ loggedUser: data.user, jwt: data.jwt });
 						localStorage.setItem("jwt", getStore().jwt);
 						localStorage.setItem("name", getStore().loggedUser.name);
 						localStorage.setItem("email", getStore().loggedUser.email);
 						localStorage.setItem("id", getStore().loggedUser.id)
-						console.log(data.user.roles)
-						localStorage.setItem("roles", JSON.stringify(data.user.roles))
+						console.log(data.user.roles);
+						console.log(JSON.stringify(data.user.roles));
+						localStorage.setItem("roles", JSON.stringify(data.user.roles));
 						return getActions().getWorkflow();
-				});
+					});
 
 			},
 			signup: (newUserData) => {
 				return getActions().queryhandler("POST", "signup/", "", newUserData)
-				.then(({status, data}) => {
-					console.log(status);
-					console.log(data);
-					setStore({loggedUser: data.user, jwt: data.jwt});
-					return getActions().getWorkflow();
-				});
-				
+					.then(({ status, data }) => {
+						console.log(status);
+						console.log(data);
+						setStore({ loggedUser: data.user, jwt: data.jwt });
+						localStorage.setItem("jwt", JSON.stringify(data.user.jwt))
+						localStorage.setItem("name", JSON.stringify(data.user.name))
+						localStorage.setItem("email", JSON.stringify(data.user.email))
+						localStorage.setItem("id", JSON.stringify(data.user.id))
+						console.log(data.user.roles);
+						console.log(JSON.stringify(data.user.roles));
+						localStorage.setItem("roles", JSON.stringify(data.user.roles))
+						return getActions().getWorkflow();
+					});
+
 			},
 
 
@@ -164,7 +173,7 @@ setContent: (content) => {
 
 
 			userContainsRole: (role) => {
-				if("roles" in localStorage){
+				if ("roles" in localStorage) {
 					return localStorage.getItem("roles").includes(role);
 				}
 				return false;
@@ -172,64 +181,69 @@ setContent: (content) => {
 
 
 
-//****************************************WORK FLOW ****************************************/
+			//****************************************WORK FLOW ****************************************/
 
 
 			getWorkflow: () => {
 				console.log("workflow desde flux");
 				return getActions().queryhandler("GET", "workflow", "", null)
-				.then(({status, data}) => {
-					if (status) {
-						let contracts = [];
-						let workflow = [];
-						data.forEach(item => {
-							if (item.contract) {
-								contracts.push(item.contract);
-							}
-							if (item.data) {
-								workflow.push(item.data);
-							}
-							if (item['404']) {
-								workflow.push(item['404']);
-							}
-						});
-						setStore({ contracts: contracts, workflow: workflow });
-						
-						console.log(getStore().contracts);
-						console.log(getStore().workflow);
-						return true;
-					} else {
-						console.log("Error loading workflow from backend");
-						console.log(data);
-						return false;
-					}
-				})
-				
+					.then(({ status, data }) => {
+						if (status) {
+							let contracts = [];
+							let workflow = [];
+							data.forEach(item => {
+								if (item.contract) {
+									contracts.push(item.contract);
+								}
+								if (item.data) {
+									workflow.push(item.data);
+								}
+								if (item['404']) {
+									workflow.push(item['404']);
+								}
+							});
+							setStore({ contracts: contracts, workflow: workflow });
+							console.log(contracts);
+							console.log(JSON.stringify(contracts));
+							localStorage.setItem("contracts", JSON.stringify(contracts));
+							localStorage.setItem("workflow", JSON.stringify(workflow));
+
+							return true;
+						} else {
+							console.log("Error loading workflow from backend");
+							console.log(data);
+							return false;
+						}
+					})
+
 			},
 
 			setContent: (content) => {
-				if(content === "operation" || content === "manager" || content === "finance" 
-				|| content === "budgetOwner" || content === "security" || content === "legal" 
-				|| content === "active"){
+				if (content === "operation" || content === "manager" || content === "finance"
+					|| content === "budgetOwner" || content === "security" || content === "legal"
+					|| content === "active") {
 					console.log("set content", content)
-					setStore({homeContent: content})
+					setStore({ homeContent: content })
 				}
-				else{
+				else {
 					console.log("Invalid content type")
 				}
-				
+
 			},
 
-// *********************************************************** Approve Contracts ****************************************************************
+			// *********************************************************** Approve Contracts ****************************************************************
 
 			approveContract: (data) => {
-				getActions().queryhandler("POST", "user_contract/", "", data)
-				.then(({status, data}) => {
-					if (status) {
-						console.log("Contract approved successfully.");
-					} else {
-						console.log("Error approving contract");
-					}});
+				return getActions().queryhandler("POST", "user_contract/", "", data)
+					.then(({ status, data }) => {
+						if (status) {
+							console.log("Contract approved successfully.");
+							return true
+						} else {
+							console.log("Error approving contract");
+							return false
+						}
+					});
 			},
 
 
@@ -326,43 +340,43 @@ setContent: (content) => {
 
 			putRole: (editData, role_id) => {
 				return getActions().queryhandler("PUT", "roles/", role_id, editData)
-					.then (() => getActions().getRoles())
+					.then(() => getActions().getRoles())
 					.catch((error) => console.error(error));
 			},
 
 			createRole: (newRoleName) => {
 				console.log(newRoleName)
-						
+
 				fetch(process.env.BACKEND_URL + "api/roles/", {
 					method: "POST",
-					body: JSON.stringify({"name": newRoleName}),
+					body: JSON.stringify({ "name": newRoleName }),
 					headers: {
-					"Content-Type": "application/json"
+						"Content-Type": "application/json"
 					}
-        		})
-				.then ((response)=>response.json())
-					.then(  ()=>  getActions().getRoles())
+				})
+					.then((response) => response.json())
+					.then(() => getActions().getRoles())
 			},
 			deleteRole: (role_id) => {
-				console.log("delete role",role_id)
+				console.log("delete role", role_id)
 
 				// console.log(store.contacts.filter( (contacts, contactsIndex)=> contactsIndex != indexToDelete))
 				// setStore({ contacts: store.contacts.filter( (contacts, contactsIndex)=> contactsIndex != indexToDelete) });
-					
+
 				const requestOptions = {
-				  method: "DELETE",
-				  redirect: "follow"
+					method: "DELETE",
+					redirect: "follow"
 				};
-				
+
 				fetch(process.env.BACKEND_URL + "api/roles/" + role_id, requestOptions)
-				  .then((response) => response.text())
-				  .then((result) => {
-					console.log(result)
-					fetch(process.env.BACKEND_URL + "api/roles")
-					.then ((response)=>response.json())
-						.then( (data)=>setStore({ roles: data}))
-						})
-				  .catch((error) => console.error(error));
+					.then((response) => response.text())
+					.then((result) => {
+						console.log(result)
+						fetch(process.env.BACKEND_URL + "api/roles")
+							.then((response) => response.json())
+							.then((data) => setStore({ roles: data }))
+					})
+					.catch((error) => console.error(error));
 			},
 
 
@@ -517,15 +531,13 @@ setContent: (content) => {
 				getActions().queryhandler("PUT", "contracts/", contract_id, editData)
 					.then(({ status, data }) => {
 						if (status) {
-							setStore({
-								contracts: getStore().contracts.map((contract) => {
-									if (contract.id === contract_id) {
-										return data;
-									} else {
-										return contract;
-									}
-								})
-							});
+							setStore({ contracts: getStore().contracts.map((contract) => {
+								if (contract.id === contract_id) {
+									return data;
+								} else {
+									return contract;
+								}
+							}) });
 						} else {
 							console.log("Error updating contract");
 							console.log(data);
@@ -585,20 +597,20 @@ setContent: (content) => {
 				console.log(user_id)
 				console.log(role_id)
 				const body = JSON.stringify({
-					user_id : user_id,
-					role_id : role_id, 	
+					user_id: user_id,
+					role_id: role_id,
 				})
 				console.log(body)
 				fetch(process.env.BACKEND_URL + "api/user_role/" + user_role, {
 					method: "PUT",
 					body: body,
 					headers: {
-					"Content-Type": "application/json",
+						"Content-Type": "application/json",
 					}
 				})
-				.then ((response)=>response.json())
-				.then((data)=> getActions().getUserRole())
-				.catch((error) => console.error("Error:", error));
+					.then((response) => response.json())
+					.then((data) => getActions().getUserRole())
+					.catch((error) => console.error("Error:", error));
 			},
 
 			getUsers: () => {

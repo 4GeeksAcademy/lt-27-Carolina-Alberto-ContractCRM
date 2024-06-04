@@ -6,14 +6,15 @@ import { Contract } from "../component/contract";
 
 export const BudgetOwnerApproval = () => {
   const { store, actions } = useContext(Context);
+  let localContracts = JSON.parse(localStorage.getItem("contracts"));
+  let haveRole = false
 
   useEffect(() => {
     console.log("se cargo la pag BudgetOwnerApproval")
-    actions.getUsers();
-    actions.getContracts();
   }, [])
 
-  const filterbystatus = store.contracts.filter(contract => contract.status === "Pending_Budget_Owner_approval");
+  haveRole = actions.userContainsRole("budgetowner")
+  const filterbystatus = localContracts.filter(contract => contract.status === "Pending_Budget_Owner_approval");
 
   return (
     <>
@@ -50,10 +51,11 @@ export const BudgetOwnerApproval = () => {
                     <th scope="col">Cost Center</th>
                     <th scope="col">Supplier POC</th>
                     <th scope="col">Business POC</th>
+                    <th scope="col">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {filterbystatus.map((contract) => <Contract key={contract.id} contract={contract}></Contract>)}
+                  {filterbystatus.map((contract) => <Contract key={contract.id} contract={contract} auth={haveRole}></Contract>)}
                 </tbody>
               </table>
               {/* <!-- End Table with stripped rows --> */}

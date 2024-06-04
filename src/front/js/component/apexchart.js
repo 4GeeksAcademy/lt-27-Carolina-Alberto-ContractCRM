@@ -34,21 +34,21 @@ const chartPieIncial = {
 };
 
 export function ApexChart() {
-  const [chartPie, setchartPie] = useState (chartPieIncial)
+  const [chartPie, setchartPie] = useState(chartPieIncial)
 
-  useEffect (()=>{
-    fetch (process.env.BACKEND_URL + "api/contracts_by_bu/")
-    .then((response) => {
-      if (response.ok){
-        return response.json()
-      }
+  useEffect(() => {
+    fetch(process.env.BACKEND_URL + "api/contracts_by_bu/")
+      .then((response) => {
+        if (response.ok) {
+          return response.json()
+        }
       })
-    .then((data) => {
-      console.log(data)
-      setchartPie({...chartPie, datasets:[{...chartPie.datasets[0], data:[data.Accounting, data.HR, data.IT, data.Marketing, data.Sales, data.Supply_Chain]}]})  
-    })
+      .then((data) => {
+        //console.log(data)
+        setchartPie({ ...chartPie, datasets: [{ ...chartPie.datasets[0], data: [data.Accounting, data.HR, data.IT, data.Marketing, data.Sales, data.Supply_Chain] }] })
+      })
   }, [])
 
-  console.log(chartPie)
+  //console.log(chartPie)
   return <Pie data={chartPie} />;
 }

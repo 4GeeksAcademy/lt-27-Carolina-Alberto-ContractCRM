@@ -393,11 +393,13 @@ def delete_contract(contract_id):
   # ********************************************************* ROUTES FOR USER_ROLE ****************************************************************
 
 
-@api.route('/user_role/<int:user_role_id>', methods=['GET'])
+#@api.route('/user_role/<int:user_role_id>', methods=['GET'])
 def get_all_roles_by_user(user_role_id):
-    user_role = User_Role.query.filter_by(id=user_role_id).first()
-    if user_role:
-        return user_role.serialize(), 200
+    user_roles = User_Role.query.filter_by(id=user_role_id).all()
+    
+    if user_roles:
+        return jsonify([user_role.serialize() for user_role in user_roles]), 200
+        
     else:
         return jsonify({"msg": "User & Role do not exist"}), 400
 
@@ -473,14 +475,6 @@ def last_status():
     
     return jsonify(statusList), 200
 
-@api.route('/user_contract/<int:user_contract_id>', methods=['GET'])
-def get_one_user_contract(user_contract_id):
-    one_user_contract = User_Contract.query.filter_by(id=user_contract_id).first()
-    if one_user_contract:
-        return jsonify(one_user_contract.serialize()), 200
-    else:
-        return jsonify({"msg": "Contract status hasn't been modified by the user"}), 400
-
 @api.route('/workflow/<int:contract_id>', methods=['GET'])
 def workflow(contract_id):
 
@@ -490,25 +484,30 @@ def workflow(contract_id):
         return jsonify(results), 200
     else:
         return jsonify({"msg": "Contract status hasn't been modified by the user"}), 400
+    
+@api.route('/user_contract/<int:user_contract_id>', methods=['GET'])
+def get_one_user_contract(user_contract_id):
+    one_user_contract = User_Contract.query.filter_by(id=user_contract_id).first()
+    if one_user_contract:
+        return jsonify(one_user_contract.serialize()), 200
+    else:
+        return jsonify({"msg": "Contract status hasn't been modified by the user"}), 400
+
 
 @api.route('/user_contracts/<int:contract_id>', methods=['GET'])
 def to_approve(contract_id):
     contracts_state = User_Contract.query.filter_by(contract_id=contract_id).order_by(User_Contract.id.desc()).first()
 
     if contracts_state:
-        return jsonify(contracts_state.serialize()["next_approval_area"]), 200
+        return jsonify(contracts_state.serialize()["next_"]), 200
     else:
         return False
 
 
 def approvalHandler( approver , contract):
     response, status_code = get_all_roles_by_user(approver)
-    permissions = response if status_code == 200 else []
+    permissions = response.json if status_code == 200 else []
     area_to_approve = to_approve(contract)
-    print ("permissions:")
-    print (permissions)
-    print ("area_to_approve:")
-    print (area_to_approve)
     
     if area_to_approve:
         print ("true1")
@@ -529,6 +528,7 @@ def approvalHandler( approver , contract):
 @api.route('/user_contract', methods=['POST'])
 def create_user_contract():
     data = request.get_json()
+    print(data)
     message = approvalHandler(data["user_id"], data["contract_id"])
     if message == True  :
         add_user_contract = User_Contract(
@@ -541,6 +541,7 @@ def create_user_contract():
             )
         db.session.add(add_user_contract)
         db.session.commit()
+
         return jsonify(add_user_contract.serialize()), 200
     elif message == "new":
         add_user_contract = User_Contract(
@@ -553,10 +554,11 @@ def create_user_contract():
             )
         db.session.add(add_user_contract)
         db.session.commit()
+
         return jsonify(add_user_contract.serialize()), 200
     else:
         return jsonify({"msg": "User doesn't have the permissions to approve this contract"}), 400
-
+    return jsonify({"msg": message}), 200
     
 
 

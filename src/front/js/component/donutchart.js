@@ -34,21 +34,21 @@ const donutChartInicial = {
 };
 
 export function DonutChart() {
-    const [donutChart, setDonutChart] = useState (donutChartInicial)
+  const [donutChart, setDonutChart] = useState(donutChartInicial)
 
-    useEffect (()=>{
-        fetch (process.env.BACKEND_URL + "api/contracts_by_type/")
-        .then((response) => {
-        if (response.ok){
-            return response.json()
+  useEffect(() => {
+    fetch(process.env.BACKEND_URL + "api/contracts_by_type/")
+      .then((response) => {
+        if (response.ok) {
+          return response.json()
         }
-        })
-        .then((data) => {
-        console.log(data)
-        setDonutChart({...donutChart, datasets:[{...donutChart.datasets[0], data:[data.Software, data.Professional_Services, data.Storage, data.Non_disclosure_agreement, data.Leases, data.Networking]}]})  
-        })
-    }, [])
-  
-    console.log(donutChart)
+      })
+      .then((data) => {
+        //console.log(data)
+        setDonutChart({ ...donutChart, datasets: [{ ...donutChart.datasets[0], data: [data.Software, data.Professional_Services, data.Storage, data.Non_disclosure_agreement, data.Leases, data.Networking] }] })
+      })
+  }, [])
+
+  //console.log(donutChart)
   return <Doughnut data={donutChart} />;
 }

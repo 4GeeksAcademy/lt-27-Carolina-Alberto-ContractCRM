@@ -6,14 +6,14 @@ import { Contract } from "../component/contract";
 
 export const LegalApproval = () => {
   const { store, actions } = useContext(Context);
+  let localContracts = JSON.parse(localStorage.getItem("contracts"));
+  let haveRole = false
 
   useEffect(() => {
     console.log("se cargo la pag LegalApproval")
-    actions.getUsers();
-    actions.getContracts();
   }, [])
-
-  const filterbystatus = store.contracts.filter(contract => contract.status === "Pending_Legal_approval");
+  haveRole = actions.userContainsRole("legal")
+  const filterbystatus = localContracts.filter(contract => contract.status === "Pending_Legal_approval");
 
   return (
     <>
@@ -50,10 +50,11 @@ export const LegalApproval = () => {
                     <th scope="col">Cost Center</th>
                     <th scope="col">Supplier POC</th>
                     <th scope="col">Business POC</th>
+                    <th scope="col">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {filterbystatus.map((contract) => <Contract key={contract.id} contract={contract}></Contract>)}
+                  {filterbystatus.map((contract) => <Contract key={contract.id} contract={contract} auth={haveRole}></Contract>)}
                 </tbody>
               </table>
               {/* <!-- End Table with stripped rows --> */}

@@ -6,13 +6,14 @@ import { Contract } from "../component/contract";
 
 export const ContractNotStarted = () => {
   const { store, actions } = useContext(Context);
+  let localContracts = JSON.parse(localStorage.getItem("contracts"));
+  let haveRole = false
 
   useEffect(() => {
     console.log("se cargo la pag ContractNotStarted")
-    actions.getUsers();
-    actions.getContracts();
   }, [])
 
+  haveRole = actions.userContainsRole("operation")
   const filterbystatus = store.contracts.filter(contract => contract.status === "Approvals_workflow_not_started");
 
   return (
@@ -50,10 +51,11 @@ export const ContractNotStarted = () => {
                     <th scope="col">Cost Center</th>
                     <th scope="col">Supplier POC</th>
                     <th scope="col">Business POC</th>
+                    <th scope="col">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {filterbystatus.map((contract) => <Contract key={contract.id} contract={contract}></Contract>)}
+                  {filterbystatus.map((contract) => <Contract key={contract.id} contract={contract} auth={haveRole}></Contract>)}
                 </tbody>
               </table>
               {/* <!-- End Table with stripped rows --> */}
